@@ -21,7 +21,7 @@ export class Project implements IProject {
   date: Date
   ui: HTMLDivElement
   cost: number = 0
-  progress: number = 0
+  progress: number = 0.6
 
   constructor(data: IProject) {
     this.id = uuidv4()
