@@ -31,7 +31,7 @@ const defaultProject: IProject = {
   description: "Default description",
   status: "pending",
   role: "developer",
-  date: new Date()
+  date: new Date(),
 }
 
 const defaultPro = projectsManager.newProject(defaultProject) 

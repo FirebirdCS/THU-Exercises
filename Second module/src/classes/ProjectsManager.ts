@@ -23,6 +23,7 @@ export class ProjectsManager {
             if (!projectsPage || !detailsPage) { return }
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
+            this.setDetailsPage(project)
         })
 
         this.ui.append(project.ui)
@@ -52,6 +53,28 @@ export class ProjectsManager {
             return project.id !== id
         })
         this.list = remaining
+    }
+
+    private setDetailsPage(project: Project) {
+        const detailsPage = document.getElementById("project-details")
+        if(!detailsPage) { return }
+        for (const key in project) {
+            const elements = detailsPage.querySelectorAll(`[data-project-info=${key}]`)
+            if(!elements){ continue }
+            if(key === "date"){
+                const date = elements[0] as HTMLElement
+                const dateInfo = new Date(project.date)
+                date.textContent = dateInfo.toDateString()
+            }else if(key === "progress"){
+                const progress = elements[0] as HTMLElement
+                progress.style.width = project.progress * 100 + "%"
+                progress.textContent = project.progress * 100 + "%"
+            } else {
+                for (const element of elements){
+                    element.textContent = project[key]
+                }
+            }
+        }
     }
 
     calcAllProjects() {
