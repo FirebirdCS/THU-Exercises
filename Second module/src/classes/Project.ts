@@ -22,12 +22,15 @@ export class Project implements IProject {
   ui: HTMLDivElement
   cost: number = 0
   progress: number = 0.6
+  cardColor: string;
+
 
   constructor(data: IProject) {
     this.id = uuidv4()
     for (const key in data){
       this[key] = data[key]
     } 
+    this.cardColor = this.selectRandomColor();
     this.setUI()
   }
 
@@ -36,9 +39,10 @@ export class Project implements IProject {
         if(this.ui && this.ui instanceof HTMLElement) {return}
         this.ui = document.createElement("div")
         this.ui.className = "project-card"
+        const iconTitle = this.name.substring(0,2).toUpperCase();
         this.ui.innerHTML = `<div class="project-card">
         <div class="card-header">
-            <p style="background-color: #ca8134; padding: 10px; border-radius:8px; aspect-ratio: 1;">HC</p>
+            <p style="background-color: ${this.cardColor}; padding: 10px; border-radius:8px; aspect-ratio: 1;">${iconTitle}</p>
             <div>
                 <h5>${this.name}</h5>
                 <p>${this.description} </p>
@@ -63,5 +67,10 @@ export class Project implements IProject {
             </div>
           </div>
         </div>`
+  }
+
+  private selectRandomColor(): string {
+    const colors = ["#212B37", "#EF6337", "#781239", "#3b95bf", "#48bf3b"];
+    return colors[Math.floor(Math.random() * colors.length)];
   }
 }

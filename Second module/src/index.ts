@@ -12,11 +12,13 @@ const projectBtn = document.getElementById("new-project-btn");
 
 const tip = document.getElementById("tip") as HTMLElement
 const error = document.getElementById('nameError') as HTMLElement
+const error2 = document.getElementById('nameError2') as HTMLElement
 
 if (projectBtn) {
   projectBtn.addEventListener("click", () => {
     if (error) {
-      error.style.display = "none";
+      error.style.display = "none"
+      error2.style.display = "none"
     }
     showModal("new-project-modal", true);
   });
@@ -49,19 +51,14 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
     event.preventDefault();
     const formData = new FormData(projectForm);
 
-    if (formData.get("name") === "" || formData.get("description") === "" || 
-    formData.get("status") === "" || formData.get("role") === "" || 
-    formData.get("date") === "") {
-      alert("Please, fill out all the fields!");
-      return; 
-    }
+
 
     const projectData: IProject = {
       name: formData.get("name") as string,
       description: formData.get("description") as string,
       status: formData.get("status") as projectStatus,
       role: formData.get("role") as userRole,
-      date: new Date(formData.get("date") as string)
+      date: new Date(formData.get("date") as string || new Date())
     };
     try{
       const project = projectsManager.newProject(projectData)
@@ -70,9 +67,18 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       projectForm.reset();
       showModal("new-project-modal", false)
     } catch(e){
-      error.innerHTML = `${e}`
-      tip.style.display = "none";
-      error.style.display = "grid";
+      // Experimenting with errors in differents inputs
+      if(e.message.includes("description")){
+        error2.innerHTML = `${e}`
+        error2.style.display = "grid";
+        tip.style.display = "none";
+        error.style.display = "none";
+      } else {
+        error.innerHTML = `${e}`
+        tip.style.display = "none";
+        error.style.display = "grid";
+        error2.style.display = "none";
+      }
     }
   });
 } else {

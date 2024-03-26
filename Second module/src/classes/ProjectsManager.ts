@@ -16,6 +16,14 @@ export class ProjectsManager {
         if (nameInUse) {
             throw new Error(`A project with the name "${data.name}" already exists`)
         }
+        if (data.name.length < 5) {
+            throw new Error(`The project name "${data.name}" should be at least 5 characters long`);
+        }
+
+        if(!data.description){
+            throw new Error(`There isn't a description for this project`);
+        }
+
         const project = new Project(data)
         project.ui.addEventListener("click", () => {
             const projectsPage = document.getElementById("projects-page")
@@ -58,13 +66,22 @@ export class ProjectsManager {
     private setDetailsPage(project: Project) {
         const detailsPage = document.getElementById("project-details")
         if(!detailsPage) { return }
+        // Change icon & icon background-color
+        const icon = detailsPage.querySelector("[data-project-info='icon']")
+        if (!icon || !(icon instanceof HTMLElement)) { return }
+        const iconTitle = project.name.substring(0, 2).toUpperCase();
+        icon.textContent = iconTitle;
+        icon.style.backgroundColor = project.cardColor;
+        // Change data related to the project only
         for (const key in project) {
-            const elements = detailsPage.querySelectorAll(`[data-project-info=${key}]`)
-            if(!elements){ continue }
+            const elements = detailsPage.querySelectorAll(`[data-project-info='${key}']`)
+            if(elements){   
             if(key === "date"){
                 const date = elements[0] as HTMLElement
                 const dateInfo = new Date(project.date)
-                date.textContent = dateInfo.toDateString()
+                // Way to format the date in a correct way without showing an offset day
+                let dateString = ("0" + dateInfo.getUTCDate()).slice(-2) + "-" + ("0" + (dateInfo.getUTCMonth()+1)).slice(-2) + "-" + dateInfo.getUTCFullYear();
+                date.textContent = dateString
             }else if(key === "progress"){
                 const progress = elements[0] as HTMLElement
                 progress.style.width = project.progress * 100 + "%"
@@ -73,6 +90,7 @@ export class ProjectsManager {
                 for (const element of elements){
                     element.textContent = project[key]
                 }
+            }
             }
         }
     }
