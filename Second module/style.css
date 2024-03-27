@@ -254,7 +254,16 @@ input:focus, textarea:focus, select:focus{
     background-color: green;
 }
 
-.accept-button:hover{
+.accept-button update-button:hover{
+    background-color: #52a63c;
+    transition: 0.6s;
+}
+
+.update-button{
+    background-color: green;
+}
+
+.update-button:hover{
     background-color: #52a63c;
     transition: 0.6s;
 }

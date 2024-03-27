@@ -3,10 +3,13 @@ import { IProject, Project } from "./Project"
 export class ProjectsManager {
     list: Project[] = []
     ui: HTMLElement
+    oldProject: Project
 
     constructor(container: HTMLElement) {
         this.ui = container
     }
+
+
 
     newProject(data: IProject) {
         const projectNames = this.list.map((project) => {
@@ -28,11 +31,13 @@ export class ProjectsManager {
         project.ui.addEventListener("click", () => {
             const projectsPage = document.getElementById("projects-page")
             const detailsPage = document.getElementById("project-details")
+            this.oldProject = project
             if (!projectsPage || !detailsPage) { return }
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
             this.setDetailsPage(project)
         })
+
 
         this.ui.append(project.ui)
         this.list.push(project)
@@ -61,6 +66,13 @@ export class ProjectsManager {
             return project.id !== id
         })
         this.list = remaining
+    }
+
+    updateProject (data:IProject) {
+        const updatedProject = new Project(data)
+        this.deleteProject(this.oldProject.id)
+        this.newProject(updatedProject)
+        this.setDetailsPage(updatedProject);
     }
 
     private setDetailsPage(project: Project) {
@@ -93,7 +105,10 @@ export class ProjectsManager {
             }
             }
         }
+
     }
+
+    
 
     calcAllProjects() {
         const totalCost = this.list.reduce((total, project) => total + project.cost, 0)

@@ -1,19 +1,57 @@
 import { IProject, projectStatus, userRole } from "./classes/Project";
 import { ProjectsManager } from "./classes/ProjectsManager"
 
-function showModal(id: string, visible: boolean) {
-  const modal = document.getElementById(id) as HTMLDialogElement;
-  modal ? (visible == true ? modal.showModal() : modal.close()) :  console.warn("The modal id wasnt found");
+// Default project
+const defaultProject: IProject = {
+  name: "Default name",
+  description: "Default description",
+  status: "pending",
+  role: "developer",
+  date: new Date(),
 }
 
 
-// Select a part of the HTML, in this case the project button
+
+// Declare all the buttons, forms, pages
 const projectBtn = document.getElementById("new-project-btn");
 
 const tip = document.getElementById("tip") as HTMLElement
 const error = document.getElementById('nameError') as HTMLElement
 const error2 = document.getElementById('nameError2') as HTMLElement
+const updateError = document.getElementById('updateNameError') as HTMLElement
+const updateError2 = document.getElementById('updateNameError2') as HTMLElement
 
+const projectListUI = document.getElementById("projects-lists") as HTMLElement
+const projectsManager = new ProjectsManager(projectListUI)
+const projectForm = document.getElementById("new-project-form") as HTMLFormElement;
+const closeModalBtn = document.getElementById("close-modal")
+const closeEditModalBtn = document.getElementById("close-edit-modal")
+const projectHome = document.getElementById("projects-home-btn");
+const userHome = document.getElementById("users-list-btn");
+const editBtn = document.getElementById("edit-btn");
+const exportProjects = document.getElementById("export-projects-btn");
+const importProjects = document.getElementById("import-projects-btn");
+
+// Create the default project
+const defaultPro = projectsManager.newProject(defaultProject) 
+
+// Func to show modals
+function showModal(id: string, visible: boolean) {
+  const modal = document.getElementById(id) as HTMLDialogElement;
+  modal ? (visible == true ? modal.showModal() : modal.close()) :  console.warn("The modal id wasnt found");
+}
+// Func to show pages
+function showPage(pageId: string) {
+  const pages = ["projects-page", "project-details", "users-list"];
+  for (const id of pages) {
+    const page = document.getElementById(id) as HTMLDivElement | null;
+    if (page) {
+      page.style.display = id === pageId ? "flex" : "none";
+    }
+  }
+}
+
+// Event handlers ("clicks")
 if (projectBtn) {
   projectBtn.addEventListener("click", () => {
     if (error) {
@@ -25,34 +63,62 @@ if (projectBtn) {
 } else {
   console.warn("Project button doesn't exist");
 }
-const projectListUI = document.getElementById("projects-lists") as HTMLElement
-const projectsManager = new ProjectsManager(projectListUI)
 
-const defaultProject: IProject = {
-  name: "Default name",
-  description: "Default description",
-  status: "pending",
-  role: "developer",
-  date: new Date(),
-}
-
-const defaultPro = projectsManager.newProject(defaultProject) 
-
-const projectForm = document.getElementById("new-project-form") as HTMLFormElement;
-const closeModalBtn = document.getElementById("close-modal")
 
 closeModalBtn?.addEventListener("click", () => {
   projectForm.reset();
   showModal("new-project-modal", false)
 })
 
+closeEditModalBtn?.addEventListener("click", () => {
+  projectForm.reset();
+  showModal("update-project-modal", false)
+})
+
+
+if (projectHome) {
+  projectHome.addEventListener("click", () => {
+    showPage("projects-page");
+  });
+}
+
+if (userHome) {
+  userHome.addEventListener("click", () => {
+    showPage("users-list");
+  });
+}
+
+
+if(editBtn){
+  editBtn.addEventListener("click", () => {
+    if (error) {
+      error.style.display = "none"
+      error2.style.display = "none"
+    }
+    showModal("update-project-modal", true);
+  })
+}
+
+
+if(exportProjects){
+  exportProjects.addEventListener("click", () => {
+    projectsManager.exportToJSON()
+  })
+}
+
+if(importProjects){
+  importProjects.addEventListener("click", () => {
+    projectsManager.importFromJSON()
+  })
+}
+
+
+// Operations
+// Create
 if (projectForm && projectForm instanceof HTMLFormElement) {
   projectForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const formData = new FormData(projectForm);
-
-
-
     const projectData: IProject = {
       name: formData.get("name") as string,
       description: formData.get("description") as string,
@@ -85,46 +151,44 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
   console.warn("The project form wasn't found");
 }
 
-const exportProjects = document.getElementById("export-projects-btn");
 
-if(exportProjects){
-  exportProjects.addEventListener("click", () => {
-    projectsManager.exportToJSON()
-  })
-}
+// Update
+const updateForm = document.getElementById("update-project-form") as HTMLFormElement;
 
-const importProjects = document.getElementById("import-projects-btn");
-
-if(importProjects){
-  importProjects.addEventListener("click", () => {
-    projectsManager.importFromJSON()
-  })
-}
-
-function showPage(pageId: string) {
-  const pages = ["projects-page", "project-details", "users-list"];
-  for (const id of pages) {
-    const page = document.getElementById(id) as HTMLDivElement | null;
-    if (page) {
-      page.style.display = id === pageId ? "flex" : "none";
+if (updateForm && updateForm instanceof HTMLFormElement) {
+  updateForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const formData = new FormData(updateForm);
+    const projectData: IProject = {
+      name: formData.get("name") as string,
+      description: formData.get("description") as string,
+      status: formData.get("status") as projectStatus,
+      role: formData.get("role") as userRole,
+      date: new Date(formData.get("date") as string || new Date())
+    };
+    try{
+      projectsManager.updateProject(projectData)
+      tip.style.display = "grid";
+      updateError.style.display = "none";
+      updateForm.reset();
+      showModal("update-project-modal", false)
+    }catch(e){
+      if(e.message.includes("description")){
+        updateError2.innerHTML = `${e}`
+        updateError2.style.display = "grid";
+        tip.style.display = "none";
+        updateError.style.display = "none";
+      } else {
+        updateError.innerHTML = `${e}`
+        tip.style.display = "none";
+        updateError.style.display = "grid";
+        updateError2.style.display = "none";
+      }
     }
   }
-}
+)}
 
-const projectHome = document.getElementById("projects-home-btn");
-const userHome = document.getElementById("users-list-btn");
 
-if (projectHome) {
-  projectHome.addEventListener("click", () => {
-    showPage("projects-page");
-  });
-}
-
-if (userHome) {
-  userHome.addEventListener("click", () => {
-    showPage("users-list");
-  });
-}
 
 
 
@@ -133,4 +197,4 @@ if (userHome) {
 //   // Select the modal element from the HTML and give it a name
 //   const modal = document.getElementById("new-project-modal");
 //   // Give the modal the property to show it with the function showModal
-//   modal.showModal();
+// modal.showModal();
