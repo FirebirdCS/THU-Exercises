@@ -26,10 +26,10 @@ export class Project implements IProject {
 
 
   constructor(data: IProject) {
-    this.id = uuidv4()
     for (const key in data){
       this[key] = data[key]
     } 
+    this.id = uuidv4()
     this.cardColor = this.selectRandomColor();
     this.setUI()
   }

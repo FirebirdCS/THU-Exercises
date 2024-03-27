@@ -79,6 +79,56 @@
             </div>
         </div>
         <div class="page" id="project-details" style="display: none;" >
+            <dialog id="update-project-modal">
+                <form id="update-project-form">
+                    <h2>Edit project</h2>
+                    <div class="input-list">
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">apartment</span>Name</label>
+                            <input name="name" type="text"> 
+                            <p id="tip" style="color:#5d616f; font-style: italic; margin-top: 5px;">TIP: Give it a short name</p>
+                            <p id="updateNameError" style="color: red; margin-top: 5px; display: none"></p>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                notes
+                                </span>Description</label>
+                            <textarea name="description" cols="30" rows="5" placeholder="Give your description"></textarea>
+                            <p id="updateNameError2" style="color: red; margin-top: 5px; display: none"></p>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                account_circle
+                                </span>Role</label>
+                            <select name="role">
+                                <option>Architect</option>
+                                <option>Engineer</option>
+                                <option>Developer</option>
+                            </select>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                help
+                                </span>Status</label>
+                            <select name="status">
+                                <option>Pending</option>
+                                <option>Active</option>
+                                <option>Finished</option>
+                            </select>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                            calendar_month
+                            </span>Finish date</label>
+                            <input name="date" type="date">
+                        </div>
+                    </div>
+                    <div class="modals-buttons">
+                        <button id="close-edit-modal" type="button" value="cancel" class="cancel-button">Cancel</button>
+                        <button type="submit" class="update-button">Update</button>
+                    </div>
+                </form>
+            </dialog>
             <header>
                 <div>
                     <h2 data-project-info="name">Hospital Center</h2>
@@ -90,7 +140,7 @@
                     <div class="dashboard-card" style="padding: 30px 0;">
                         <div class="details-header">
                             <p data-project-info="icon" style="font-size: 20px; background-color: #ca8134; aspect-ratio: 1; border-radius: 100%; padding: 12px;">HC</p>
-                            <button class="edit-button">
+                            <button id="edit-btn" class="edit-button">
                                 <p style="width: 100%;">Edit</p>
                             </button>
                         </div>
@@ -137,10 +187,10 @@
                             <div class="task-item">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <div style="display: flex; column-gap: 15px; align-items: center;">
-                                        <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px;">construction</span>
-                                        <p>Make anything here as you want, even something longer.</p>
+                                        <span data-project-info="material-icon-todo" class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px;">construction</span>
+                                        <p data-project-info="description-todo" >Make anything here as you want, even something longer.</p>
                                     </div>
-                                    <p style="text-wrap: nowrap; margin-left: 10px;">Fri, 20 sep</p>
+                                    <p data-project-info="date-todo" style="text-wrap: nowrap; margin-left: 10px;">Fri, 20 sep</p>
                                 </div>
                             </div>
                         </div>
