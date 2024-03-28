@@ -1,4 +1,4 @@
-import { IProject, projectStatus, userRole } from "./classes/Project";
+import { IProject, ITodo, projectStatus, userRole } from "./classes/Project";
 import { ProjectsManager } from "./classes/ProjectsManager"
 
 // Default project
@@ -8,6 +8,7 @@ const defaultProject: IProject = {
   status: "pending",
   role: "developer",
   date: new Date(),
+  todoList: []
 }
 
 
@@ -22,7 +23,8 @@ const updateError = document.getElementById('updateNameError') as HTMLElement
 const updateError2 = document.getElementById('updateNameError2') as HTMLElement
 
 const projectListUI = document.getElementById("projects-lists") as HTMLElement
-const projectsManager = new ProjectsManager(projectListUI)
+const toDoUI = document.getElementById("task-container") as HTMLDivElement
+const projectsManager = new ProjectsManager(projectListUI, toDoUI)
 const projectForm = document.getElementById("new-project-form") as HTMLFormElement;
 const closeModalBtn = document.getElementById("close-modal")
 const closeEditModalBtn = document.getElementById("close-edit-modal")
@@ -31,6 +33,9 @@ const userHome = document.getElementById("users-list-btn");
 const editBtn = document.getElementById("edit-btn");
 const exportProjects = document.getElementById("export-projects-btn");
 const importProjects = document.getElementById("import-projects-btn");
+const toDoForm = document.getElementById("create-todo-form") as HTMLFormElement
+const createToDoBtn = document.getElementById("create-toDo")
+const closeToDoModalBtn = document.getElementById("close-todo-modal")
 
 // Create the default project
 const defaultPro = projectsManager.newProject(defaultProject) 
@@ -64,6 +69,14 @@ if (projectBtn) {
   console.warn("Project button doesn't exist");
 }
 
+if(createToDoBtn){
+  createToDoBtn.addEventListener("click", () => {
+    showModal("create-todo-modal", true)
+  })
+} else {
+  console.warn("ToDo button doesn't exist")
+}
+
 
 closeModalBtn?.addEventListener("click", () => {
   projectForm.reset();
@@ -73,6 +86,11 @@ closeModalBtn?.addEventListener("click", () => {
 closeEditModalBtn?.addEventListener("click", () => {
   projectForm.reset();
   showModal("update-project-modal", false)
+})
+
+closeToDoModalBtn?.addEventListener("click", () => {
+  toDoForm.reset();
+  showModal("create-todo-modal", false)
 })
 
 
@@ -124,7 +142,8 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       description: formData.get("description") as string,
       status: formData.get("status") as projectStatus,
       role: formData.get("role") as userRole,
-      date: new Date(formData.get("date") as string || new Date())
+      date: new Date(formData.get("date") as string || new Date()),
+      todoList: []
     };
     try{
       const project = projectsManager.newProject(projectData)
@@ -164,7 +183,8 @@ if (updateForm && updateForm instanceof HTMLFormElement) {
       description: formData.get("description") as string,
       status: formData.get("status") as projectStatus,
       role: formData.get("role") as userRole,
-      date: new Date(formData.get("date") as string || new Date())
+      date: new Date(formData.get("date") as string || new Date()),
+      todoList: []
     };
     try{
       projectsManager.updateProject(projectData)
@@ -187,6 +207,26 @@ if (updateForm && updateForm instanceof HTMLFormElement) {
     }
   }
 )}
+
+// Create to-do
+if(toDoForm && toDoForm instanceof HTMLFormElement) {
+  toDoForm.addEventListener("submit", (event) => {
+    event.preventDefault()
+    const formData = new FormData(toDoForm)
+    const todoData: ITodo = {
+      description: formData.get("description") as string,
+      date: new Date(formData.get("date") as string || new Date()),
+    }
+    try{
+      console.log(todoData);
+      projectsManager.updateTodo(todoData)
+      toDoForm.reset();
+      showModal("create-todo-modal", false)
+    }catch(e){
+      console.log(e)
+    }
+  })
+}
 
 
 

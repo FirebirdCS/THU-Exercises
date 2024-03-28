@@ -1,15 +1,15 @@
-import { IProject, Project } from "./Project"
+import { IProject, ITodo, Project, toDo } from "./Project"
 
 export class ProjectsManager {
     list: Project[] = []
     ui: HTMLElement
+    uiTodo: HTMLElement
     oldProject: Project
 
-    constructor(container: HTMLElement) {
+    constructor(container: HTMLElement, containerToDo: HTMLDivElement) {
         this.ui = container
+        this.uiTodo = containerToDo
     }
-
-
 
     newProject(data: IProject) {
         const projectNames = this.list.map((project) => {
@@ -75,40 +75,61 @@ export class ProjectsManager {
         this.setDetailsPage(updatedProject);
     }
 
+    updateTodo (data:ITodo){
+        const todoNew = new toDo(data);
+        this.oldProject.newTodo(data);
+        this.uiTodo.append(todoNew.uiTodo);
+    }
+    
     private setDetailsPage(project: Project) {
-        const detailsPage = document.getElementById("project-details")
-        if(!detailsPage) { return }
+        const detailsPage = document.getElementById("project-details");
+    
+        if (!detailsPage) { return; }
+        
         // Change icon & icon background-color
-        const icon = detailsPage.querySelector("[data-project-info='icon']")
-        if (!icon || !(icon instanceof HTMLElement)) { return }
+        const icon = detailsPage.querySelector("[data-project-info='icon']");
+        if (!icon || !(icon instanceof HTMLElement)) { return; }
+    
         const iconTitle = project.name.substring(0, 2).toUpperCase();
         icon.textContent = iconTitle;
         icon.style.backgroundColor = project.cardColor;
+    
         // Change data related to the project only
         for (const key in project) {
-            const elements = detailsPage.querySelectorAll(`[data-project-info='${key}']`)
-            if(elements){   
-            if(key === "date"){
-                const date = elements[0] as HTMLElement
-                const dateInfo = new Date(project.date)
-                // Way to format the date in a correct way without showing an offset day
-                let dateString = ("0" + dateInfo.getUTCDate()).slice(-2) + "-" + ("0" + (dateInfo.getUTCMonth()+1)).slice(-2) + "-" + dateInfo.getUTCFullYear();
-                date.textContent = dateString
-            }else if(key === "progress"){
-                const progress = elements[0] as HTMLElement
-                progress.style.width = project.progress * 100 + "%"
-                progress.textContent = project.progress * 100 + "%"
-            } else {
-                for (const element of elements){
-                    element.textContent = project[key]
+            const elements = detailsPage.querySelectorAll(`[data-project-info='${key}']`);
+            if (elements) {
+                if (key === "date") {
+                    const date = elements[0] as HTMLElement;
+                    const dateInfo = new Date(project.date);
+                    // Way to format the date in a correct way without showing an offset day
+                    let dateString = ("0" + dateInfo.getUTCDate()).slice(-2) + "-" + ("0" + (dateInfo.getUTCMonth() + 1)).slice(-2) + "-" + dateInfo.getUTCFullYear();
+                    date.textContent = dateString;
+                } else if (key === "progress") {
+                    const progress = elements[0] as HTMLElement;
+                    progress.style.width = project.progress * 100 + "%";
+                    progress.textContent = project.progress * 100 + "%";
+                } else {
+                    for (const element of elements) {
+                        element.textContent = project[key];
+                    }
                 }
-            }
             }
         }
 
-    }
+        // Renderize to-do cards
+        const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
+        projectTodoCardsContainer.innerHTML = ''
+        for (const todo of project.todoList){
+            const todoCard = new toDo(todo)
+            projectTodoCardsContainer.append(todoCard.uiTodo)
+        }
+        // Way to only make the to-do container scrollable, not the whole page
+        projectTodoCardsContainer.style.maxHeight = "300px"; 
+        projectTodoCardsContainer.style.overflowY = "auto";
 
+    }
     
+
 
     calcAllProjects() {
         const totalCost = this.list.reduce((total, project) => total + project.cost, 0)
@@ -135,10 +156,15 @@ export class ProjectsManager {
             const json = reader.result
             if (!json) { return }
             const projects: IProject[] = JSON.parse(json as string)
-            for (const project of projects) {
+            for (const projectData of projects) {
                 try {
-                    this.newProject(project)
+                    for (const todo of projectData.todoList){
+                        if (todo.date==null) {todo.date = new Date('')}
+                        else {todo.date = new Date(todo.date)} 
+                    }
+                    this.newProject(projectData)
                 } catch (e) {
+                    console.error('Error trying to import the project', e);
                 }
             }
         })
