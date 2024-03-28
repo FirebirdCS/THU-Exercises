@@ -180,10 +180,10 @@
                                     <span class="material-icons-round">search</span>
                                     <input type="text" placeholder="Search To-Do's by name" style="width: 100%;">
                                 </div>
-                                <span class="material-icons-round">add</span>
+                                <span id="create-toDo" style="cursor: pointer " class="material-icons-round">add</span>
                             </div>
                         </div>
-                        <div class="task-container">
+                        <div id="task-container" class="task-container">
                             <div class="task-item">
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <div style="display: flex; column-gap: 15px; align-items: center;">
@@ -194,6 +194,29 @@
                                 </div>
                             </div>
                         </div>
+                        <dialog id="create-todo-modal">
+                            <form id="create-todo-form">
+                                <h2>Create a toDo</h2>
+                                <div class="input-list">
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                            notes
+                                            </span>Description</label>
+                                        <textarea name="description" cols="30" rows="5" placeholder="Give the description of the task"></textarea>
+                                    </div>
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                        calendar_month
+                                        </span>Finish date</label>
+                                        <input name="date" type="date">
+                                    </div>
+                                </div>
+                                <div class="modals-buttons">
+                                    <button id="close-todo-modal" type="button" value="cancel" class="cancel-button">Cancel</button>
+                                    <button type="submit"  class="update-button">Create</button>
+                                </div>
+                            </form>
+                        </dialog>
                     </div>
                 </div>
                 <div id="viewer-container" class="dashboard-card"></div>
