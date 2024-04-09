@@ -184,14 +184,7 @@
                             </div>
                         </div>
                         <div id="task-container" class="task-container">
-                            <div class="task-item">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div style="display: flex; column-gap: 15px; align-items: center;">
-                                        <span data-project-info="material-icon-todo" class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px;">construction</span>
-                                        <p data-project-info="description-todo" >Make anything here as you want, even something longer.</p>
-                                    </div>
-                                    <p data-project-info="date-todo" style="text-wrap: nowrap; margin-left: 10px;">Fri, 20 sep</p>
-                                </div>
+                            <div  id="editToDo" class="task-item">
                             </div>
                         </div>
                         <dialog id="create-todo-modal">
@@ -210,10 +203,41 @@
                                         </span>Finish date</label>
                                         <input name="date" type="date">
                                     </div>
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                            help
+                                            </span>Status</label>
+                                        <select name="statusToDo">
+                                            <option>important</option>
+                                            <option>completed</option>
+                                            <option>on-going</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="modals-buttons">
                                     <button id="close-todo-modal" type="button" value="cancel" class="cancel-button">Cancel</button>
                                     <button type="submit"  class="update-button">Create</button>
+                                </div>
+                            </form>
+                        </dialog>
+                        <dialog id="edit-todo-modal">
+                            <form id="edit-todo-form">
+                                <h2>Edit a toDo</h2>
+                                <div class="input-list">
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                            help
+                                            </span>Status</label>
+                                        <select name="statusToDo">
+                                            <option>important</option>
+                                            <option>completed</option>
+                                            <option>on-going</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modals-buttons">
+                                    <button id="close-editToDo-modal" type="button" value="cancel" class="cancel-button">Cancel</button>
+                                    <button type="submit"  class="update-button">Update</button>
                                 </div>
                             </form>
                         </dialog>

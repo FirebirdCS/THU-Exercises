@@ -3,7 +3,6 @@ import {v4 as uuidv4} from 'uuid'
 export type projectStatus = "pending" | "active" | "finished"
 export type userRole = "architect" | "engineer" | "developer"
 export type statusTask = "important" | "completed" | "on-going" 
-export type statusColors = "red" | "green" | "orange"
 
 export interface IProject {
   name: string
@@ -18,32 +17,66 @@ export interface IProject {
 export interface ITodo{
   description: string
   date: Date
+  statusToDo: statusTask
 }
 
 export class toDo implements ITodo{
-  description: string
-  date: Date
-  uiTodo: HTMLElement
-  constructor(data: ITodo){
-    for (const key in data) {
-      this[key] = data[key]
+    description: string
+    date: Date
+    id: string
+    uiTodo: HTMLElement
+    statusToDo: statusTask
+    symbol: string = ""
+    colorStatus: string = ""
+  
+    constructor(data: ITodo) {
+      this.id = uuidv4()
+      for (const key in data) {
+        this[key] = data[key]
+      }
+      this.setUI()
     }
-    this.setUI()
-  }
-  setUI(){
-    if(this.uiTodo && this.uiTodo instanceof HTMLElement) {return}
+  
+// Dentro del método setUI de la clase toDo
+setUI() {
+    if (this.uiTodo && this.uiTodo instanceof HTMLElement) { return }
+    if (this.statusToDo == "important") {
+        this.symbol = "warning"
+        this.colorStatus = "red"
+    }
+    if (this.statusToDo == "completed") {
+        this.symbol = "done"
+        this.colorStatus = "green"
+    }
+    if (this.statusToDo == "on-going") {
+        this.symbol = "grade"
+        this.colorStatus = "#2b69b5"
+    }
+
     this.uiTodo = document.createElement("div")
     this.uiTodo.className = "task-item"
-    // Way to format the date in a correct way without showing an offset day, like in project details
+    this.uiTodo.style.backgroundColor = this.colorStatus
     const localDate = new Date(this.date.getTime() + this.date.getTimezoneOffset() * 60000);
     const formattedDate = localDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' });
-    this.uiTodo.innerHTML = `<div style="display: flex; justify-content: space-between; align-items: center;">
-      <div style="display: flex; column-gap: 15px; align-items: center;">
-        <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px;">construction</span>
-        <p>${this.description}</p>
-      </div>
-      <p style="text-wrap: nowrap; margin-left: 10px;">${formattedDate}</p>
-    </div>`;
+    this.uiTodo.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; column-gap: 15px; align-items: center;">
+                <span class="material-icons-round" style="padding: 10px; border-radius: 10px;">${this.symbol}</span>
+                <p style="word-wrap: break-word;">${this.description}</p>
+            </div>
+            <p style="text-wrap: nowrap; margin-left: 10px;">${formattedDate}</p>
+            <span class="edit-icon material-icons-round" style="cursor: pointer; margin-left: 5px">edit</span>
+        </div>`;
+
+
+      const editIcon = this.uiTodo.querySelector(".edit-icon");
+      if (editIcon) {
+          editIcon.addEventListener("click", () => {
+              showModal("edit-todo-modal", true);
+          });
+      }
+
+      return this.uiTodo;
 }
 
 }
@@ -119,3 +152,10 @@ export class Project implements IProject {
   }
   
 }
+
+// To show the edit modal - in progress
+function showModal(id: string, visible: boolean) {
+  const modal = document.getElementById(id) as HTMLDialogElement;
+  modal ? (visible == true ? modal.showModal() : modal.close()) :  console.warn(`The modal with id ${id} wasnt found`);
+}
+

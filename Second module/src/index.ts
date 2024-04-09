@@ -1,4 +1,4 @@
-import { IProject, ITodo, projectStatus, userRole } from "./classes/Project";
+import { IProject, ITodo, projectStatus, statusTask, userRole, toDo } from "./classes/Project";
 import { ProjectsManager } from "./classes/ProjectsManager"
 
 // Default project
@@ -8,10 +8,14 @@ const defaultProject: IProject = {
   status: "pending",
   role: "developer",
   date: new Date(),
-  todoList: []
+  todoList: [ 
+    new toDo({ 
+      description: "Task 1",
+      date: new Date(),
+      statusToDo: "important"
+    }),
+  ]
 }
-
-
 
 // Declare all the buttons, forms, pages
 const projectBtn = document.getElementById("new-project-btn");
@@ -36,6 +40,9 @@ const importProjects = document.getElementById("import-projects-btn");
 const toDoForm = document.getElementById("create-todo-form") as HTMLFormElement
 const createToDoBtn = document.getElementById("create-toDo")
 const closeToDoModalBtn = document.getElementById("close-todo-modal")
+const closeEditToDoModal = document.getElementById("close-editToDo-modal") 
+const editToDoForm = document.getElementById("edit-todo-form") as HTMLFormElement
+const editToDo = document.getElementById("editToDo")
 
 // Create the default project
 const defaultPro = projectsManager.newProject(defaultProject) 
@@ -43,7 +50,7 @@ const defaultPro = projectsManager.newProject(defaultProject)
 // Func to show modals
 function showModal(id: string, visible: boolean) {
   const modal = document.getElementById(id) as HTMLDialogElement;
-  modal ? (visible == true ? modal.showModal() : modal.close()) :  console.warn("The modal id wasnt found");
+  modal ? (visible == true ? modal.showModal() : modal.close()) :  console.warn(`The modal with id ${id} wasnt found`);
 }
 // Func to show pages
 function showPage(pageId: string) {
@@ -77,6 +84,14 @@ if(createToDoBtn){
   console.warn("ToDo button doesn't exist")
 }
 
+if(editToDo){
+  editToDo.addEventListener("click", () => {
+    showModal("edit-todo-modal", true)
+  })
+} else {
+  console.warn("ToDo Edit button doesn't exist")
+}
+
 
 closeModalBtn?.addEventListener("click", () => {
   projectForm.reset();
@@ -91,6 +106,11 @@ closeEditModalBtn?.addEventListener("click", () => {
 closeToDoModalBtn?.addEventListener("click", () => {
   toDoForm.reset();
   showModal("create-todo-modal", false)
+})
+
+closeEditToDoModal?.addEventListener("click", () => {
+  editToDoForm.reset()
+  showModal("edit-todo-modal", false)
 })
 
 
@@ -116,6 +136,7 @@ if(editBtn){
     showModal("update-project-modal", true);
   })
 }
+
 
 
 if(exportProjects){
@@ -216,6 +237,7 @@ if(toDoForm && toDoForm instanceof HTMLFormElement) {
     const todoData: ITodo = {
       description: formData.get("description") as string,
       date: new Date(formData.get("date") as string || new Date()),
+      statusToDo: formData.get("statusToDo") as statusTask
     }
     try{
       console.log(todoData);
@@ -228,13 +250,24 @@ if(toDoForm && toDoForm instanceof HTMLFormElement) {
   })
 }
 
+// Edit toDo - in progress
 
+if(editToDoForm&& editToDoForm instanceof HTMLFormElement) {
+  editToDoForm.addEventListener("submit", (event) => {
+    event.preventDefault()
+    const formData = new FormData(editToDoForm)
+    const todoData: ITodo = {
+      description: formData.get("description") as string,
+      date: new Date(formData.get("date") as string || new Date()),
+      statusToDo: formData.get("statusToDo") as statusTask
+    }
+    try{
+      projectsManager.updateTodoStatus(todoData)
+      editToDoForm.reset();
+      showModal("edit-todo-modal", false)
+    }catch(e){
+      console.log(e)
+    }
+  })
+}
 
-
-
-// // Add an event to the constant that we named earlier, in this case the event will be a click event (When we click the button of add project)
-// projectBtn.addEventListener("click", () => {
-//   // Select the modal element from the HTML and give it a name
-//   const modal = document.getElementById("new-project-modal");
-//   // Give the modal the property to show it with the function showModal
-// modal.showModal();
