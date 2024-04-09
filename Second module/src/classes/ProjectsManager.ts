@@ -5,6 +5,7 @@ export class ProjectsManager {
     ui: HTMLElement
     uiTodo: HTMLElement
     oldProject: Project
+    oldTodo: toDo
 
     constructor(container: HTMLElement, containerToDo: HTMLDivElement) {
         this.ui = container
@@ -58,6 +59,11 @@ export class ProjectsManager {
         return projectName
     }
 
+    calcAllProjects() {
+        const totalCost = this.list.reduce((total, project) => total + project.cost, 0)
+        return totalCost
+    }
+
     deleteProject(id: string) {
         const project = this.getProject(id)
         if (!project) { return }
@@ -69,16 +75,66 @@ export class ProjectsManager {
     }
 
     updateProject (data:IProject) {
-        const updatedProject = new Project(data)
+        data.todoList = this.oldProject.todoList
         this.deleteProject(this.oldProject.id)
-        this.newProject(updatedProject)
-        this.setDetailsPage(updatedProject);
+        const project = this.newProject(data)
+        this.setDetailsPage(project);
     }
+
+    // Create toDo
 
     updateTodo (data:ITodo){
         const todoNew = new toDo(data);
-        this.oldProject.newTodo(data);
+        this.oldProject.todoList.push(todoNew);
         this.uiTodo.append(todoNew.uiTodo);
+        this.oldTodo = todoNew
+    }
+
+    // Update toDo - in progress
+
+    updateTodoStatus(data: ITodo) {
+        const todoToUpdate = this.oldProject.todoList.find(todo => todo.id === this.oldTodo.id);
+        console.log(todoToUpdate);
+        if (todoToUpdate) {
+            todoToUpdate.statusToDo = data.statusToDo;
+    
+            if (data.description !== null && data.date !== null) {
+                todoToUpdate.description = data.description;
+                todoToUpdate.date = data.date;
+            }
+
+            switch (data.statusToDo) {
+                case "important":
+                    todoToUpdate.colorStatus = "red"
+                    todoToUpdate.uiTodo.style.backgroundColor = "red";
+                    break;
+                case "completed":
+                    todoToUpdate.colorStatus = "green"
+                    todoToUpdate.uiTodo.style.backgroundColor = "green";
+                    break;
+                case "on-going":
+                    todoToUpdate.colorStatus = "#2b69b5"
+                    todoToUpdate.uiTodo.style.backgroundColor = "#2b69b5";
+                    break;
+                default:
+                    break;
+            }
+    
+            console.log("Todo status updated successfully");
+        } else {
+            console.error("Todo not found");
+        }
+    }
+    
+    
+
+    updateProjectWhenImport (data: IProject){
+        const oldProject = this.getProjectByName(data.name)
+        if(oldProject){
+            data.todoList = oldProject.todoList.concat(data.todoList)
+            this.deleteProject(oldProject.id)
+        }
+        return this.newProject(data)
     }
     
     private setDetailsPage(project: Project) {
@@ -92,7 +148,7 @@ export class ProjectsManager {
     
         const iconTitle = project.name.substring(0, 2).toUpperCase();
         icon.textContent = iconTitle;
-        icon.style.backgroundColor = project.cardColor;
+        icon.style.backgroundColor = this.oldProject.cardColor;
     
         // Change data related to the project only
         for (const key in project) {
@@ -130,12 +186,6 @@ export class ProjectsManager {
     }
     
 
-
-    calcAllProjects() {
-        const totalCost = this.list.reduce((total, project) => total + project.cost, 0)
-        return totalCost
-    }
-
     exportToJSON(fileName: string = "projects") {
         const json = JSON.stringify(this.list, null, 2)
         const blob = new Blob([json], { type: 'application/json' })
@@ -156,15 +206,28 @@ export class ProjectsManager {
             const json = reader.result
             if (!json) { return }
             const projects: IProject[] = JSON.parse(json as string)
+            const nameInUse = new Array()
             for (const projectData of projects) {
                 try {
+                    projectData.date = new Date(projectData.date);
                     for (const todo of projectData.todoList){
-                        if (todo.date==null) {todo.date = new Date('')}
-                        else {todo.date = new Date(todo.date)} 
+                        if (todo.date == null) {
+                            todo.date = new Date('');
+                        } else {
+                            todo.date = new Date(todo.date);
+                        }
                     }
-                    this.newProject(projectData)
+                    this.oldProject = this.newProject(projectData)
                 } catch (e) {
-                    console.error('Error trying to import the project', e);
+                    this.oldProject = this.updateProjectWhenImport(projectData)
+                    for (const todo of projectData.todoList){
+                        if (todo.date == null) {
+                            todo.date = new Date('');
+                        } else {
+                            todo.date = new Date(todo.date);
+                        } 
+                    }
+                    nameInUse.push(projectData.name)
                 }
             }
         })
