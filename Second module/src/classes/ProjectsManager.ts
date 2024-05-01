@@ -152,7 +152,22 @@ export class ProjectsManager {
             }
         });
     }
-    
+
+    // Search by description - testing
+    searchTodosByDescription(searchTerm: string) {
+        const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
+        const todosList = projectTodoCardsContainer.getElementsByClassName('task-item');
+
+        Array.from(todosList).forEach((todoElement: Element) => {
+            const todo = todoElement as HTMLElement;
+            const description = todo.querySelector('.description')?.textContent || '';
+            if (description.toLowerCase().includes(searchTerm.toLowerCase())) {
+                todo.style.display = 'block';
+            } else {
+                todo.style.display = 'none';
+            }
+        });
+    }
 
     updateProjectWhenImport (data: IProject){
         const oldProject = this.getProjectByName(data.name)
@@ -182,7 +197,8 @@ export class ProjectsManager {
             if (elements) {
                 if (key === "date") {
                     const date = elements[0] as HTMLElement;
-                    const formattedDate = formatShortDate(project.date);
+                    const parsedDate = new Date(project.date);
+                    const formattedDate = formatShortDate(parsedDate);
                     date.textContent = formattedDate;
                 } else if (key === "progress") {
                     const progress = elements[0] as HTMLElement;
@@ -222,48 +238,47 @@ export class ProjectsManager {
     }
 
     importFromJSON() {
-        const input = document.createElement('input')
-        input.type = 'file'
-        input.accept = 'application/json'
-        const reader = new FileReader()
-        reader.addEventListener("load", () => {
-            const json = reader.result
-            if (!json) { return }
-            const projects: IProject[] = JSON.parse(json as string)
-            const nameInUse = new Array()
-            for (const projectData of projects) {
-                try {
-                    projectData.date = new Date(projectData.date);
-                    for (const todo of projectData.todoList){
-                        if (todo.date == null) {
-                            todo.date = new Date('');
-                        } else {
-                            todo.date = new Date(todo.date);
-                        }
-                    }
-                    this.oldProject = this.newProject(projectData)
-                } catch (e) {
-                    this.oldProject = this.updateProjectWhenImport(projectData)
-                    for (const todo of projectData.todoList){
-                        if (todo.date == null) {
-                            todo.date = new Date('');
-                        } else {
-                            todo.date = new Date(todo.date);
-                        } 
-                    }
-                    nameInUse.push(projectData.name)
-                }
-            }
-        })
-
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'application/json';
         input.addEventListener('change', () => {
-            const filesList = input.files
-            if (!filesList) { return }
-            reader.readAsText(filesList[0])
-        })
-        input.click()
-
+            const filesList = input.files;
+            if (!filesList) { return; }
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+                const json = reader.result;
+                if (!json) { return; }
+                const projects: IProject[] = JSON.parse(json as string);
+                const nameInUse = new Array();
+                for (const projectData of projects) {
+                    const todoList = projectData.todoList;
+                    projectData.todoList = [];
+                    try {
+                        this.oldProject = this.newProject(projectData);
+                        if (typeof projectData.date === 'string') { // Parse the date into a date object
+                            projectData.date = new Date(projectData.date);
+                        }
+                        for (const todo of todoList) {
+                            if (typeof todo.date === 'string') {
+                                todo.date = new Date(todo.date); // Parse the todo date into a date object
+                            }
+                            this.newTodo(todo); // Create the imported todo
+                        }
+                    } catch (e) {
+                        this.oldProject = this.updateProjectWhenImport(projectData);
+                        for (const todo of todoList) {
+                            if (typeof todo.date === 'string') {
+                                todo.date = new Date(todo.date);
+                            }
+                            this.newTodo(todo); // Create the imported todo
+                        }
+                        nameInUse.push(projectData.name);
+                    }
+                }
+            });
+            reader.readAsText(filesList[0]);
+        });
+        input.click();
     }
-    
     
 }

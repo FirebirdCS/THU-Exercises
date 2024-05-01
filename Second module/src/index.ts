@@ -1,7 +1,6 @@
 import { IProject, projectStatus, userRole } from "./classes/Project";
-import { ITodo,ToDo, statusTask } from "./classes/ToDo";
+import { ITodo, statusTask } from "./classes/ToDo";
 import { ProjectsManager } from "./classes/ProjectsManager"
-import { v4 as uuidv4 } from "uuid";
 import { ModalManager } from "./utils/Utils";
 
 // Default project
@@ -86,7 +85,13 @@ if(createToDoBtn){
   console.warn("ToDo button doesn't exist")
 }
 
-
+// Search
+const searchInput = document.querySelector('.task-searchbar-container input') as HTMLInputElement;
+searchInput.addEventListener('input', (event) => {
+    const searchTerm = (event.target as HTMLInputElement).value.trim();
+    projectsManager.searchTodosByDescription(searchTerm);
+});
+        
 closeModalBtn?.addEventListener("click", () => {
   projectForm.reset();
   const closeProjectModal = new ModalManager()

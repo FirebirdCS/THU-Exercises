@@ -16,11 +16,17 @@ export class ModalManager {
 
 
 export function formatShortDate(date: Date): string {
+    if (!date || !(date instanceof Date)) {
+        return ''; 
+    }
     const localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
     return localDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: '2-digit' });
 }
 
 export function getFormattedDate(date: Date, options?: Intl.DateTimeFormatOptions): string {
+    if (!date || !(date instanceof Date)) {
+        return ''; 
+    }
     return date.toLocaleDateString('en-US', options);
 }
 

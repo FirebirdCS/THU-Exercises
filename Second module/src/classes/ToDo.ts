@@ -30,10 +30,10 @@ export class ToDo implements ITodo{
     setUI() {
       if (this.statusToDo === "important") {
           this.symbol = "warning";
-          this.colorStatus = "red";
+          this.colorStatus = "#cf0e28";
       } else if (this.statusToDo === "completed") {
           this.symbol = "done";
-          this.colorStatus = "green";
+          this.colorStatus = "#0ec70e";
       } else if (this.statusToDo === "on-going") {
           this.symbol = "grade";
           this.colorStatus = "#2b69b5";
@@ -50,10 +50,10 @@ export class ToDo implements ITodo{
           <div style="display: flex; justify-content: space-between; align-items: center;">
               <div style="display: flex; column-gap: 15px; align-items: center;">
                   <span class="material-icons-round" style="padding: 10px; border-radius: 10px;">${this.symbol}</span>
-                  <p style="word-wrap: break-word;">${this.description}</p>
+                  <p class="description" style="word-wrap: break-word;">${this.description}</p>
               </div>
               <p style="text-wrap: nowrap; margin-left: 10px;">${formattedDate}</p>
-              <span id="editIcon" class="edit-icon material-icons-round" style="cursor: pointer; margin-left: 5px">edit</span>
+              <span id="editIcon" class="edit-icon material-icons-round" style="margin-left: 5px">edit</span>
           </div>`;
 
       return this.uiTodo;
