@@ -1,5 +1,8 @@
-import { IProject, ITodo, projectStatus, statusTask, userRole, toDo } from "./classes/Project";
+import { IProject, projectStatus, userRole } from "./classes/Project";
+import { ITodo,ToDo, statusTask } from "./classes/ToDo";
 import { ProjectsManager } from "./classes/ProjectsManager"
+import { v4 as uuidv4 } from "uuid";
+import { ModalManager } from "./utils/Utils";
 
 // Default project
 const defaultProject: IProject = {
@@ -9,11 +12,6 @@ const defaultProject: IProject = {
   role: "developer",
   date: new Date(),
   todoList: [ 
-    new toDo({ 
-      description: "Task 1",
-      date: new Date(),
-      statusToDo: "important"
-    }),
   ]
 }
 
@@ -26,7 +24,10 @@ const error2 = document.getElementById('nameError2') as HTMLElement
 const updateError = document.getElementById('updateNameError') as HTMLElement
 const updateError2 = document.getElementById('updateNameError2') as HTMLElement
 
-const projectListUI = document.getElementById("projects-lists") as HTMLElement
+const createToDoError = document.getElementById('createDescriptionError') as HTMLElement
+const updateDescriptionError = document.getElementById('updateDescriptionError') as HTMLElement
+
+const projectListUI = document.getElementById("projects-lists") as HTMLDivElement
 const toDoUI = document.getElementById("task-container") as HTMLDivElement
 const projectsManager = new ProjectsManager(projectListUI, toDoUI)
 const projectForm = document.getElementById("new-project-form") as HTMLFormElement;
@@ -42,16 +43,12 @@ const createToDoBtn = document.getElementById("create-toDo")
 const closeToDoModalBtn = document.getElementById("close-todo-modal")
 const closeEditToDoModal = document.getElementById("close-editToDo-modal") 
 const editToDoForm = document.getElementById("edit-todo-form") as HTMLFormElement
-const editToDo = document.getElementById("editToDo")
+const editToDo = document.getElementById("editIcon")
 
 // Create the default project
 const defaultPro = projectsManager.newProject(defaultProject) 
 
-// Func to show modals
-function showModal(id: string, visible: boolean) {
-  const modal = document.getElementById(id) as HTMLDialogElement;
-  modal ? (visible == true ? modal.showModal() : modal.close()) :  console.warn(`The modal with id ${id} wasnt found`);
-}
+
 // Func to show pages
 function showPage(pageId: string) {
   const pages = ["projects-page", "project-details", "users-list"];
@@ -70,7 +67,8 @@ if (projectBtn) {
       error.style.display = "none"
       error2.style.display = "none"
     }
-    showModal("new-project-modal", true);
+    const createProjectModal = new ModalManager()
+    createProjectModal.showModal("new-project-modal", 1);
   });
 } else {
   console.warn("Project button doesn't exist");
@@ -78,40 +76,40 @@ if (projectBtn) {
 
 if(createToDoBtn){
   createToDoBtn.addEventListener("click", () => {
-    showModal("create-todo-modal", true)
+    if(createToDoError){
+      createToDoError.style.display = "none"
+    }
+    const createTodoModal = new ModalManager()
+    createTodoModal.showModal("create-todo-modal", 1)
   })
 } else {
   console.warn("ToDo button doesn't exist")
 }
 
-if(editToDo){
-  editToDo.addEventListener("click", () => {
-    showModal("edit-todo-modal", true)
-  })
-} else {
-  console.warn("ToDo Edit button doesn't exist")
-}
-
 
 closeModalBtn?.addEventListener("click", () => {
   projectForm.reset();
-  showModal("new-project-modal", false)
+  const closeProjectModal = new ModalManager()
+  closeProjectModal.showModal("new-project-modal", 0)
 })
 
 closeEditModalBtn?.addEventListener("click", () => {
   projectForm.reset();
-  showModal("update-project-modal", false)
+  const closeEditProjectModal = new ModalManager()
+  closeEditProjectModal.showModal("update-project-modal", 0)
 })
 
 closeToDoModalBtn?.addEventListener("click", () => {
   toDoForm.reset();
-  showModal("create-todo-modal", false)
+  const closeToDoModal = new ModalManager()
+  closeToDoModal.showModal("create-todo-modal", 0)
 })
 
-closeEditToDoModal?.addEventListener("click", () => {
+ closeEditToDoModal?.addEventListener("click", () => {
   editToDoForm.reset()
-  showModal("edit-todo-modal", false)
-})
+  const closeEditToDoModal = new ModalManager()
+  closeEditToDoModal.showModal("edit-todo-modal", 0)
+ })
 
 
 if (projectHome) {
@@ -133,7 +131,8 @@ if(editBtn){
       error.style.display = "none"
       error2.style.display = "none"
     }
-    showModal("update-project-modal", true);
+    const openEditProjectModal = new ModalManager()
+    openEditProjectModal.showModal("update-project-modal", 1);
   })
 }
 
@@ -171,7 +170,8 @@ if (projectForm && projectForm instanceof HTMLFormElement) {
       tip.style.display = "grid";
       error.style.display = "none";
       projectForm.reset();
-      showModal("new-project-modal", false)
+      const projectBtn = new ModalManager()
+      projectBtn.showModal("new-project-modal", 0)
     } catch(e){
       // Experimenting with errors in differents inputs
       if(e.message.includes("description")){
@@ -212,7 +212,8 @@ if (updateForm && updateForm instanceof HTMLFormElement) {
       tip.style.display = "grid";
       updateError.style.display = "none";
       updateForm.reset();
-      showModal("update-project-modal", false)
+      const updateBtn = new ModalManager()
+      updateBtn.showModal("update-project-modal", 0)
     }catch(e){
       if(e.message.includes("description")){
         updateError2.innerHTML = `${e}`
@@ -232,41 +233,51 @@ if (updateForm && updateForm instanceof HTMLFormElement) {
 // Create to-do
 if(toDoForm && toDoForm instanceof HTMLFormElement) {
   toDoForm.addEventListener("submit", (event) => {
-    event.preventDefault()
     const formData = new FormData(toDoForm)
+    event.preventDefault()
     const todoData: ITodo = {
       description: formData.get("description") as string,
       date: new Date(formData.get("date") as string || new Date()),
-      statusToDo: formData.get("statusToDo") as statusTask
+      statusToDo: formData.get("statusToDo") as statusTask,
     }
     try{
-      console.log(todoData);
-      projectsManager.updateTodo(todoData)
+      projectsManager.newTodo(todoData)
+      createToDoError.style.display = 'none'
       toDoForm.reset();
-      showModal("create-todo-modal", false)
+      const toDoBtn = new ModalManager()
+      toDoBtn.showModal("create-todo-modal", 0)
     }catch(e){
-      console.log(e)
+      if(e.message.includes("description")){
+        createToDoError.innerHTML = `${e}`
+        createToDoError.style.display = 'grid'
+      }
     }
   })
 }
 
-// Edit toDo - in progress
-
+// Edit toDo - done
 if(editToDoForm&& editToDoForm instanceof HTMLFormElement) {
   editToDoForm.addEventListener("submit", (event) => {
-    event.preventDefault()
     const formData = new FormData(editToDoForm)
-    const todoData: ITodo = {
+    event.preventDefault()
+    const newData: ITodo = {
       description: formData.get("description") as string,
       date: new Date(formData.get("date") as string || new Date()),
-      statusToDo: formData.get("statusToDo") as statusTask
+      statusToDo : formData.get("statusToDo") as statusTask,
     }
     try{
-      projectsManager.updateTodoStatus(todoData)
+      // Get the id from the input element
+      const todoId = formData.get("idToDo") as string
+      projectsManager.updateTodo(todoId, newData)
+      updateDescriptionError.style.display = "none"
       editToDoForm.reset();
-      showModal("edit-todo-modal", false)
+      const updateToDo = new ModalManager()
+      updateToDo.showModal("edit-todo-modal", 0)
     }catch(e){
-      console.log(e)
+      if(e.message.includes("description")){
+        updateDescriptionError.innerHTML = `${e}`
+        updateDescriptionError.style.display = 'grid'
+      }
     }
   })
 }

@@ -123,9 +123,6 @@ button {
 
 /* Content styles */
 
-#content {
-}
-
 header {
     padding: 30px 40px;
     display: flex;
@@ -351,6 +348,12 @@ input:focus, textarea:focus, select:focus{
     flex-direction: column; 
     padding: 10px 30px; 
     row-gap: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.hide{
+    display: none;
 }
 
 .task-item{
@@ -362,7 +365,7 @@ input:focus, textarea:focus, select:focus{
 }
 
 .task-item:hover{
-    background-color: var(--primary);
+    outline: 2px solid #fff;
 }
 
 

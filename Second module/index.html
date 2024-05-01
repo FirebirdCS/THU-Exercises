@@ -183,9 +183,7 @@
                                 <span id="create-toDo" style="cursor: pointer " class="material-icons-round">add</span>
                             </div>
                         </div>
-                        <div id="task-container" class="task-container">
-                            <div  id="editToDo" class="task-item">
-                            </div>
+                        <div id="task-container" class="task-container"> </div>
                         </div>
                         <dialog id="create-todo-modal">
                             <form id="create-todo-form">
@@ -194,8 +192,9 @@
                                     <div class="form-field-container">
                                         <label><span class="material-icons-round">
                                             notes
-                                            </span>Description</label>
+                                        </span>Description</label>
                                         <textarea name="description" cols="30" rows="5" placeholder="Give the description of the task"></textarea>
+                                        <p id="createDescriptionError" style="color: red; margin-top: 5px; display: none"></p>
                                     </div>
                                     <div class="form-field-container">
                                         <label><span class="material-icons-round">
@@ -224,6 +223,20 @@
                             <form id="edit-todo-form">
                                 <h2>Edit a toDo</h2>
                                 <div class="input-list">
+                                    <input readonly name="idToDo" type="text" style="display: none"></input>
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                            notes
+                                            </span>Description</label>
+                                        <textarea name="description" cols="30" rows="5" placeholder="Give the description of the task"></textarea>
+                                        <p id="updateDescriptionError" style="color: red; margin-top: 5px; display: none"></p>
+                                    </div>
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                        calendar_month
+                                        </span>Finish date</label>
+                                        <input name="date" type="date">
+                                    </div>
                                     <div class="form-field-container">
                                         <label><span class="material-icons-round">
                                             help
@@ -237,7 +250,7 @@
                                 </div>
                                 <div class="modals-buttons">
                                     <button id="close-editToDo-modal" type="button" value="cancel" class="cancel-button">Cancel</button>
-                                    <button type="submit"  class="update-button">Update</button>
+                                    <button type="submit" class="update-button">Update</button>
                                 </div>
                             </form>
                         </dialog>

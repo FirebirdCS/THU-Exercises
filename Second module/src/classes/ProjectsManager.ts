@@ -1,13 +1,17 @@
-import { IProject, ITodo, Project, toDo } from "./Project"
+import { ModalManager } from './../utils/Utils';
+import { IProject, Project } from "./Project"
+import { ITodo, ToDo, statusTask } from "./ToDo"
+import { formatShortDate} from '../utils/Utils';
 
 export class ProjectsManager {
     list: Project[] = []
-    ui: HTMLElement
-    uiTodo: HTMLElement
+    ui: HTMLDivElement
+    uiTodo: HTMLDivElement
     oldProject: Project
-    oldTodo: toDo
+    oldTodo: ToDo
+    
 
-    constructor(container: HTMLElement, containerToDo: HTMLDivElement) {
+    constructor(container: HTMLDivElement, containerToDo: HTMLDivElement) {
         this.ui = container
         this.uiTodo = containerToDo
     }
@@ -81,51 +85,73 @@ export class ProjectsManager {
         this.setDetailsPage(project);
     }
 
-    // Create toDo
-
-    updateTodo (data:ITodo){
-        const todoNew = new toDo(data);
-        this.oldProject.todoList.push(todoNew);
-        this.uiTodo.append(todoNew.uiTodo);
-        this.oldTodo = todoNew
+    
+    newTodo(data: ITodo) {
+        if (!data.description) {
+            throw new Error(`The description should not be empty!`);
+        }
+        const todoNew = new ToDo(data);
+        this.oldProject.todoList.push(todoNew);;
+        const editBtn = todoNew.uiTodo.querySelector(`[id=editIcon]`) as HTMLElement;
+        editBtn.addEventListener('click', () => {
+            const updateModal = new ModalManager();
+            const updateForm = document.getElementById('edit-todo-form') as HTMLFormElement;
+            const idForm = updateForm.querySelector(`[name=idToDo]`) as HTMLInputElement
+            const descriptionForm = updateForm.querySelector(`[name=description]`) as HTMLTextAreaElement
+            const dateForm = updateForm.querySelector(`[name=date]`) as HTMLInputElement
+            const statusForm = updateForm.querySelector(`[name=statusToDo]`) as HTMLSelectElement
+            if (updateForm && updateModal) {
+                idForm.value = todoNew.id; // Populate the input element
+                descriptionForm.value = todoNew.description;
+                dateForm.value = todoNew.date.toISOString().slice(0, 10); // Way to format the date to put it into the date input
+                statusForm.value = todoNew.statusToDo;
+                this.oldTodo = todoNew;
+                updateModal.showModal('edit-todo-modal', 1);
+            }
+        });
+        const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
+        projectTodoCardsContainer.append(todoNew.uiTodo);
     }
-
-    // Update toDo - in progress
-
-    updateTodoStatus(data: ITodo) {
-        const todoToUpdate = this.oldProject.todoList.find(todo => todo.id === this.oldTodo.id);
-        console.log(todoToUpdate);
+    
+    // Update toDo - done
+    updateTodo(todoId: string, updatedTodo: ITodo) {
+        if (!updatedTodo.description) {
+            throw new Error(`The description should not be empty!`);
+        }
+        const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
+        const todoToUpdate = this.oldProject.todoList.find(todo => todo.id === todoId);
         if (todoToUpdate) {
-            todoToUpdate.statusToDo = data.statusToDo;
-    
-            if (data.description !== null && data.date !== null) {
-                todoToUpdate.description = data.description;
-                todoToUpdate.date = data.date;
-            }
-
-            switch (data.statusToDo) {
-                case "important":
-                    todoToUpdate.colorStatus = "red"
-                    todoToUpdate.uiTodo.style.backgroundColor = "red";
-                    break;
-                case "completed":
-                    todoToUpdate.colorStatus = "green"
-                    todoToUpdate.uiTodo.style.backgroundColor = "green";
-                    break;
-                case "on-going":
-                    todoToUpdate.colorStatus = "#2b69b5"
-                    todoToUpdate.uiTodo.style.backgroundColor = "#2b69b5";
-                    break;
-                default:
-                    break;
-            }
-    
-            console.log("Todo status updated successfully");
+            projectTodoCardsContainer.removeChild(todoToUpdate.uiTodo);
+            todoToUpdate.description = updatedTodo.description;
+            todoToUpdate.date = updatedTodo.date;
+            todoToUpdate.statusToDo = updatedTodo.statusToDo;
+            const newUI = todoToUpdate.setUI();
+            this.addEditEventListener(todoToUpdate);
+            projectTodoCardsContainer.append(newUI);
         } else {
-            console.error("Todo not found");
+            console.error('ToDo not found for update');
         }
     }
-    
+
+    // Separate event listener for the update method
+    private addEditEventListener(todo: ToDo) {
+        const editBtn = todo.uiTodo.querySelector(`[id=editIcon]`) as HTMLElement;
+        editBtn.addEventListener('click', () => {
+            const updateModal = new ModalManager();
+            const updateForm = document.getElementById('edit-todo-form') as HTMLFormElement;
+            const idForm = (updateForm.querySelector(`[name=idToDo]`) as HTMLTextAreaElement);
+            const descriptionForm = (updateForm.querySelector(`[name=description]`) as HTMLTextAreaElement);
+            const dateForm = (updateForm.querySelector(`[name=date]`) as HTMLInputElement);
+            const statusForm = (updateForm.querySelector(`[name=statusToDo]`) as HTMLSelectElement);
+            if (updateForm && updateModal) {
+                idForm.value = todo.id;
+                descriptionForm.value = todo.description;
+                dateForm.value = todo.date.toISOString().slice(0, 10);
+                statusForm.value = todo.statusToDo;
+                updateModal.showModal('edit-todo-modal', 1);
+            }
+        });
+    }
     
 
     updateProjectWhenImport (data: IProject){
@@ -136,7 +162,7 @@ export class ProjectsManager {
         }
         return this.newProject(data)
     }
-    
+
     private setDetailsPage(project: Project) {
         const detailsPage = document.getElementById("project-details");
     
@@ -156,10 +182,8 @@ export class ProjectsManager {
             if (elements) {
                 if (key === "date") {
                     const date = elements[0] as HTMLElement;
-                    const dateInfo = new Date(project.date);
-                    // Way to format the date in a correct way without showing an offset day
-                    let dateString = ("0" + dateInfo.getUTCDate()).slice(-2) + "-" + ("0" + (dateInfo.getUTCMonth() + 1)).slice(-2) + "-" + dateInfo.getUTCFullYear();
-                    date.textContent = dateString;
+                    const formattedDate = formatShortDate(project.date);
+                    date.textContent = formattedDate;
                 } else if (key === "progress") {
                     const progress = elements[0] as HTMLElement;
                     progress.style.width = project.progress * 100 + "%";
@@ -176,7 +200,7 @@ export class ProjectsManager {
         const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
         projectTodoCardsContainer.innerHTML = ''
         for (const todo of project.todoList){
-            const todoCard = new toDo(todo)
+            const todoCard = new ToDo(todo)
             projectTodoCardsContainer.append(todoCard.uiTodo)
         }
         // Way to only make the to-do container scrollable, not the whole page
@@ -240,5 +264,6 @@ export class ProjectsManager {
         input.click()
 
     }
-
+    
+    
 }
