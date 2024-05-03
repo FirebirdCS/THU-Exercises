@@ -153,7 +153,7 @@ export class ProjectsManager {
         });
     }
 
-    // Search by description - testing
+    // Search by description - done
     searchTodosByDescription(searchTerm: string) {
         const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
         const todosList = projectTodoCardsContainer.getElementsByClassName('task-item');
@@ -180,9 +180,8 @@ export class ProjectsManager {
 
     private setDetailsPage(project: Project) {
         const detailsPage = document.getElementById("project-details");
-    
+
         if (!detailsPage) { return; }
-        
         // Change icon & icon background-color
         const icon = detailsPage.querySelector("[data-project-info='icon']");
         if (!icon || !(icon instanceof HTMLElement)) { return; }
