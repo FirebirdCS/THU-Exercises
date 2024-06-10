@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Construction Design</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <aside id="sidebar">
+        <img id="company-logo" src="./assets/company-logo.svg"  alt="Construction-site">
+        <ul id="nav-buttons">
+            <li id="projects-home-btn"><span  class="material-icons-round">apartment</span>Projects</li>
+            <li id="users-list-btn"><span class="material-icons-round">person </span>User</li>
+        </ul>
+        </aside>
+    <main id="content">
+        <div class="page" id="projects-page" >
+            <dialog id="new-project-modal">
+                <form id="new-project-form">
+                    <h2>New project</h2>
+                    <div class="input-list">
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">apartment</span>Name</label>
+                            <input name="name" type="text"> 
+                            <p id="tip" style="color:#5d616f; font-style: italic; margin-top: 5px;">TIP: Give it a short name</p>
+                            <p id="nameError" style="color: red; margin-top: 5px; display: none"></p>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                notes
+                                </span>Description</label>
+                            <textarea name="description" cols="30" rows="5" placeholder="Give your description"></textarea>
+                            <p id="nameError2" style="color: red; margin-top: 5px; display: none"></p>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                account_circle
+                                </span>Role</label>
+                            <select name="role">
+                                <option>Architect</option>
+                                <option>Engineer</option>
+                                <option>Developer</option>
+                            </select>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                help
+                                </span>Status</label>
+                            <select name="status">
+                                <option>Pending</option>
+                                <option>Active</option>
+                                <option>Finished</option>
+                            </select>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                            calendar_month
+                            </span>Finish date</label>
+                            <input name="date" type="date">
+                        </div>
+                    </div>
+                    <div class="modals-buttons">
+                        <button id="close-modal" type="button" value="cancel" class="cancel-button">Cancel</button>
+                        <button type="submit" class="accept-button">Accept</button>
+                    </div>
+                </form>
+            </dialog>
+            <header>
+                <h2>Project List</h2>
+                <div style="display: flex; align-items: center; column-gap: 15px;">
+                    <span id="import-projects-btn" style="cursor: pointer;" class="material-icons-round action-icon">file_upload</span>
+                    <span id="export-projects-btn" style="cursor: pointer;" class="material-icons-round action-icon">file_download</span>
+                    <button id="new-project-btn" class="project-button"><span class="material-icons-round">add</span>New project</button>
+                </div>
+            </header>
+            <div id="projects-lists">
+            </div>
+        </div>
+        <div class="page" id="project-details" style="display: none;" >
+            <dialog id="update-project-modal">
+                <form id="update-project-form">
+                    <h2>Edit project</h2>
+                    <div class="input-list">
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">apartment</span>Name</label>
+                            <input name="name" type="text"> 
+                            <p id="tip" style="color:#5d616f; font-style: italic; margin-top: 5px;">TIP: Give it a short name</p>
+                            <p id="updateNameError" style="color: red; margin-top: 5px; display: none"></p>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                notes
+                                </span>Description</label>
+                            <textarea name="description" cols="30" rows="5" placeholder="Give your description"></textarea>
+                            <p id="updateNameError2" style="color: red; margin-top: 5px; display: none"></p>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                account_circle
+                                </span>Role</label>
+                            <select name="role">
+                                <option>Architect</option>
+                                <option>Engineer</option>
+                                <option>Developer</option>
+                            </select>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                help
+                                </span>Status</label>
+                            <select name="status">
+                                <option>Pending</option>
+                                <option>Active</option>
+                                <option>Finished</option>
+                            </select>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                            calendar_month
+                            </span>Finish date</label>
+                            <input name="date" type="date">
+                        </div>
+                    </div>
+                    <div class="modals-buttons">
+                        <button id="close-edit-modal" type="button" value="cancel" class="cancel-button">Cancel</button>
+                        <button type="submit" class="update-button">Update</button>
+                    </div>
+                </form>
+            </dialog>
+            <header>
+                <div>
+                    <h2 data-project-info="name">Hospital Center</h2>
+                    <p data-project-info="description" style="color: #969696">Community hospital center located at Downtown </p>
+                </div>
+            </header>
+            <div class="main-page-content">
+                <div class="details-column">
+                    <div class="dashboard-card" style="padding: 30px 0;">
+                        <div class="details-header">
+                            <p data-project-info="icon" style="font-size: 20px; background-color: #ca8134; aspect-ratio: 1; border-radius: 100%; padding: 12px;">HC</p>
+                            <button id="edit-btn" class="edit-button">
+                                <p style="width: 100%;">Edit</p>
+                            </button>
+                        </div>
+                        <div style="padding: 0 30px">
+                            <div>
+                                <h5 data-project-info="name">Hospital Center</h5>
+                                <p data-project-info="description">Community hospital located at downtown</p>
+                              </div>
+                              <div class="details-info">
+                                <div>
+                                    <p style="color: #969696; font-size: var(--font-sm);">Status</p>
+                                    <p data-project-info="status">Active</p>
+                                </div>
+                                <div>
+                                    <p style="color: #969696; font-size: var(--font-sm);">Cost</p>
+                                    <p data-project-info="cost">$2,500.000</p>
+                                </div>
+                                <div>
+                                    <p style="color: #969696; font-size: var(--font-sm);">Role</p>
+                                    <p data-project-info="role">Engineer</p>
+                                </div>
+                                <div>
+                                    <p style="color: #969696; font-size: var(--font-sm);">Finish Date</p>
+                                    <p data-project-info="date">2023-11-27</p>
+                                </div>
+                             </div>
+                             <div style="background-color: #404040; border-radius: 9999px; overflow: auto;">
+                                <div data-project-info="progress" style="width: 80%; background-color: green; padding: 4px 0; text-align: center;">80%</div>
+                              </div>
+                        </div>
+                    </div>
+                    <div class="dashboard-card" styles="flex-grow: 1">
+                        <div class="task-header">
+                           <h4>To-Do</h4>
+                            <div class="task-searchbar">
+                                <div class="task-searchbar-container">
+                                    <span class="material-icons-round">search</span>
+                                    <input type="text" placeholder="Search To-Do's by name" style="width: 100%;">
+                                </div>
+                                <span id="create-toDo" style="cursor: pointer " class="material-icons-round">add</span>
+                            </div>
+                        </div>
+                        <div id="task-container" class="task-container"> </div>
+                        </div>
+                        <dialog id="create-todo-modal">
+                            <form id="create-todo-form">
+                                <h2>Create a toDo</h2>
+                                <div class="input-list">
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                            notes
+                                        </span>Description</label>
+                                        <textarea name="description" cols="30" rows="5" placeholder="Give the description of the task"></textarea>
+                                        <p id="createDescriptionError" style="color: red; margin-top: 5px; display: none"></p>
+                                    </div>
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                        calendar_month
+                                        </span>Finish date</label>
+                                        <input name="date" type="date">
+                                    </div>
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                            help
+                                            </span>Status</label>
+                                        <select name="statusToDo">
+                                            <option>important</option>
+                                            <option>completed</option>
+                                            <option>on-going</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modals-buttons">
+                                    <button id="close-todo-modal" type="button" value="cancel" class="cancel-button">Cancel</button>
+                                    <button type="submit"  class="update-button">Create</button>
+                                </div>
+                            </form>
+                        </dialog>
+                        <dialog id="edit-todo-modal">
+                            <form id="edit-todo-form">
+                                <h2>Edit a toDo</h2>
+                                <div class="input-list">
+                                    <input readonly name="idToDo" type="text" style="display: none"></input>
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                            notes
+                                            </span>Description</label>
+                                        <textarea name="description" cols="30" rows="5" placeholder="Give the description of the task"></textarea>
+                                        <p id="updateDescriptionError" style="color: red; margin-top: 5px; display: none"></p>
+                                    </div>
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                        calendar_month
+                                        </span>Finish date</label>
+                                        <input name="date" type="date">
+                                    </div>
+                                    <div class="form-field-container">
+                                        <label><span class="material-icons-round">
+                                            help
+                                            </span>Status</label>
+                                        <select name="statusToDo">
+                                            <option>important</option>
+                                            <option>completed</option>
+                                            <option>on-going</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modals-buttons">
+                                    <button id="close-editToDo-modal" type="button" value="cancel" class="cancel-button">Cancel</button>
+                                    <button type="submit" class="update-button">Update</button>
+                                </div>
+                            </form>
+                        </dialog>
+                    </div>
+                </div>
+                <div id="viewer-container" class="dashboard-card"></div>
+            </div>
+        </div>
+        <div class="page" id="users-list" style="display: none;">
+            <header>
+                <h2>Users</h2>
+                <div class="user-search">
+                    <span class="material-icons-round">search</span>
+                    <input type="text" placeholder="Search an user..." style="width: 300px">
+                    <button class="user-button"><span class="material-icons-round">add</span>New user</button>
+                </div>
+            </header>
+            <dialog id="new-user-modal">
+                <form>
+                    <h2>Create an user</h2>
+                    <div class="input-list">
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">badge</span>Full name</label>
+                            <input type="text" placeholder="Type your full name..."> 
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                mail
+                                </span>Email</label>
+                            <input type="email" placeholder="Type your email...">
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                password
+                                </span>Password</label>
+                            <input type="password" placeholder="Type your password">
+                            <p style="color:#5d616f; font-style: italic; margin-top: 5px;">TIP: It should include at least one upper case letter</p>
+                            <p style="color:#5d616f; font-style: italic; margin-top: 5px;">a number and special character</p>
+                        </div>
+                        <div class="form-field-container">
+                            <label><span class="material-icons-round">
+                                account_circle
+                                </span>Role</label>
+                            <select>
+                                <option>Architect</option>
+                                <option>Engineer</option>
+                                <option>Developer</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modals-buttons">
+                        <button class="cancel-button">Cancel</button>
+                        <button class="accept-button">Register</button>
+                    </div>
+                </form>
+            </dialog>
+            <div id="user-info">
+                <div class="user-card">  
+                    <div class="user-content">
+                        <div class="user-property">
+                            <img src="assets/p1.png" alt="" class="profile-image">
+                        </div>
+                        <div class="user-property">
+                            <p style="color: #969696;">Name</p>
+                            <p >Alvaro Flores</p>
+                        </div>
+                        <div  class="user-property">
+                            <p style="color: #969696;">Role</p>
+                            <p>Engineer</p>
+                        </div>
+                        <div  class="user-property">
+                            <p style="color: #969696;">Email</p>
+                            <p>alvaro@gmail.com</p>
+                        </div>
+                        <div  class="user-property">
+                            <p style="color: #969696;">Signed up</p>
+                            <p>6 months ago</p>
+                        </div>
+                        <div style="display: flex; align-items: center; column-gap: 10px; padding: 10px;">
+                            <span class="material-icons-round">edit</span>
+                        </div>
+                    </div> 
+                </div> 
+                </div>
+                <div id="user-info">
+                    <div class="user-card">  
+                        <div class="user-content">
+                            <div class="user-property">
+                                <img src="assets/p3.png" alt="" class="profile-image">
+                            </div>
+                            <div class="user-property">
+                                <p style="color: #969696;">Name</p>
+                                <p >Susanna González</p>
+                            </div>
+                            <div  class="user-property">
+                                <p style="color: #969696;">Role</p>
+                                <p>Architect</p>
+                            </div>
+                            <div  class="user-property">
+                                <p style="color: #969696;">Email</p>
+                                <p>susanna@gmail.com</p>
+                            </div>
+                            <div class="user-property">
+                                <p style="color: #969696;">Signed up</p>
+                                <p>1 year ago ago</p>
+                            </div>
+                            <div style="display: flex; align-items: center; column-gap: 10px; padding: 10px;">
+                                <span class="material-icons-round">edit</span>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div id="user-info">
+                    <div class="user-card">  
+                        <div class="user-content">
+                            <div class="user-property">
+                                <img src="assets/p2.png" alt="" class="profile-image">
+                            </div>
+                            <div class="user-property">
+                                <p style="color: #969696;">Name</p>
+                                <p >Pedro Jimenez</p>
+                            </div>
+                            <div  class="user-property">
+                                <p style="color: #969696;">Role</p>
+                                <p>Developer</p>
+                            </div>
+                            <div  class="user-property">
+                                <p style="color: #969696;">Email</p>
+                                <p>pedro@gmail.com</p>
+                            </div>
+                            <div class="user-property">
+                                <p style="color: #969696;">Signed up</p>
+                                <p>3 years ago ago</p>
+                            </div>
+                            <div style="display: flex; align-items: center; column-gap: 10px; padding: 10px;">
+                                <span class="material-icons-round">edit</span>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                <div id="user-info">
+                    <div class="user-card">  
+                        <div class="user-content">
+                            <div class="user-property">
+                                <img src="assets/p4.png" alt="" class="profile-image">
+                            </div>
+                            <div class="user-property">
+                                <p style="color: #969696;">Name</p>
+                                <p >Carmelia Orozco</p>
+                            </div>
+                            <div  class="user-property">
+                                <p style="color: #969696;">Role</p>
+                                <p>Architect</p>
+                            </div>
+                            <div  class="user-property">
+                                <p style="color: #969696;">Email</p>
+                                <p>carmeliao@gmail.com</p>
+                            </div>
+                            <div class="user-property">
+                                <p style="color: #969696;">Signed up</p>
+                                <p>3 weeks ago ago</p>
+                            </div>
+                            <div style="display: flex; align-items: center; column-gap: 10px; padding: 10px;">
+                                <span class="material-icons-round">edit</span>
+                            </div>
+                        </div> 
+                    </div> 
+                </div>
+                
+            </div>
+        </div>
+    </main>
+    <script type="module" src="./src/index.ts"></script>
+</body>
+</html>
+
+
