@@ -14,6 +14,16 @@ export class ProjectsManager {
     constructor(container: HTMLDivElement, containerToDo: HTMLDivElement) {
         this.ui = container
         this.uiTodo = containerToDo
+        const project = this.newProject({
+            name: "Default name",
+            description: "Default description",
+            status: "pending",
+            role: "developer",
+            date: new Date(),
+            todoList: [ 
+            ]
+        })
+        project.ui.click()
     }
 
     newProject(data: IProject) {

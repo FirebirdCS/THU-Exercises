@@ -1,18 +1,14 @@
+import * as THREE from "three"
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
+import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js"
+import { MTLLoader } from "three/examples/jsm/loaders/MTLLoader.js"
 import { IProject, projectStatus, userRole } from "./classes/Project";
 import { ITodo, statusTask } from "./classes/ToDo";
 import { ProjectsManager } from "./classes/ProjectsManager"
 import { ModalManager } from "./utils/Utils";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-// Default project
-const defaultProject: IProject = {
-  name: "Default name",
-  description: "Default description",
-  status: "pending",
-  role: "developer",
-  date: new Date(),
-  todoList: [ 
-  ]
-}
 
 // Declare all the buttons, forms, pages
 const projectBtn = document.getElementById("new-project-btn");
@@ -43,9 +39,7 @@ const closeToDoModalBtn = document.getElementById("close-todo-modal")
 const closeEditToDoModal = document.getElementById("close-editToDo-modal") 
 const editToDoForm = document.getElementById("edit-todo-form") as HTMLFormElement
 const editToDo = document.getElementById("editIcon")
-
-// Create the default project
-const defaultPro = projectsManager.newProject(defaultProject) 
+const viewerContainer = document.getElementById("viewer-container") as HTMLElement
 
 
 // Func to show pages
@@ -286,4 +280,91 @@ if(editToDoForm&& editToDoForm instanceof HTMLFormElement) {
     }
   })
 }
+
+// Create Three.js scene
+const scene = new THREE.Scene()
+const camera = new THREE.PerspectiveCamera(75)
+camera.position.z = 5
+
+const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true})
+viewerContainer.append(renderer.domElement)
+
+function resizeViewer() {
+  const containerDimensions = viewerContainer.getBoundingClientRect()
+  renderer.setSize(containerDimensions.width, containerDimensions.height)
+  const aspectRatio = containerDimensions.width / containerDimensions.height
+  camera.aspect = aspectRatio
+  camera.updateProjectionMatrix()
+}
+
+window.addEventListener("resize", resizeViewer)
+resizeViewer()
+
+// Set up the mesh
+const boxGeometry = new THREE.BoxGeometry()
+const material = new THREE.MeshStandardMaterial()
+const cube = new THREE.Mesh(boxGeometry, material)
+// Set up lights
+const directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+const helper = new THREE.DirectionalLightHelper( directionalLight, 5 );
+const spotlight = new THREE.SpotLight( 0xffffff );
+spotlight.castShadow = true;
+const ambientLight = new THREE.AmbientLight()
+ambientLight.intensity = 0.4
+const axes = new THREE.AxesHelper()
+const grid = new THREE.GridHelper()
+grid.material.transparent = true
+grid.material.opacity = 0.4
+grid.material.color = new THREE.Color("#808080")
+
+scene.add(cube, directionalLight, helper, spotlight, ambientLight, axes, grid)
+
+const gui = new GUI()
+
+const cubeControls = gui.addFolder("Cube")
+cubeControls.add(cube.position, "x", -10, 10, 1)
+cubeControls.add(cube.position, "y", -10, 10, 1)
+cubeControls.add(cube.position, "z", -10, 10, 1)
+cubeControls.add(cube, "visible")
+cubeControls.addColor(cube.material, "color")
+
+const lightControls = gui.addFolder("Lights")
+lightControls.add(directionalLight.position, "x", -5, 5, 1)
+lightControls.add(directionalLight.position, "y", -5, 5, 1)
+lightControls.add(directionalLight.position, "z", -5, 5, 1)
+lightControls.add(directionalLight, "intensity", -10, 10, 1)
+lightControls.addColor(directionalLight, "color")
+
+const spotControls = gui.addFolder("SpotLights")
+spotControls.add(spotlight.position, "x", -10, 10, 1)
+spotControls.add(spotlight.position, "y", -10, 10, 1)
+spotControls.add(spotlight.position, "z", -10, 10, 1)
+spotControls.add(spotlight, "intensity", 0, 10, 1)
+spotControls.addColor(spotlight, "color")
+
+const objLoader = new OBJLoader()
+const mtlLoader = new MTLLoader()
+
+const gltfLoader = new GLTFLoader()
+
+// mtlLoader.load("../assets/Gear/Gear1.mtl", (materials) => {
+//   materials.preload()
+//   objLoader.setMaterials(materials)
+//   objLoader.load("../assets/Gear/Gear1.obj", (mesh) => {
+//     scene.add(mesh)
+//   })
+// })
+
+gltfLoader.load("../assets/penguin.gltf", (mesh) => {
+  scene.add(mesh.scene);
+})
+
+const cameraControls = new OrbitControls(camera, viewerContainer)
+
+function renderScene() {
+  renderer.render(scene,camera)
+  requestAnimationFrame(renderScene)
+}
+
+renderScene()
 
