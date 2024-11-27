@@ -5,15 +5,11 @@ import { formatShortDate} from '../utils/Utils';
 
 export class ProjectsManager {
     list: Project[] = []
-    ui: HTMLDivElement
-    uiTodo: HTMLDivElement
     oldProject: Project
     oldTodo: ToDo
     
 
-    constructor(container: HTMLDivElement, containerToDo: HTMLDivElement) {
-        this.ui = container
-        this.uiTodo = containerToDo
+    constructor() {
         const project = this.newProject({
             name: "Default name",
             description: "Default description",
@@ -52,9 +48,6 @@ export class ProjectsManager {
             detailsPage.style.display = "flex"
             this.setDetailsPage(project)
         })
-
-
-        this.ui.append(project.ui)
         this.list.push(project)
         return project
     }

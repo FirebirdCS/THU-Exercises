@@ -1,10 +1,90 @@
 import * as React from "react";
+import { ModalManager } from "../utils/Utils";
+import { IProject, projectStatus, userRole } from "../classes/Project";
+import { ProjectsManager } from "../classes/ProjectsManager";
 
 export function ProjectsPage() {
+  const projectsManager = new ProjectsManager();
+
+  // Open new modal logic
+  const onNewProjectClick = () => {
+    const error = document.getElementById("nameError") as HTMLElement;
+    const error2 = document.getElementById("nameError2") as HTMLElement;
+    if (error) {
+      error.style.display = "none";
+      error2.style.display = "none";
+    }
+    const createProjectModal = new ModalManager();
+    createProjectModal.showModal("new-project-modal", 1);
+  };
+
+  // Create new modal logic
+  const onFormSubmit = (event: React.FormEvent) => {
+    const projectForm = document.getElementById(
+      "new-project-form"
+    ) as HTMLFormElement;
+    const error = document.getElementById("nameError") as HTMLElement;
+    const error2 = document.getElementById("nameError2") as HTMLElement;
+    const tip = document.getElementById("tip") as HTMLElement;
+    if (!(projectForm && projectForm instanceof HTMLFormElement)) {
+      return;
+    }
+    event.preventDefault();
+    const formData = new FormData(projectForm);
+    const projectData: IProject = {
+      name: formData.get("name") as string,
+      description: formData.get("description") as string,
+      status: formData.get("status") as projectStatus,
+      role: formData.get("role") as userRole,
+      date: new Date((formData.get("date") as string) || new Date()),
+      todoList: [],
+    };
+    try {
+      const project = projectsManager.newProject(projectData);
+      tip.style.display = "grid";
+      error.style.display = "none";
+      console.log(project);
+      projectForm.reset();
+      const projectBtn = new ModalManager();
+      projectBtn.showModal("new-project-modal", 0);
+    } catch (e) {
+      if (e.message.includes("description")) {
+        error2.innerHTML = `${e}`;
+        error2.style.display = "grid";
+        tip.style.display = "none";
+        error.style.display = "none";
+      } else {
+        error.innerHTML = `${e}`;
+        tip.style.display = "none";
+        error.style.display = "grid";
+        error2.style.display = "none";
+      }
+    }
+  };
+
+  // Close modal logic
+  const onCloseModal = () => {
+    const projectForm = document.getElementById(
+      "new-project-form"
+    ) as HTMLFormElement;
+    projectForm.reset();
+    const closeProjectModal = new ModalManager();
+    closeProjectModal.showModal("new-project-modal", 0);
+  };
+
+  // Import & Export Logic
+  const onExportProject = () => {
+    projectsManager.exportToJSON();
+  };
+
+  const onImportProject = () => {
+    projectsManager.importFromJSON();
+  };
+
   return (
     <div className="page" id="projects-page">
       <dialog id="new-project-modal">
-        <form id="new-project-form">
+        <form onSubmit={(e) => onFormSubmit(e)} id="new-project-form">
           <h2>New project</h2>
           <div className="input-list">
             <div className="form-field-container">
@@ -69,6 +149,7 @@ export function ProjectsPage() {
           </div>
           <div className="modals-buttons">
             <button
+              onClick={onCloseModal}
               id="close-modal"
               type="button"
               value="cancel"
@@ -86,6 +167,7 @@ export function ProjectsPage() {
         <h2>Project List</h2>
         <div style={{ display: "flex", alignItems: "center", columnGap: 15 }}>
           <span
+            onClick={onImportProject}
             id="import-projects-btn"
             style={{ cursor: "pointer" }}
             className="material-icons-round action-icon"
@@ -93,13 +175,18 @@ export function ProjectsPage() {
             file_upload
           </span>
           <span
+            onClick={onExportProject}
             id="export-projects-btn"
             style={{ cursor: "pointer" }}
             className="material-icons-round action-icon"
           >
             file_download
           </span>
-          <button id="new-project-btn" className="project-button">
+          <button
+            onClick={onNewProjectClick}
+            id="new-project-btn"
+            className="project-button"
+          >
             <span className="material-icons-round">add</span>New project
           </button>
         </div>
