@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import { Sidebar } from "./react-components/Sidebar";
+import { ProjectsPage } from "./react-components/ProjectsPage";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GUI } from "three/examples/jsm/libs/lil-gui.module.min.js";
@@ -14,7 +15,12 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
 const rootElement = document.getElementById("app") as HTMLDivElement;
 const appRoot = ReactDOM.createRoot(rootElement);
-appRoot.render(<Sidebar />);
+appRoot.render(
+  <>
+    <Sidebar />
+    <ProjectsPage />
+  </>
+);
 
 // Declare all the buttons, forms, pages
 const projectBtn = document.getElementById("new-project-btn");
