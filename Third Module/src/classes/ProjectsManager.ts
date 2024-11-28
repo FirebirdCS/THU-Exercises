@@ -19,7 +19,6 @@ export class ProjectsManager {
             todoList: [ 
             ]
         })
-        project.ui.click()
     }
 
     newProject(data: IProject) {
@@ -39,15 +38,6 @@ export class ProjectsManager {
         }
 
         const project = new Project(data)
-        project.ui.addEventListener("click", () => {
-            const projectsPage = document.getElementById("projects-page")
-            const detailsPage = document.getElementById("project-details")
-            this.oldProject = project
-            if (!projectsPage || !detailsPage) { return }
-            projectsPage.style.display = "none"
-            detailsPage.style.display = "flex"
-            this.setDetailsPage(project)
-        })
         this.list.push(project)
         return project
     }
@@ -74,7 +64,6 @@ export class ProjectsManager {
     deleteProject(id: string) {
         const project = this.getProject(id)
         if (!project) { return }
-        project.ui.remove()
         const remaining = this.list.filter((project) => {
             return project.id !== id
         })
@@ -85,7 +74,6 @@ export class ProjectsManager {
         data.todoList = this.oldProject.todoList
         this.deleteProject(this.oldProject.id)
         const project = this.newProject(data)
-        this.setDetailsPage(project);
     }
 
     
@@ -181,52 +169,6 @@ export class ProjectsManager {
         return this.newProject(data)
     }
 
-    private setDetailsPage(project: Project) {
-        const detailsPage = document.getElementById("project-details");
-
-        if (!detailsPage) { return; }
-        // Change icon & icon background-color
-        const icon = detailsPage.querySelector("[data-project-info='icon']");
-        if (!icon || !(icon instanceof HTMLElement)) { return; }
-    
-        const iconTitle = project.name.substring(0, 2).toUpperCase();
-        icon.textContent = iconTitle;
-        icon.style.backgroundColor = this.oldProject.cardColor;
-    
-        // Change data related to the project only
-        for (const key in project) {
-            const elements = detailsPage.querySelectorAll(`[data-project-info='${key}']`);
-            if (elements) {
-                if (key === "date") {
-                    const date = elements[0] as HTMLElement;
-                    const parsedDate = new Date(project.date);
-                    const formattedDate = formatShortDate(parsedDate);
-                    date.textContent = formattedDate;
-                } else if (key === "progress") {
-                    const progress = elements[0] as HTMLElement;
-                    progress.style.width = project.progress * 100 + "%";
-                    progress.textContent = project.progress * 100 + "%";
-                } else {
-                    for (const element of elements) {
-                        element.textContent = project[key];
-                    }
-                }
-            }
-        }
-
-        // Renderize to-do cards
-        const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
-        projectTodoCardsContainer.innerHTML = ''
-        for (const todo of project.todoList){
-            const todoCard = new ToDo(todo)
-            projectTodoCardsContainer.append(todoCard.uiTodo)
-        }
-        // Way to only make the to-do container scrollable, not the whole page
-        projectTodoCardsContainer.style.maxHeight = "300px"; 
-        projectTodoCardsContainer.style.overflowY = "auto";
-
-    }
-    
 
     exportToJSON(fileName: string = "projects") {
         const json = JSON.stringify(this.list, null, 2)
