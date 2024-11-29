@@ -1,40 +1,46 @@
 import * as React from "react";
+import { Project } from "../classes/Project";
 
-export function ProjectCard() {
+interface Props {
+  project: Project;
+}
+
+export function ProjectCard(props: Props) {
+  const iconTitle = props.project.name.substring(0, 2).toUpperCase();
   return (
     <div className="project-card">
       <div className="card-header">
         <p
           style={{
-            backgroundColor: "#565626",
+            backgroundColor: `${props.project.cardColor}`,
             padding: 10,
             borderRadius: 8,
             aspectRatio: 1,
           }}
         >
-          HC
+          {iconTitle}
         </p>
         <div>
-          <h5>Project Name</h5>
-          <p>Project Description</p>
+          <h5>{props.project.name}</h5>
+          <p>{props.project.description}</p>
         </div>
       </div>
       <div className="card-content">
         <div className="card-property">
           <p style={{ color: "#969696" }}>Status</p>
-          <p>Active</p>
+          <p>{props.project.status}</p>
         </div>
         <div className="card-property">
           <p style={{ color: "#969696" }}>Role</p>
-          <p>Architecture</p>
+          <p>{props.project.role}</p>
         </div>
         <div className="card-property">
           <p style={{ color: "#969696" }}>Cost</p>
-          <p>$1,000,000.00</p>
+          <p>{props.project.cost}</p>
         </div>
         <div className="card-property">
           <p style={{ color: "#969696" }}>Estimated Progress</p>
-          <p>67%</p>
+          <p>{props.project.progress * 100}</p>
         </div>
       </div>
     </div>

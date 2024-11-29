@@ -5,11 +5,26 @@ import { ProjectsManager } from "../classes/ProjectsManager";
 import { ProjectCard } from "./ProjectCard";
 
 export function ProjectsPage() {
-  const projectsManager = new ProjectsManager();
+  const [projectsManager] = React.useState(new ProjectsManager());
 
   const [projects, setProjects] = React.useState<Project[]>(
     projectsManager.list
   );
+
+  projectsManager.onProjectCreated = () => {
+    setProjects([...projectsManager.list]);
+  };
+  projectsManager.onProjectDeleted = () => {
+    setProjects([...projectsManager.list]);
+  };
+
+  React.useEffect(() => {
+    console.log("Project state updated", projects);
+  }, [projects]);
+
+  const projectCards = projects.map((project) => {
+    return <ProjectCard project={project} key={project.id} />;
+  });
 
   // Open new modal logic
   const onNewProjectClick = () => {
@@ -196,9 +211,7 @@ export function ProjectsPage() {
           </button>
         </div>
       </header>
-      <div id="projects-lists">
-        <ProjectCard />
-      </div>
+      <div id="projects-lists">{projectCards}</div>
     </div>
   );
 }

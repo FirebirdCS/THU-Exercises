@@ -7,6 +7,12 @@ export class ProjectsManager {
     list: Project[] = []
     oldProject: Project
     oldTodo: ToDo
+    onProjectCreated = (project: Project) => {
+
+    }
+    onProjectDeleted = () => {
+
+    }
     
 
     constructor() {
@@ -39,6 +45,7 @@ export class ProjectsManager {
 
         const project = new Project(data)
         this.list.push(project)
+        this.onProjectCreated(project)
         return project
     }
 
@@ -68,6 +75,7 @@ export class ProjectsManager {
             return project.id !== id
         })
         this.list = remaining
+        this.onProjectDeleted()
     }
 
     updateProject (data:IProject) {
