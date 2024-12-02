@@ -1,16 +1,25 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
+import * as Router from "react-router-dom";
 import { Sidebar } from "./react-components/Sidebar";
 import { ProjectsPage } from "./react-components/ProjectsPage";
 import * as THREE from "three";
 import { ModalManager } from "./utils/Utils";
+import { ProjectDetailsPage } from "./react-components/ProjectDetailsPage";
+import { UserPage } from "./react-components/UserPage";
 
 const rootElement = document.getElementById("app") as HTMLDivElement;
 const appRoot = ReactDOM.createRoot(rootElement);
 appRoot.render(
   <>
-    <Sidebar />
-    <ProjectsPage />
+    <Router.BrowserRouter>
+      <Sidebar />
+      <Router.Routes>
+        <Router.Route path="/" element={<ProjectsPage />} />
+        <Router.Route path="/project/:id" element={<ProjectDetailsPage />} />
+        <Router.Route path="/users" element={<UserPage />} />
+      </Router.Routes>
+    </Router.BrowserRouter>
   </>
 );
 
@@ -79,13 +88,13 @@ if (createToDoBtn) {
 }
 
 // Search
-const searchInput = document.querySelector(
-  ".task-searchbar-container input"
-) as HTMLInputElement;
-searchInput.addEventListener("input", (event) => {
-  const searchTerm = (event.target as HTMLInputElement).value.trim();
-  // projectsManager.searchTodosByDescription(searchTerm);
-});
+// const searchInput = document.querySelector(
+//   ".task-searchbar-container input"
+// ) as HTMLInputElement;
+// searchInput.addEventListener("input", (event) => {
+//   const searchTerm = (event.target as HTMLInputElement).value.trim();
+//   // projectsManager.searchTodosByDescription(searchTerm);
+// });
 
 closeModalBtn?.addEventListener("click", () => {
   projectForm.reset();
