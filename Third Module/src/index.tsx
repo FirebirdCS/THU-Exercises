@@ -7,6 +7,10 @@ import * as THREE from "three";
 import { ModalManager } from "./utils/Utils";
 import { ProjectDetailsPage } from "./react-components/ProjectDetailsPage";
 import { UserPage } from "./react-components/UserPage";
+import { ProjectsManager } from "./classes/ProjectsManager";
+import { Project } from "./classes/Project";
+
+const projectsManager = new ProjectsManager();
 
 const rootElement = document.getElementById("app") as HTMLDivElement;
 const appRoot = ReactDOM.createRoot(rootElement);
@@ -15,8 +19,14 @@ appRoot.render(
     <Router.BrowserRouter>
       <Sidebar />
       <Router.Routes>
-        <Router.Route path="/" element={<ProjectsPage />} />
-        <Router.Route path="/project/:id" element={<ProjectDetailsPage />} />
+        <Router.Route
+          path="/"
+          element={<ProjectsPage projectsManager={projectsManager} />}
+        />
+        <Router.Route
+          path="/project/:id"
+          element={<ProjectDetailsPage projectsManager={projectsManager} />}
+        />
         <Router.Route path="/users" element={<UserPage />} />
       </Router.Routes>
     </Router.BrowserRouter>
@@ -75,17 +85,17 @@ function showPage(pageId: string) {
 //   console.warn("Project button doesn't exist");
 // }
 
-if (createToDoBtn) {
-  createToDoBtn.addEventListener("click", () => {
-    if (createToDoError) {
-      createToDoError.style.display = "none";
-    }
-    const createTodoModal = new ModalManager();
-    createTodoModal.showModal("create-todo-modal", 1);
-  });
-} else {
-  console.warn("ToDo button doesn't exist");
-}
+// if (createToDoBtn) {
+//   createToDoBtn.addEventListener("click", () => {
+//     if (createToDoError) {
+//       createToDoError.style.display = "none";
+//     }
+//     const createTodoModal = new ModalManager();
+//     createTodoModal.showModal("create-todo-modal", 1);
+//   });
+// } else {
+//   console.warn("ToDo button doesn't exist");
+// }
 
 // Search
 // const searchInput = document.querySelector(

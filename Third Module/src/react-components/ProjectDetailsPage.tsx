@@ -1,6 +1,21 @@
 import * as React from "react";
+import * as Router from "react-router-dom";
+import { ProjectsManager } from "../classes/ProjectsManager";
+import { Project } from "../classes/Project";
+import { ToDoCard } from "./ToDoCard";
 
-export function ProjectDetailsPage() {
+interface Props {
+  projectsManager: ProjectsManager;
+}
+
+export function ProjectDetailsPage(props: Props) {
+  const routeParams = Router.useParams<{ id: string }>();
+  if (!routeParams.id)
+    return <>{console.log("Project not found", routeParams.id)}</>;
+  const project = props.projectsManager.getProject(routeParams.id);
+  if (!(project && project instanceof Project)) {
+    return <>{console.log("Project not found in the list", routeParams.id)}</>;
+  }
   return (
     <div className="page" id="project-details">
       <dialog id="update-project-modal">
@@ -186,7 +201,7 @@ export function ProjectDetailsPage() {
               </div>
             </div>
             <div id="task-container" className="task-container">
-              {" "}
+              {<ToDoCard />}
             </div>
           </div>
           <dialog id="create-todo-modal">

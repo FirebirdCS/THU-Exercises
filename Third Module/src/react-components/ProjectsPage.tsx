@@ -3,19 +3,22 @@ import { ModalManager } from "../utils/Utils";
 import { IProject, Project, projectStatus, userRole } from "../classes/Project";
 import { ProjectsManager } from "../classes/ProjectsManager";
 import { ProjectCard } from "./ProjectCard";
+import * as Router from "react-router-dom";
 
-export function ProjectsPage() {
-  const [projectsManager] = React.useState(new ProjectsManager());
+interface Props {
+  projectsManager: ProjectsManager;
+}
 
+export function ProjectsPage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
-    projectsManager.list
+    props.projectsManager.list
   );
 
-  projectsManager.onProjectCreated = () => {
-    setProjects([...projectsManager.list]);
+  props.projectsManager.onProjectCreated = () => {
+    setProjects([...props.projectsManager.list]);
   };
-  projectsManager.onProjectDeleted = () => {
-    setProjects([...projectsManager.list]);
+  props.projectsManager.onProjectDeleted = () => {
+    setProjects([...props.projectsManager.list]);
   };
 
   React.useEffect(() => {
@@ -23,7 +26,11 @@ export function ProjectsPage() {
   }, [projects]);
 
   const projectCards = projects.map((project) => {
-    return <ProjectCard project={project} key={project.id} />;
+    return (
+      <Router.Link to={`/project/${project.id}`} key={project.id}>
+        <ProjectCard project={project} />
+      </Router.Link>
+    );
   });
 
   // Open new modal logic
@@ -60,7 +67,7 @@ export function ProjectsPage() {
       todoList: [],
     };
     try {
-      const project = projectsManager.newProject(projectData);
+      const project = props.projectsManager.newProject(projectData);
       tip.style.display = "grid";
       error.style.display = "none";
       console.log(project);
@@ -94,11 +101,11 @@ export function ProjectsPage() {
 
   // Import & Export Logic
   const onExportProject = () => {
-    projectsManager.exportToJSON();
+    props.projectsManager.exportToJSON();
   };
 
   const onImportProject = () => {
-    projectsManager.importFromJSON();
+    props.projectsManager.importFromJSON();
   };
 
   return (
