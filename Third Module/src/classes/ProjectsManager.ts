@@ -1,6 +1,6 @@
 import { ModalManager } from './../utils/Utils';
 import { IProject, Project } from "./Project"
-import { ITodo, ToDo, statusTask } from "./ToDo"
+import { ITodo, ToDo } from "./ToDo"
 import { formatShortDate} from '../utils/Utils';
 
 export class ProjectsManager {
@@ -124,9 +124,9 @@ export class ProjectsManager {
             todoToUpdate.description = updatedTodo.description;
             todoToUpdate.date = updatedTodo.date;
             todoToUpdate.statusToDo = updatedTodo.statusToDo;
-            const newUI = todoToUpdate.setUI();
+            // const newUI = todoToUpdate.setUI();
             this.addEditEventListener(todoToUpdate);
-            projectTodoCardsContainer.append(newUI);
+            // projectTodoCardsContainer.append(newUI);
         } else {
             console.error('ToDo not found for update');
         }
@@ -232,5 +232,4 @@ export class ProjectsManager {
         });
         input.click();
     }
-    
 }

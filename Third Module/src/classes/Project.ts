@@ -24,7 +24,7 @@ export class Project implements IProject {
   date: Date
   ui: HTMLDivElement
   cost: number = 0
-  progress: number = 0.6
+  progress: number = 0
   cardColor: string;
   todoList: ToDo[] = []
 

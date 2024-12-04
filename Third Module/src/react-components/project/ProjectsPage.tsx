@@ -1,7 +1,12 @@
 import * as React from "react";
-import { ModalManager } from "../utils/Utils";
-import { IProject, Project, projectStatus, userRole } from "../classes/Project";
-import { ProjectsManager } from "../classes/ProjectsManager";
+import { ModalManager } from "../../utils/Utils";
+import {
+  IProject,
+  Project,
+  projectStatus,
+  userRole,
+} from "../../classes/Project";
+import { ProjectsManager } from "../../classes/ProjectsManager";
 import { ProjectCard } from "./ProjectCard";
 import * as Router from "react-router-dom";
 

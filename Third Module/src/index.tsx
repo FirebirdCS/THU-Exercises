@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom/client";
 import * as Router from "react-router-dom";
-import { Sidebar } from "./react-components/Sidebar";
-import { ProjectsPage } from "./react-components/ProjectsPage";
+import { Sidebar } from "./react-components/ui/Sidebar";
+import { ProjectsPage } from "./react-components/project/ProjectsPage";
 import * as THREE from "three";
 import { ModalManager } from "./utils/Utils";
-import { ProjectDetailsPage } from "./react-components/ProjectDetailsPage";
-import { UserPage } from "./react-components/UserPage";
+import { ProjectDetailsPage } from "./react-components/project/ProjectDetailsPage";
+import { UserPage } from "./react-components/user/UserPage";
 import { ProjectsManager } from "./classes/ProjectsManager";
 import { Project } from "./classes/Project";
 

@@ -1,0 +1,221 @@
+import * as React from "react";
+import * as Router from "react-router-dom";
+import { ProjectsManager } from "../../classes/ProjectsManager";
+import { Project } from "../../classes/Project";
+import { ToDoPage } from "../todo/ToDoPage";
+import { formatShortDate, ModalManager } from "../../utils/Utils";
+
+interface Props {
+  projectsManager: ProjectsManager;
+}
+
+export function ProjectDetailsPage(props: Props) {
+  const routeParams = Router.useParams<{ id: string }>();
+  if (!routeParams.id)
+    return <>{console.log("Project not found", routeParams.id)}</>;
+  const project = props.projectsManager.getProject(routeParams.id);
+  if (!(project && project instanceof Project)) {
+    return <>{console.log("Project not found in the list", routeParams.id)}</>;
+  }
+  const parsedDate = new Date(project.date);
+  const formattedDate = formatShortDate(parsedDate);
+
+  const onUpdateProjectClick = () => {
+    const error = document.getElementById("nameError") as HTMLElement;
+    const error2 = document.getElementById("nameError2") as HTMLElement;
+    if (error) {
+      error.style.display = "none";
+      error2.style.display = "none";
+    }
+    const createProjectModal = new ModalManager();
+    createProjectModal.showModal("update-project-modal", 1);
+  };
+
+  const onCloseModal = () => {
+    const projectForm = document.getElementById(
+      "update-project-form"
+    ) as HTMLFormElement;
+    projectForm.reset();
+    const closeProjectModal = new ModalManager();
+    closeProjectModal.showModal("update-project-modal", 0);
+  };
+
+  return (
+    <div className="page" id="project-details">
+      <dialog id="update-project-modal">
+        <form id="update-project-form">
+          <h2>Edit project</h2>
+          <div className="input-list">
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">apartment</span>Name
+              </label>
+              <input name="name" type="text" />
+              <p
+                id="tip"
+                style={{ color: "#5d616f", fontStyle: "italic", marginTop: 5 }}
+              >
+                TIP: Give it a short name
+              </p>
+              <p
+                id="updateNameError"
+                style={{ color: "red", marginTop: 5, display: "none" }}
+              />
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">notes</span>Description
+              </label>
+              <textarea
+                name="description"
+                cols={30}
+                rows={5}
+                placeholder="Give your description"
+                defaultValue={""}
+              />
+              <p
+                id="updateNameError2"
+                style={{ color: "red", marginTop: 5, display: "none" }}
+              />
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">account_circle</span>Role
+              </label>
+              <select name="role">
+                <option>Architect</option>
+                <option>Engineer</option>
+                <option>Developer</option>
+              </select>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">help</span>Status
+              </label>
+              <select name="status">
+                <option>Pending</option>
+                <option>Active</option>
+                <option>Finished</option>
+              </select>
+            </div>
+            <div className="form-field-container">
+              <label>
+                <span className="material-icons-round">calendar_month</span>
+                Finish date
+              </label>
+              <input name="date" type="date" />
+            </div>
+          </div>
+          <div className="modals-buttons">
+            <button
+              onClick={onCloseModal}
+              id="close-edit-modal"
+              type="button"
+              value="cancel"
+              className="cancel-button"
+            >
+              Cancel
+            </button>
+            <button type="submit" className="update-button">
+              Update
+            </button>
+          </div>
+        </form>
+      </dialog>
+      <header>
+        <div>
+          <h2 data-project-info="name">{project.name}</h2>
+          <p data-project-info="description" style={{ color: "#969696" }}>
+            {project.description}
+          </p>
+        </div>
+      </header>
+      <div className="main-page-content">
+        <div className="details-column">
+          <div className="dashboard-card" style={{ padding: "30px 0" }}>
+            <div className="details-header">
+              <p
+                data-project-info="icon"
+                style={{
+                  fontSize: 20,
+                  backgroundColor: "#ca8134",
+                  aspectRatio: 1,
+                  borderRadius: "100%",
+                  padding: 12,
+                }}
+              >
+                HC
+              </p>
+              <button
+                onClick={onUpdateProjectClick}
+                id="edit-btn"
+                className="edit-button"
+              >
+                <p style={{ width: "100%" }}>Edit</p>
+              </button>
+            </div>
+            <div style={{ padding: "0 30px" }}>
+              <div>
+                <h5 data-project-info="name">{project.name}</h5>
+                <p data-project-info="description">{project.description}</p>
+              </div>
+              <div className="details-info">
+                <div>
+                  <p style={{ color: "#969696", fontSize: "var(--font-sm)" }}>
+                    Status
+                  </p>
+                  <p data-project-info="status">{project.status}</p>
+                </div>
+                <div>
+                  <p style={{ color: "#969696", fontSize: "var(--font-sm)" }}>
+                    Cost
+                  </p>
+                  <p data-project-info="cost">{project.cost}</p>
+                </div>
+                <div>
+                  <p style={{ color: "#969696", fontSize: "var(--font-sm)" }}>
+                    Role
+                  </p>
+                  <p data-project-info="role">{project.role}</p>
+                </div>
+                <div>
+                  <p style={{ color: "#969696", fontSize: "var(--font-sm)" }}>
+                    Finish Date
+                  </p>
+                  <p data-project-info="date">{formattedDate}</p>
+                </div>
+              </div>
+              <div
+                style={{
+                  backgroundColor: "#404040",
+                  borderRadius: 9999,
+                  overflow: "auto",
+                }}
+              >
+                <div
+                  data-project-info="progress"
+                  style={{
+                    width: `${project.progress * 100}%`,
+                    backgroundColor: "green",
+                    padding: "4px 0",
+                    textAlign: "center",
+                  }}
+                >
+                  {project.progress * 100}%
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="dashboard-card" style={{ flexGrow: "1" }}>
+            {<ToDoPage />}
+          </div>
+        </div>
+        <div
+          id="viewer-container"
+          className="dashboard-card"
+          style={{ minWidth: 0, minHeight: 0 }}
+        />
+      </div>
+    </div>
+  );
+}

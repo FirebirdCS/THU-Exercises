@@ -1,8 +1,23 @@
 import * as React from "react";
+import { ToDo } from "../../classes/ToDo";
+
+interface Props {
+  todo: ToDo;
+}
 
 export function ToDoCard() {
+  //   if (this.statusToDo === "important") {
+  //     this.symbol = "warning";
+  //     this.colorStatus = "#cf0e28";
+  //   } else if (this.statusToDo === "completed") {
+  //     this.symbol = "done";
+  //     this.colorStatus = "#0ec70e";
+  //   } else if (this.statusToDo === "on-going") {
+  //     this.symbol = "grade";
+  //     this.colorStatus = "#2b69b5";
+  //   }
   return (
-    <>
+    <div id="task-container" className="task-container">
       <div style={{ backgroundColor: "#2b69b5" }} className="task-item">
         {/* Background color above for the status of the task */}
         <div
@@ -36,6 +51,6 @@ export function ToDoCard() {
           </span>
         </div>
       </div>
-    </>
+    </div>
   );
 }
