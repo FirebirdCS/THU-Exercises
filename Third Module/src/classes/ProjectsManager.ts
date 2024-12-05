@@ -5,11 +5,18 @@ import { formatShortDate} from '../utils/Utils';
 
 export class ProjectsManager {
     list: Project[] = []
+    todoList: ToDo[] = []
     oldProject: Project
     oldTodo: ToDo
     onProjectCreated = (project: Project) => {
 
     }
+
+    onToDoCreated = (todo: ToDo) => {
+
+    }
+
+
     onProjectDeleted = () => {
 
     }
@@ -44,9 +51,17 @@ export class ProjectsManager {
         }
 
         const project = new Project(data)
+        this.oldProject = project
         this.list.push(project)
         this.onProjectCreated(project)
         return project
+    }
+
+    filterProjects(value: string){
+        const filteredProjects = this.list.filter((project) => {
+            return project.name.includes(value.toLowerCase());
+        });
+        return filteredProjects
     }
 
     getProject(id: string) {
@@ -54,6 +69,13 @@ export class ProjectsManager {
             return project.id === id
         })
         return project
+    }
+
+    getToDo(id: string){
+        const todo = this.todoList.find((todo) => {
+            return todo.id === id
+        })
+        return todo
     }
 
     getProjectByName(name: string) {
@@ -91,25 +113,9 @@ export class ProjectsManager {
         }
         const todoNew = new ToDo(data);
         this.oldProject.todoList.push(todoNew);;
-        const editBtn = todoNew.uiTodo.querySelector(`[id=editIcon]`) as HTMLElement;
-        editBtn.addEventListener('click', () => {
-            const updateModal = new ModalManager();
-            const updateForm = document.getElementById('edit-todo-form') as HTMLFormElement;
-            const idForm = updateForm.querySelector(`[name=idToDo]`) as HTMLInputElement
-            const descriptionForm = updateForm.querySelector(`[name=description]`) as HTMLTextAreaElement
-            const dateForm = updateForm.querySelector(`[name=date]`) as HTMLInputElement
-            const statusForm = updateForm.querySelector(`[name=statusToDo]`) as HTMLSelectElement
-            if (updateForm && updateModal) {
-                idForm.value = todoNew.id; // Populate the input element
-                descriptionForm.value = todoNew.description;
-                dateForm.value = todoNew.date.toISOString().slice(0, 10); // Way to format the date to put it into the date input
-                statusForm.value = todoNew.statusToDo;
-                this.oldTodo = todoNew;
-                updateModal.showModal('edit-todo-modal', 1);
-            }
-        });
-        const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
-        projectTodoCardsContainer.append(todoNew.uiTodo);
+        this.todoList.push(todoNew)
+        this.onToDoCreated(todoNew)
+        return todoNew
     }
     
     // Update toDo - done

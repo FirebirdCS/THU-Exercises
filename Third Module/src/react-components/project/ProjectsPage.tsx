@@ -8,6 +8,7 @@ import {
 } from "../../classes/Project";
 import { ProjectsManager } from "../../classes/ProjectsManager";
 import { ProjectCard } from "./ProjectCard";
+import { SearchProjectbox } from "../ui/SearchProjectBox";
 import * as Router from "react-router-dom";
 
 interface Props {
@@ -25,10 +26,6 @@ export function ProjectsPage(props: Props) {
   props.projectsManager.onProjectDeleted = () => {
     setProjects([...props.projectsManager.list]);
   };
-
-  React.useEffect(() => {
-    console.log("Project state updated", projects);
-  }, [projects]);
 
   const projectCards = projects.map((project) => {
     return (
@@ -75,7 +72,6 @@ export function ProjectsPage(props: Props) {
       const project = props.projectsManager.newProject(projectData);
       tip.style.display = "grid";
       error.style.display = "none";
-      console.log(project);
       projectForm.reset();
       const projectBtn = new ModalManager();
       projectBtn.showModal("new-project-modal", 0);
@@ -111,6 +107,10 @@ export function ProjectsPage(props: Props) {
 
   const onImportProject = () => {
     props.projectsManager.importFromJSON();
+  };
+
+  const onProjectSearch = (value: string) => {
+    setProjects(props.projectsManager.filterProjects(value));
   };
 
   return (
@@ -197,6 +197,11 @@ export function ProjectsPage(props: Props) {
       </dialog>
       <header>
         <h2>Project List</h2>
+        <SearchProjectbox
+          onChange={(value) => {
+            onProjectSearch(value);
+          }}
+        />
         <div style={{ display: "flex", alignItems: "center", columnGap: 15 }}>
           <span
             onClick={onImportProject}
@@ -223,7 +228,21 @@ export function ProjectsPage(props: Props) {
           </button>
         </div>
       </header>
-      <div id="projects-lists">{projectCards}</div>
+      {projects.length > 0 ? (
+        <div id="projects-lists">{projectCards}</div>
+      ) : (
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: "50px",
+            color: "#FF6347",
+            fontSize: "18px",
+            fontWeight: "bold",
+          }}
+        >
+          🚫 No projects found! Please try a different search.
+        </div>
+      )}
     </div>
   );
 }

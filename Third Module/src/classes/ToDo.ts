@@ -24,5 +24,15 @@ export class ToDo implements ITodo{
       for (const key in data) {
         this[key] = data[key]
       }
+      if (this.statusToDo === "important") {
+        this.symbol = 'warning'
+        this.colorStatus = "#cf0e28";
+      } else if (this.statusToDo === "completed") {
+        this.symbol = "done";
+        this.colorStatus = "#0ec70e";
+      } else if (this.statusToDo === "on-going") {
+        this.symbol = "grade";
+        this.colorStatus = "#2b69b5";
+      }
     }
 }

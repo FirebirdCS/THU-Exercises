@@ -1,8 +1,26 @@
 import * as React from "react";
 import { ModalManager } from "../../utils/Utils";
 import { ToDoCard } from "./ToDoCard";
+import { ITodo, statusTask, ToDo } from "../../classes/ToDo";
+import { ProjectsManager } from "../../classes/ProjectsManager";
 
-export function ToDoPage() {
+interface Props {
+  projectsManager: ProjectsManager;
+}
+
+export function ToDoPage(props: Props) {
+  const [toDos, setToDos] = React.useState<ToDo[]>(
+    props.projectsManager.todoList
+  );
+
+  props.projectsManager.onProjectCreated = () => {
+    setToDos([...props.projectsManager.todoList]);
+  };
+
+  const toDoCards = toDos.map((todo) => {
+    return <ToDoCard todo={todo} key={todo.id} />;
+  });
+
   const onNewToDoClick = () => {
     const error = document.getElementById(
       "createDescriptionError"
@@ -21,6 +39,31 @@ export function ToDoPage() {
     toDoForm.reset();
     const closeToDoModal = new ModalManager();
     closeToDoModal.showModal("create-todo-modal", 0);
+  };
+
+  const onFormSubmit = (event: React.FormEvent) => {
+    const toDoForm = document.getElementById(
+      "create-todo-form"
+    ) as HTMLFormElement;
+    if (toDoForm && toDoForm instanceof HTMLFormElement) {
+      const formData = new FormData(toDoForm);
+      event.preventDefault();
+      const todoData: ITodo = {
+        description: formData.get("description") as string,
+        date: new Date((formData.get("date") as string) || new Date()),
+        statusToDo: formData.get("statusToDo") as statusTask,
+      };
+      try {
+        props.projectsManager.newTodo(todoData);
+        console.log("Todo made", todoData);
+        toDoForm.reset();
+        const toDoBtn = new ModalManager();
+        toDoBtn.showModal("create-todo-modal", 0);
+      } catch (e) {
+        if (e.message.includes("description")) {
+        }
+      }
+    }
   };
 
   return (
@@ -46,7 +89,9 @@ export function ToDoPage() {
           </span>
         </div>
       </div>
-      <ToDoCard />
+      <div id="task-container" className="task-container">
+        {toDoCards}
+      </div>
       <dialog id="edit-todo-modal">
         <form id="edit-todo-form">
           <h2>Edit a toDo</h2>
@@ -108,7 +153,7 @@ export function ToDoPage() {
         </form>
       </dialog>
       <dialog id="create-todo-modal">
-        <form id="create-todo-form">
+        <form onSubmit={(e) => onFormSubmit(e)} id="create-todo-form">
           <h2>Create a toDo</h2>
           <div className="input-list">
             <div className="form-field-container">

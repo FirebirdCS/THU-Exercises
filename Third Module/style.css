@@ -359,6 +359,7 @@ input:focus, textarea:focus, select:focus{
     row-gap: 20px;
     overflow-y: auto;
     flex-grow: 1;
+    max-height: 300px;
 }
 
 .hide{

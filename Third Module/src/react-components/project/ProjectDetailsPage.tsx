@@ -20,6 +20,8 @@ export function ProjectDetailsPage(props: Props) {
   const parsedDate = new Date(project.date);
   const formattedDate = formatShortDate(parsedDate);
 
+  const iconTitle = project.name.substring(0, 2).toUpperCase();
+
   const onUpdateProjectClick = () => {
     const error = document.getElementById("nameError") as HTMLElement;
     const error2 = document.getElementById("nameError2") as HTMLElement;
@@ -138,13 +140,13 @@ export function ProjectDetailsPage(props: Props) {
                 data-project-info="icon"
                 style={{
                   fontSize: 20,
-                  backgroundColor: "#ca8134",
+                  backgroundColor: `${project.cardColor}`,
                   aspectRatio: 1,
                   borderRadius: "100%",
                   padding: 12,
                 }}
               >
-                HC
+                {iconTitle}
               </p>
               <button
                 onClick={onUpdateProjectClick}
@@ -207,7 +209,7 @@ export function ProjectDetailsPage(props: Props) {
             </div>
           </div>
           <div className="dashboard-card" style={{ flexGrow: "1" }}>
-            {<ToDoPage />}
+            <ToDoPage projectsManager={props.projectsManager} />
           </div>
         </div>
         <div
