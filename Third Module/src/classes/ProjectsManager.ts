@@ -57,12 +57,14 @@ export class ProjectsManager {
         return project
     }
 
+
     filterProjects(value: string){
         const filteredProjects = this.list.filter((project) => {
             return project.name.includes(value.toLowerCase());
         });
         return filteredProjects
     }
+
 
     getProject(id: string) {
         const project = this.list.find((project) => {
@@ -106,17 +108,30 @@ export class ProjectsManager {
         const project = this.newProject(data)
     }
 
-    
-    newTodo(data: ITodo) {
-        if (!data.description) {
-            throw new Error(`The description should not be empty!`);
+    // Gets the task id and verify it belongs to the project
+
+    getProjectIdForToDo(todoId: string) {
+        for (const project of this.list) {
+          if (project.todoList.some((todo) => todo.id === todoId)) {
+            return project.id;
+          }
         }
-        const todoNew = new ToDo(data);
-        this.oldProject.todoList.push(todoNew);;
-        this.todoList.push(todoNew)
-        this.onToDoCreated(todoNew)
-        return todoNew
+        return "";
+      }
+
+      // newTodo updated, added projectId to verify it makes the task in the right project
+
+    newTodo(projectId: string, todoData: ITodo) {
+        const project = this.list.find((proj) => proj.id === projectId);
+        if (!project) {
+            throw new Error("Project not found");
+        }
+        const todoNew = new ToDo(todoData);
+        project.todoList.push(todoNew);
+        this.onToDoCreated(todoNew);
+        return todoNew;
     }
+
     
     // Update toDo - done
     updateTodo(todoId: string, updatedTodo: ITodo) {
@@ -210,6 +225,7 @@ export class ProjectsManager {
                 const nameInUse = new Array();
                 for (const projectData of projects) {
                     const todoList = projectData.todoList;
+                    console.log(todoList)
                     projectData.todoList = [];
                     try {
                         this.oldProject = this.newProject(projectData);
@@ -220,7 +236,7 @@ export class ProjectsManager {
                             if (typeof todo.date === 'string') {
                                 todo.date = new Date(todo.date); // Parse the todo date into a date object
                             }
-                            this.newTodo(todo); // Create the imported todo
+                            this.newTodo(this.oldProject.id, todo); // Create the imported todo
                         }
                     } catch (e) {
                         this.oldProject = this.updateProjectWhenImport(projectData);
@@ -228,7 +244,7 @@ export class ProjectsManager {
                             if (typeof todo.date === 'string') {
                                 todo.date = new Date(todo.date);
                             }
-                            this.newTodo(todo); // Create the imported todo
+                            this.newTodo(this.oldProject.id, todo); // Create the imported todo
                         }
                         nameInUse.push(projectData.name);
                     }

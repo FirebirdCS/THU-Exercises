@@ -4,6 +4,7 @@ import { ProjectsManager } from "../../classes/ProjectsManager";
 import { Project } from "../../classes/Project";
 import { ToDoPage } from "../todo/ToDoPage";
 import { formatShortDate, ModalManager } from "../../utils/Utils";
+import { ThreeViewer } from "../three/ThreeViewer";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -209,14 +210,14 @@ export function ProjectDetailsPage(props: Props) {
             </div>
           </div>
           <div className="dashboard-card" style={{ flexGrow: "1" }}>
-            <ToDoPage projectsManager={props.projectsManager} />
+            {/* projectId as an parameter  */}
+            <ToDoPage
+              projectsManager={props.projectsManager}
+              projectId={project.id}
+            />
           </div>
         </div>
-        <div
-          id="viewer-container"
-          className="dashboard-card"
-          style={{ minWidth: 0, minHeight: 0 }}
-        />
+        <ThreeViewer />
       </div>
     </div>
   );

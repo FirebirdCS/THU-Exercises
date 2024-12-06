@@ -6,20 +6,23 @@ import { ProjectsManager } from "../../classes/ProjectsManager";
 
 interface Props {
   projectsManager: ProjectsManager;
+  projectId: string;
 }
 
 export function ToDoPage(props: Props) {
-  const [toDos, setToDos] = React.useState<ToDo[]>(
-    props.projectsManager.todoList
-  );
+  const [toDos, setToDos] = React.useState<ToDo[]>([]);
 
-  props.projectsManager.onProjectCreated = () => {
-    setToDos([...props.projectsManager.todoList]);
-  };
+  // Render tasks
+  React.useEffect(() => {
+    const currentProject = props.projectsManager.list.find(
+      (project) => project.id === props.projectId
+    );
+    if (currentProject) {
+      setToDos([...currentProject.todoList]);
+    }
+  }, [props.projectId, props.projectsManager.list]);
 
-  const toDoCards = toDos.map((todo) => {
-    return <ToDoCard todo={todo} key={todo.id} />;
-  });
+  const toDoCards = toDos.map((todo) => <ToDoCard todo={todo} key={todo.id} />);
 
   const onNewToDoClick = () => {
     const error = document.getElementById(
@@ -54,14 +57,19 @@ export function ToDoPage(props: Props) {
         statusToDo: formData.get("statusToDo") as statusTask,
       };
       try {
-        props.projectsManager.newTodo(todoData);
-        console.log("Todo made", todoData);
+        // Add task to the current project
+        props.projectsManager.newTodo(props.projectId, todoData);
+        const currentProject = props.projectsManager.list.find(
+          (project) => project.id === props.projectId
+        );
+        if (currentProject) {
+          setToDos([...currentProject.todoList]);
+        }
         toDoForm.reset();
         const toDoBtn = new ModalManager();
         toDoBtn.showModal("create-todo-modal", 0);
       } catch (e) {
-        if (e.message.includes("description")) {
-        }
+        console.error(e.message);
       }
     }
   };

@@ -15,7 +15,6 @@ export function ToDoCard(props: Props) {
       style={{ backgroundColor: props.todo.colorStatus }}
       className="task-item"
     >
-      {/* Background color above for the status of the task */}
       <div
         style={{
           display: "flex",
@@ -29,14 +28,11 @@ export function ToDoCard(props: Props) {
             style={{ padding: 10, borderRadius: 10 }}
           >
             {props.todo.symbol}
-            {/* Symbol */}
           </span>
-          {/* Description of the task  */}
           <p className="description" style={{ wordWrap: "break-word" }}>
             {props.todo.description}
           </p>
         </div>
-        {/* Formatted date */}
         <p style={{ textWrap: "nowrap", marginLeft: 10 }}> {formattedDate}</p>
         <span
           id="editIcon"

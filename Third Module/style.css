@@ -352,15 +352,16 @@ input:focus, textarea:focus, select:focus{
     column-gap: 10px;
 }
 
-.task-container{
+.task-container {
     display: flex; 
     flex-direction: column; 
     padding: 10px 30px; 
     row-gap: 20px;
-    overflow-y: auto;
+    overflow-y: auto; 
     flex-grow: 1;
-    max-height: 300px;
+    height: 400px; 
 }
+
 
 .hide{
     display: none;
