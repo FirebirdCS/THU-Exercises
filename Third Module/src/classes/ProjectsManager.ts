@@ -102,11 +102,22 @@ export class ProjectsManager {
         this.onProjectDeleted()
     }
 
-    updateProject (data:IProject) {
-        data.todoList = this.oldProject.todoList
-        this.deleteProject(this.oldProject.id)
-        const project = this.newProject(data)
+    updateProject(projectId: string, data: IProject) {
+        // Find the existing project by its ID
+        const existingProject = this.list.find((project) => project.id === projectId);
+        if (existingProject) {
+            existingProject.name = data.name;
+            existingProject.description = data.description;
+            existingProject.status = data.status;
+            existingProject.role = data.role;
+            existingProject.date = data.date;
+            data.todoList = this.oldProject.todoList; 
+            this.onProjectCreated(existingProject); 
+        } else {
+            console.error(`Project with ID ${projectId} not found for update`);
+        }
     }
+    
 
     // Gets the task id and verify it belongs to the project
 
@@ -222,31 +233,50 @@ export class ProjectsManager {
                 const json = reader.result;
                 if (!json) { return; }
                 const projects: IProject[] = JSON.parse(json as string);
-                const nameInUse = new Array();
+                const nameInUse = new Set<string>();  
                 for (const projectData of projects) {
                     const todoList = projectData.todoList;
-                    console.log(todoList)
                     projectData.todoList = [];
-                    try {
-                        this.oldProject = this.newProject(projectData);
-                        if (typeof projectData.date === 'string') { // Parse the date into a date object
-                            projectData.date = new Date(projectData.date);
-                        }
-                        for (const todo of todoList) {
-                            if (typeof todo.date === 'string') {
-                                todo.date = new Date(todo.date); // Parse the todo date into a date object
-                            }
-                            this.newTodo(this.oldProject.id, todo); // Create the imported todo
-                        }
-                    } catch (e) {
-                        this.oldProject = this.updateProjectWhenImport(projectData);
+                    let existingProject = this.list.find(project => project.name === projectData.name);
+                    // If project does exist, update their toDo content
+                    if (existingProject) {
                         for (const todo of todoList) {
                             if (typeof todo.date === 'string') {
                                 todo.date = new Date(todo.date);
                             }
-                            this.newTodo(this.oldProject.id, todo); // Create the imported todo
+                            // Only add a toDo if it doesnt exists & the toDo description doesnt exist (experimental)
+                            if (!existingProject.todoList.some(existingTodo => existingTodo.id === todo.id) && !existingProject.todoList.some(existingTodo => existingTodo.description === todo.description)) {
+                                this.newTodo(existingProject.id, todo); 
+                            }
                         }
-                        nameInUse.push(projectData.name);
+                    } else {
+                        // If project does not exist, create it
+                        try {
+                            this.oldProject = this.newProject(projectData);
+                            if (typeof projectData.date === 'string') {
+                                projectData.date = new Date(projectData.date); // Parse the date into a date object
+                            }
+                            // Add todos only if they are not already in the project's todoList
+                            for (const todo of todoList) {
+                                if (typeof todo.date === 'string') {
+                                    todo.date = new Date(todo.date); // Parse the todo date into a date object
+                                }
+                                // Check if this todo already exists in the project's todoList && the toDo description exists (experimental)
+                                if (!this.oldProject.todoList.some(existingTodo => existingTodo.id === todo.id) && !this.oldProject.todoList.some(existingTodo => existingTodo.description === todo.description) ) {
+                                    this.newTodo(this.oldProject.id, todo); // Add the new todo
+                                }
+                            }
+                        } catch (e) {
+                            console.error("Error while importing project", e);
+                            this.oldProject = this.updateProjectWhenImport(projectData);
+                            for (const todo of todoList) {
+                                if (typeof todo.date === 'string') {
+                                    todo.date = new Date(todo.date);
+                                }
+                                this.newTodo(this.oldProject.id, todo); // Create the imported todo
+                            }
+                            nameInUse.add(projectData.name);
+                        }
                     }
                 }
             });
@@ -254,4 +284,5 @@ export class ProjectsManager {
         });
         input.click();
     }
+    
 }

@@ -353,14 +353,27 @@ input:focus, textarea:focus, select:focus{
 }
 
 .task-container {
-    display: flex; 
-    flex-direction: column; 
-    padding: 10px 30px; 
+    display: flex;
+    flex-direction: column;
+    padding: 10px 30px;
     row-gap: 20px;
-    overflow-y: auto; 
+    overflow-y: auto;
     flex-grow: 1;
-    height: 400px; 
+    height: 300px; 
 }
+
+@media (max-width: 768px) {
+    .task-container {
+        height: 60vh; /* More height for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .task-container {
+        height: 70vh; /* More height for very small screens */
+    }
+}
+
 
 
 .hide{

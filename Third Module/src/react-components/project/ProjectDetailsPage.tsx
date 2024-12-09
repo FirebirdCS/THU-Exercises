@@ -1,7 +1,12 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
 import { ProjectsManager } from "../../classes/ProjectsManager";
-import { Project } from "../../classes/Project";
+import {
+  IProject,
+  Project,
+  projectStatus,
+  userRole,
+} from "../../classes/Project";
 import { ToDoPage } from "../todo/ToDoPage";
 import { formatShortDate, ModalManager } from "../../utils/Utils";
 import { ThreeViewer } from "../three/ThreeViewer";
@@ -12,6 +17,21 @@ interface Props {
 
 export function ProjectDetailsPage(props: Props) {
   const routeParams = Router.useParams<{ id: string }>();
+  const [projectDetails, setProjectDetails] = React.useState<IProject | null>(
+    null
+  );
+
+  React.useEffect(() => {
+    if (routeParams.id) {
+      const currentProject = props.projectsManager.getProject(routeParams.id);
+      if (currentProject && currentProject instanceof Project) {
+        setProjectDetails(currentProject);
+      } else {
+        console.log("Project not found", routeParams.id);
+      }
+    }
+  }, [routeParams.id, props.projectsManager]);
+
   if (!routeParams.id)
     return <>{console.log("Project not found", routeParams.id)}</>;
   const project = props.projectsManager.getProject(routeParams.id);
@@ -43,10 +63,42 @@ export function ProjectDetailsPage(props: Props) {
     closeProjectModal.showModal("update-project-modal", 0);
   };
 
+  const onFormSubmit = (event: React.FormEvent) => {
+    const updateForm = document.getElementById(
+      "update-project-form"
+    ) as HTMLFormElement;
+    if (!(updateForm && updateForm instanceof HTMLFormElement)) {
+      return;
+    }
+    event.preventDefault();
+    const formData = new FormData(updateForm);
+    const projectData: IProject = {
+      name: formData.get("name") as string,
+      description: formData.get("description") as string,
+      status: formData.get("status") as projectStatus,
+      role: formData.get("role") as userRole,
+      date: new Date((formData.get("date") as string) || new Date()),
+      todoList: [],
+    };
+    if (routeParams.id) {
+      try {
+        props.projectsManager.updateProject(routeParams.id, projectData);
+        setProjectDetails(projectData);
+        updateForm.reset();
+        const updateBtn = new ModalManager();
+        updateBtn.showModal("update-project-modal", 0);
+      } catch (e) {
+        console.log(e);
+      }
+    } else {
+      console.error("Project ID not found in URL.");
+    }
+  };
+
   return (
     <div className="page" id="project-details">
       <dialog id="update-project-modal">
-        <form id="update-project-form">
+        <form onSubmit={(e) => onFormSubmit(e)} id="update-project-form">
           <h2>Edit project</h2>
           <div className="input-list">
             <div className="form-field-container">

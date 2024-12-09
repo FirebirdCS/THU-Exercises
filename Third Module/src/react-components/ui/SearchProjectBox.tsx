@@ -14,6 +14,7 @@ export function SearchProjectbox(props: Props) {
         width: "40%",
       }}
     >
+      <span className="material-icons-round">search</span>
       <input
         onChange={(e) => {
           props.onChange(e.target.value.toLowerCase());
