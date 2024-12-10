@@ -22,11 +22,20 @@ export function ToDoPage(props: Props) {
     }
   }, [props.projectId, props.projectsManager.list]);
 
+  const updateToDo = (updatedToDo: ToDo) => {
+    setToDos((prevToDos) =>
+      prevToDos.map((todo) =>
+        todo.id === updatedToDo.id ? { ...updatedToDo } : todo
+      )
+    );
+  };
+
   const toDoCards = toDos.map((todo) => (
     <ToDoCard
       projectsManager={props.projectsManager}
       todo={todo}
       key={todo.id}
+      onUpdate={updateToDo}
     />
   ));
 
@@ -54,6 +63,9 @@ export function ToDoPage(props: Props) {
     const toDoForm = document.getElementById(
       "create-todo-form"
     ) as HTMLFormElement;
+    const createToDoError = document.getElementById(
+      "createDescriptionError"
+    ) as HTMLElement;
     if (toDoForm && toDoForm instanceof HTMLFormElement) {
       const formData = new FormData(toDoForm);
       event.preventDefault();
@@ -75,7 +87,10 @@ export function ToDoPage(props: Props) {
         const toDoBtn = new ModalManager();
         toDoBtn.showModal("create-todo-modal", 0);
       } catch (e) {
-        console.error(e.message);
+        if (e.message.includes("description")) {
+          createToDoError.innerHTML = `${e}`;
+          createToDoError.style.display = "grid";
+        }
       }
     }
   };

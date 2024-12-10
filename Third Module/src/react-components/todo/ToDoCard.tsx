@@ -6,6 +6,7 @@ import { ProjectsManager } from "../../classes/ProjectsManager";
 interface Props {
   todo: ToDo;
   projectsManager: ProjectsManager;
+  onUpdate: (updatedToDo: ToDo) => void;
 }
 
 export function ToDoCard(props: Props) {
@@ -27,6 +28,9 @@ export function ToDoCard(props: Props) {
     const editToDoForm = document.getElementById(
       "edit-todo-form"
     ) as HTMLFormElement;
+    const updateDescriptionError = document.getElementById(
+      "updateDescriptionError"
+    ) as HTMLElement;
     if (editToDoForm && editToDoForm instanceof HTMLFormElement) {
       const formData = new FormData(editToDoForm);
       event.preventDefault();
@@ -38,14 +42,21 @@ export function ToDoCard(props: Props) {
       try {
         const todoId = formData.get("idToDo") as string;
         props.projectsManager.updateTodo(todoId, newData);
-        const updatedTodo = props.projectsManager.getToDo(todoId);
-        if (updatedTodo) {
-          setTodo(updatedTodo);
-        }
+        updateDescriptionError.style.display = "none";
         editToDoForm.reset();
         const updateToDo = new ModalManager();
         updateToDo.showModal("edit-todo-modal", 0);
-      } catch (e) {}
+        const updatedTodo = props.projectsManager.getToDo(todoId);
+        if (updatedTodo) {
+          setTodo(updatedTodo);
+          props.onUpdate(updatedTodo);
+        }
+      } catch (e) {
+        if (e.message.includes("description")) {
+          updateDescriptionError.innerHTML = `${e}`;
+          updateDescriptionError.style.display = "grid";
+        }
+      }
     }
   };
 
@@ -76,8 +87,6 @@ export function ToDoCard(props: Props) {
       if (dateInput) dateInput.value = formatShortDate(todo.date);
       if (statusSelect) statusSelect.value = todo.statusToDo;
     }
-
-    console.log(props.todo.id);
   };
 
   const onCloseModal = () => {

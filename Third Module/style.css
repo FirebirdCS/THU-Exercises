@@ -385,7 +385,7 @@ input:focus, textarea:focus, select:focus{
     background-color: var(--background-200);
     border-radius: 10px;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .task-item:hover{

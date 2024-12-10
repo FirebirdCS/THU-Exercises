@@ -44,11 +44,15 @@ export function ProjectDetailsPage(props: Props) {
   const iconTitle = project.name.substring(0, 2).toUpperCase();
 
   const onUpdateProjectClick = () => {
-    const error = document.getElementById("nameError") as HTMLElement;
-    const error2 = document.getElementById("nameError2") as HTMLElement;
-    if (error) {
-      error.style.display = "none";
-      error2.style.display = "none";
+    const updateError = document.getElementById(
+      "updateNameError"
+    ) as HTMLElement;
+    const updateError2 = document.getElementById(
+      "updateNameError2"
+    ) as HTMLElement;
+    if (updateError || updateError2) {
+      updateError.style.display = "none";
+      updateError2.style.display = "none";
     }
     const createProjectModal = new ModalManager();
     createProjectModal.showModal("update-project-modal", 1);
@@ -61,12 +65,29 @@ export function ProjectDetailsPage(props: Props) {
     projectForm.reset();
     const closeProjectModal = new ModalManager();
     closeProjectModal.showModal("update-project-modal", 0);
+    const updateError = document.getElementById(
+      "updateNameError"
+    ) as HTMLElement;
+    const updateError2 = document.getElementById(
+      "updateNameError2"
+    ) as HTMLElement;
+    if (updateError || updateError2) {
+      updateError.style.display = "none";
+      updateError2.style.display = "none";
+    }
   };
 
   const onFormSubmit = (event: React.FormEvent) => {
     const updateForm = document.getElementById(
       "update-project-form"
     ) as HTMLFormElement;
+    const updateError = document.getElementById(
+      "updateNameError"
+    ) as HTMLElement;
+    const updateError2 = document.getElementById(
+      "updateNameError2"
+    ) as HTMLElement;
+    const tip = document.getElementById("tip") as HTMLElement;
     if (!(updateForm && updateForm instanceof HTMLFormElement)) {
       return;
     }
@@ -83,12 +104,24 @@ export function ProjectDetailsPage(props: Props) {
     if (routeParams.id) {
       try {
         props.projectsManager.updateProject(routeParams.id, projectData);
+        tip.style.display = "grid";
+        updateError.style.display = "none";
         setProjectDetails(projectData);
         updateForm.reset();
         const updateBtn = new ModalManager();
         updateBtn.showModal("update-project-modal", 0);
       } catch (e) {
-        console.log(e);
+        if (e.message.includes("description")) {
+          updateError2.innerHTML = `${e}`;
+          updateError2.style.display = "grid";
+          tip.style.display = "none";
+          updateError.style.display = "none";
+        } else {
+          updateError.innerHTML = `${e}`;
+          tip.style.display = "none";
+          updateError.style.display = "grid";
+          updateError2.style.display = "none";
+        }
       }
     } else {
       console.error("Project ID not found in URL.");

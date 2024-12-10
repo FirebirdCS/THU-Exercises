@@ -20,10 +20,6 @@ export class ProjectsManager {
     onProjectDeleted = () => {
 
     }
-
-    onToDoUpdated = (todo: ToDo) => {
-        console.log("ToDo updated:", todo);
-    }
     
 
     constructor() {
@@ -108,6 +104,13 @@ export class ProjectsManager {
 
     updateProject(projectId: string, data: IProject) {
         // Find the existing project by its ID
+        if (data.name.length < 5) {
+            throw new Error(`The project name "${data.name}" should be at least 5 characters long`);
+        }
+
+        if(!data.description){
+            throw new Error(`There isn't a description for this project`);
+        }
         const existingProject = this.list.find((project) => project.id === projectId);
         if (existingProject) {
             existingProject.name = data.name;
@@ -137,12 +140,16 @@ export class ProjectsManager {
     // newTodo updated, added projectId to verify it makes the task in the right project
 
     newTodo(projectId: string, todoData: ITodo) {
+        if (!todoData.description) {
+            throw new Error(`The description should not be empty!`);
+        }
         const project = this.list.find((proj) => proj.id === projectId);
         if (!project) {
             throw new Error("Project not found");
         }
         const todoNew = new ToDo(todoData);
         project.todoList.push(todoNew);
+        this.todoList.push(todoNew); // Push the todoNew to the list of toDos
         this.onToDoCreated(todoNew);
         return todoNew;
     }
@@ -150,16 +157,16 @@ export class ProjectsManager {
     
     // Update toDo - done
     updateTodo(todoId: string, updatedTodo: ITodo) {
-        if (!updatedTodo.description) {
+          if (!updatedTodo.description) {
             throw new Error(`The description should not be empty!`);
           }
-        
-          const todoToUpdate = this.oldProject.todoList.find(todo => todo.id === todoId);
+          // Instead of searching in oldProject the toDo, search it in the todoList
+          // This fixes the problem while importing projects 
+          const todoToUpdate = this.todoList.find(todo => todo.id === todoId);
           if (todoToUpdate) {
             todoToUpdate.description = updatedTodo.description;
             todoToUpdate.date = updatedTodo.date;
             todoToUpdate.statusToDo = updatedTodo.statusToDo;
-        
             // Recalculate derived properties
             if (updatedTodo.statusToDo === "important") {
               todoToUpdate.symbol = "warning";
