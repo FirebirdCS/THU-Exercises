@@ -22,7 +22,13 @@ export function ToDoPage(props: Props) {
     }
   }, [props.projectId, props.projectsManager.list]);
 
-  const toDoCards = toDos.map((todo) => <ToDoCard todo={todo} key={todo.id} />);
+  const toDoCards = toDos.map((todo) => (
+    <ToDoCard
+      projectsManager={props.projectsManager}
+      todo={todo}
+      key={todo.id}
+    />
+  ));
 
   const onNewToDoClick = () => {
     const error = document.getElementById(
@@ -100,66 +106,6 @@ export function ToDoPage(props: Props) {
       <div id="task-container" className="task-container">
         {toDoCards}
       </div>
-      <dialog id="edit-todo-modal">
-        <form id="edit-todo-form">
-          <h2>Edit a toDo</h2>
-          <div className="input-list">
-            <input
-              readOnly
-              name="idToDo"
-              type="text"
-              style={{ display: "none" }}
-            />
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">notes</span>
-                Description
-              </label>
-              <textarea
-                name="description"
-                cols={30}
-                rows={5}
-                placeholder="Give the description of the task"
-                defaultValue={""}
-              />
-              <p
-                id="updateDescriptionError"
-                style={{ color: "red", marginTop: 5, display: "none" }}
-              />
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">calendar_month</span>
-                Finish date
-              </label>
-              <input name="date" type="date" />
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">help</span>Status
-              </label>
-              <select name="statusToDo">
-                <option>important</option>
-                <option>completed</option>
-                <option>on-going</option>
-              </select>
-            </div>
-          </div>
-          <div className="modals-buttons">
-            <button
-              id="close-editToDo-modal"
-              type="button"
-              value="cancel"
-              className="cancel-button"
-            >
-              Cancel
-            </button>
-            <button type="submit" className="update-button">
-              Update
-            </button>
-          </div>
-        </form>
-      </dialog>
       <dialog id="create-todo-modal">
         <form onSubmit={(e) => onFormSubmit(e)} id="create-todo-form">
           <h2>Create a toDo</h2>

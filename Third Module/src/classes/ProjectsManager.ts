@@ -20,6 +20,10 @@ export class ProjectsManager {
     onProjectDeleted = () => {
 
     }
+
+    onToDoUpdated = (todo: ToDo) => {
+        console.log("ToDo updated:", todo);
+    }
     
 
     constructor() {
@@ -130,7 +134,7 @@ export class ProjectsManager {
         return "";
       }
 
-      // newTodo updated, added projectId to verify it makes the task in the right project
+    // newTodo updated, added projectId to verify it makes the task in the right project
 
     newTodo(projectId: string, todoData: ITodo) {
         const project = this.list.find((proj) => proj.id === projectId);
@@ -148,56 +152,28 @@ export class ProjectsManager {
     updateTodo(todoId: string, updatedTodo: ITodo) {
         if (!updatedTodo.description) {
             throw new Error(`The description should not be empty!`);
-        }
-        const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
-        const todoToUpdate = this.oldProject.todoList.find(todo => todo.id === todoId);
-        if (todoToUpdate) {
-            projectTodoCardsContainer.removeChild(todoToUpdate.uiTodo);
+          }
+        
+          const todoToUpdate = this.oldProject.todoList.find(todo => todo.id === todoId);
+          if (todoToUpdate) {
             todoToUpdate.description = updatedTodo.description;
             todoToUpdate.date = updatedTodo.date;
             todoToUpdate.statusToDo = updatedTodo.statusToDo;
-            // const newUI = todoToUpdate.setUI();
-            this.addEditEventListener(todoToUpdate);
-            // projectTodoCardsContainer.append(newUI);
-        } else {
+        
+            // Recalculate derived properties
+            if (updatedTodo.statusToDo === "important") {
+              todoToUpdate.symbol = "warning";
+              todoToUpdate.colorStatus = "#cf0e28";
+            } else if (updatedTodo.statusToDo === "completed") {
+              todoToUpdate.symbol = "done";
+              todoToUpdate.colorStatus = "#0ec70e";
+            } else if (updatedTodo.statusToDo === "on-going") {
+              todoToUpdate.symbol = "grade";
+              todoToUpdate.colorStatus = "#2b69b5";
+            }
+          } else {
             console.error('ToDo not found for update');
-        }
-    }
-
-    // Separate event listener for the update method
-    private addEditEventListener(todo: ToDo) {
-        const editBtn = todo.uiTodo.querySelector(`[id=editIcon]`) as HTMLElement;
-        editBtn.addEventListener('click', () => {
-            const updateModal = new ModalManager();
-            const updateForm = document.getElementById('edit-todo-form') as HTMLFormElement;
-            const idForm = (updateForm.querySelector(`[name=idToDo]`) as HTMLTextAreaElement);
-            const descriptionForm = (updateForm.querySelector(`[name=description]`) as HTMLTextAreaElement);
-            const dateForm = (updateForm.querySelector(`[name=date]`) as HTMLInputElement);
-            const statusForm = (updateForm.querySelector(`[name=statusToDo]`) as HTMLSelectElement);
-            if (updateForm && updateModal) {
-                idForm.value = todo.id;
-                descriptionForm.value = todo.description;
-                dateForm.value = todo.date.toISOString().slice(0, 10);
-                statusForm.value = todo.statusToDo;
-                updateModal.showModal('edit-todo-modal', 1);
-            }
-        });
-    }
-
-    // Search by description - done
-    searchTodosByDescription(searchTerm: string) {
-        const projectTodoCardsContainer = document.getElementById('task-container') as HTMLDivElement;
-        const todosList = projectTodoCardsContainer.getElementsByClassName('task-item');
-
-        Array.from(todosList).forEach((todoElement: Element) => {
-            const todo = todoElement as HTMLElement;
-            const description = todo.querySelector('.description')?.textContent || '';
-            if (description.toLowerCase().includes(searchTerm.toLowerCase())) {
-                todo.style.display = 'block';
-            } else {
-                todo.style.display = 'none';
-            }
-        });
+          }
     }
 
     updateProjectWhenImport (data: IProject){
@@ -245,7 +221,8 @@ export class ProjectsManager {
                                 todo.date = new Date(todo.date);
                             }
                             // Only add a toDo if it doesnt exists & the toDo description doesnt exist (experimental)
-                            if (!existingProject.todoList.some(existingTodo => existingTodo.id === todo.id) && !existingProject.todoList.some(existingTodo => existingTodo.description === todo.description)) {
+                            if (!existingProject.todoList.some(existingTodo => existingTodo.id === todo.id) 
+                                && !existingProject.todoList.some(existingTodo => existingTodo.description === todo.description)) {
                                 this.newTodo(existingProject.id, todo); 
                             }
                         }
@@ -262,7 +239,8 @@ export class ProjectsManager {
                                     todo.date = new Date(todo.date); // Parse the todo date into a date object
                                 }
                                 // Check if this todo already exists in the project's todoList && the toDo description exists (experimental)
-                                if (!this.oldProject.todoList.some(existingTodo => existingTodo.id === todo.id) && !this.oldProject.todoList.some(existingTodo => existingTodo.description === todo.description) ) {
+                                if (!this.oldProject.todoList.some(existingTodo => existingTodo.id === todo.id) 
+                                    && !this.oldProject.todoList.some(existingTodo => existingTodo.description === todo.description) ) {
                                     this.newTodo(this.oldProject.id, todo); // Add the new todo
                                 }
                             }
