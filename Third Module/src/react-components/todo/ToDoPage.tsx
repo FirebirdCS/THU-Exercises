@@ -1,8 +1,8 @@
 import * as React from "react";
-import { ModalManager } from "../../utils/Utils";
-import { ToDoCard } from "./ToDoCard";
-import { ITodo, statusTask, ToDo } from "../../classes/ToDo";
-import { ProjectsManager } from "../../classes/ProjectsManager";
+import { ModalManager } from "@utils/Utils";
+import { ToDoCard } from "@reactComponents/todo/ToDoCard";
+import { ITodo, statusTask, ToDo } from "@classes/ToDo";
+import { ProjectsManager } from "@classes/ProjectsManager";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -71,7 +71,9 @@ export function ToDoPage(props: Props) {
       event.preventDefault();
       const todoData: ITodo = {
         description: formData.get("description") as string,
-        date: new Date((formData.get("date") as string) || new Date()),
+        date: new Date(
+          (formData.get("date") as string).replace(/-/g, "/") || new Date() // Parsing date
+        ),
         statusToDo: formData.get("statusToDo") as statusTask,
       };
       try {

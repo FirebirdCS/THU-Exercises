@@ -1,15 +1,10 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
-import { ProjectsManager } from "../../classes/ProjectsManager";
-import {
-  IProject,
-  Project,
-  projectStatus,
-  userRole,
-} from "../../classes/Project";
-import { ToDoPage } from "../todo/ToDoPage";
-import { formatShortDate, ModalManager } from "../../utils/Utils";
-import { ThreeViewer } from "../three/ThreeViewer";
+import { ProjectsManager } from "@classes/ProjectsManager";
+import { IProject, Project, projectStatus, userRole } from "@classes/Project";
+import { ToDoPage } from "@reactComponents/todo/ToDoPage";
+import { formattedDateProject, ModalManager } from "@utils/Utils";
+import { ThreeViewer } from "@reactComponents/three/ThreeViewer";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -38,8 +33,10 @@ export function ProjectDetailsPage(props: Props) {
   if (!(project && project instanceof Project)) {
     return <>{console.log("Project not found in the list", routeParams.id)}</>;
   }
-  const parsedDate = new Date(project.date);
-  const formattedDate = formatShortDate(parsedDate);
+
+  const formattedDate = formattedDateProject(
+    new Date(project.date.toISOString())
+  );
 
   const iconTitle = project.name.substring(0, 2).toUpperCase();
 

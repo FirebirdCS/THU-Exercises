@@ -15,7 +15,7 @@ export class ModalManager {
 }
 
 
-export function formatShortDate(date: Date): string {
+export function formattedDateToDo(date: Date): string {
     if (!date || !(date instanceof Date)) {
         return '';
     }
@@ -28,7 +28,7 @@ export function formatShortDate(date: Date): string {
 }
 
 
-export function getFormattedDate(date: Date, options?: Intl.DateTimeFormatOptions): string {
+export function formattedDateProject(date: Date, options?: Intl.DateTimeFormatOptions): string {
     if (!date || !(date instanceof Date)) {
         return ''; 
     }

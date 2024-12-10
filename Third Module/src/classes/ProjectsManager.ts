@@ -1,7 +1,5 @@
-import { ModalManager } from './../utils/Utils';
 import { IProject, Project } from "./Project"
 import { ITodo, ToDo } from "./ToDo"
-import { formatShortDate} from '../utils/Utils';
 
 export class ProjectsManager {
     list: Project[] = []
@@ -29,9 +27,14 @@ export class ProjectsManager {
             status: "pending",
             role: "developer",
             date: new Date(),
-            todoList: [ 
-            ]
-        })
+            todoList: [],
+        });
+        // Add a default toDo to the project
+        this.newTodo(project.id, {
+            description: "Default task",
+            date: new Date(),
+            statusToDo: "completed",
+        });
     }
 
     newProject(data: IProject) {
@@ -58,11 +61,13 @@ export class ProjectsManager {
     }
 
 
-    filterProjects(value: string){
+    filterProjects(value: string) {
+        const searchTerm = value.trim().toLowerCase().replace(/\s+/g, ""); // Remove spaces from the search input
         const filteredProjects = this.list.filter((project) => {
-            return project.name.includes(value.toLowerCase());
+            const normalizedProjectName = project.name?.toLowerCase().replace(/\s+/g, ""); // Remove spaces from project names
+            return normalizedProjectName?.includes(searchTerm);
         });
-        return filteredProjects
+        return filteredProjects;
     }
 
 
@@ -149,7 +154,7 @@ export class ProjectsManager {
         }
         const todoNew = new ToDo(todoData);
         project.todoList.push(todoNew);
-        this.todoList.push(todoNew); // Push the todoNew to the list of toDos
+        this.todoList.push(todoNew);
         this.onToDoCreated(todoNew);
         return todoNew;
     }

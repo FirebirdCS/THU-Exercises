@@ -1,14 +1,9 @@
 import * as React from "react";
-import { ModalManager } from "../../utils/Utils";
-import {
-  IProject,
-  Project,
-  projectStatus,
-  userRole,
-} from "../../classes/Project";
-import { ProjectsManager } from "../../classes/ProjectsManager";
-import { ProjectCard } from "./ProjectCard";
-import { SearchProjectbox } from "../ui/SearchProjectBox";
+import { ModalManager } from "@utils/Utils";
+import { IProject, Project, projectStatus, userRole } from "@classes/Project";
+import { ProjectsManager } from "@classes/ProjectsManager";
+import { ProjectCard } from "@reactComponents/project/ProjectCard";
+import { SearchProjectbox } from "@reactComponents/ui/SearchProjectBox";
 import * as Router from "react-router-dom";
 
 interface Props {
@@ -65,7 +60,9 @@ export function ProjectsPage(props: Props) {
       description: formData.get("description") as string,
       status: formData.get("status") as projectStatus,
       role: formData.get("role") as userRole,
-      date: new Date((formData.get("date") as string) || new Date()),
+      date: new Date(
+        (formData.get("date") as string).replace(/-/g, "/") || new Date()
+      ),
       todoList: [],
     };
     try {

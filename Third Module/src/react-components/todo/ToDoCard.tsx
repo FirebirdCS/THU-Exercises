@@ -1,7 +1,7 @@
 import * as React from "react";
-import { ITodo, statusTask, ToDo } from "../../classes/ToDo";
-import { formatShortDate, ModalManager } from "../../utils/Utils";
-import { ProjectsManager } from "../../classes/ProjectsManager";
+import { ITodo, statusTask, ToDo } from "@classes/ToDo";
+import { formattedDateToDo, ModalManager } from "@utils/Utils";
+import { ProjectsManager } from "@classes/ProjectsManager";
 
 interface Props {
   todo: ToDo;
@@ -22,7 +22,7 @@ export function ToDoCard(props: Props) {
   }, [props.todo, props.projectsManager]);
 
   const parsedDate = new Date(props.todo.date);
-  const formattedDate = formatShortDate(parsedDate);
+  const formattedDate = formattedDateToDo(parsedDate);
 
   const onFormSubmit = (event: React.FormEvent) => {
     const editToDoForm = document.getElementById(
@@ -84,7 +84,7 @@ export function ToDoCard(props: Props) {
 
       if (idForm) idForm.value = todo.id;
       if (descriptionInput) descriptionInput.value = todo.description;
-      if (dateInput) dateInput.value = formatShortDate(todo.date);
+      if (dateInput) dateInput.value = formattedDateToDo(todo.date);
       if (statusSelect) statusSelect.value = todo.statusToDo;
     }
   };
