@@ -34,9 +34,7 @@ export function ProjectDetailsPage(props: Props) {
     return <>{console.log("Project not found in the list", routeParams.id)}</>;
   }
 
-  const formattedDate = formattedDateProject(
-    new Date(project.date.toISOString())
-  );
+  const formattedDate = formattedDateProject(new Date(project.date));
 
   const iconTitle = project.name.substring(0, 2).toUpperCase();
 

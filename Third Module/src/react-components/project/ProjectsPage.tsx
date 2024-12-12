@@ -1,10 +1,12 @@
 import * as React from "react";
+import * as Firestore from "firebase/firestore";
 import { ModalManager } from "@utils/Utils";
 import { IProject, Project, projectStatus, userRole } from "@classes/Project";
 import { ProjectsManager } from "@classes/ProjectsManager";
 import { ProjectCard } from "@reactComponents/project/ProjectCard";
 import { SearchProjectbox } from "@reactComponents/ui/SearchProjectBox";
 import * as Router from "react-router-dom";
+import { firebaseDB } from "../../firebase/index";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -21,6 +23,30 @@ export function ProjectsPage(props: Props) {
   props.projectsManager.onProjectDeleted = () => {
     setProjects([...props.projectsManager.list]);
   };
+
+  const getFirestoreProjects = async () => {
+    const projectsCollection = Firestore.collection(
+      firebaseDB,
+      "/projects"
+    ) as Firestore.CollectionReference<IProject>;
+    const firebaseProjects = await Firestore.getDocs(projectsCollection);
+    for (const doc of firebaseProjects.docs) {
+      const data = doc.data();
+      const project: IProject = {
+        ...data,
+        date: (data.date as unknown as Firestore.Timestamp).toDate(),
+      };
+      try {
+        props.projectsManager.newProject(project, doc.id);
+      } catch (e) {
+        props.projectsManager.updateProject(doc.id, project);
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    getFirestoreProjects();
+  }, []);
 
   const projectCards = projects.map((project) => {
     return (

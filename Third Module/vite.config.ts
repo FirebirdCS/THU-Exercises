@@ -10,5 +10,5 @@ export default defineConfig({
             "@reactComponents": path.resolve(__dirname, "src/react-components"),
             "@utils": path.resolve(__dirname, "src/utils"),
         }
-    }
+    },
 })

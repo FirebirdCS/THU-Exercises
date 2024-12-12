@@ -29,11 +29,11 @@ export class Project implements IProject {
   todoList: ToDo[] = []
 
 
-  constructor(data: IProject) {
-    this.id = uuidv4()
+  constructor(data: IProject, id = uuidv4()) {
     for (const key in data){
       this[key] = data[key]
     } 
+    this.id = id
     this.cardColor = selectRandomColor();
   }
   

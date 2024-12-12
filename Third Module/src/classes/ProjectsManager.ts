@@ -20,24 +20,7 @@ export class ProjectsManager {
     }
     
 
-    constructor() {
-        const project = this.newProject({
-            name: "Default name",
-            description: "Default description",
-            status: "pending",
-            role: "developer",
-            date: new Date(),
-            todoList: [],
-        });
-        // Add a default toDo to the project
-        this.newTodo(project.id, {
-            description: "Default task",
-            date: new Date(),
-            statusToDo: "completed",
-        });
-    }
-
-    newProject(data: IProject) {
+    newProject(data: IProject, id?: string) {
         const projectNames = this.list.map((project) => {
             return project.name
         })
@@ -53,7 +36,7 @@ export class ProjectsManager {
             throw new Error(`There isn't a description for this project`);
         }
 
-        const project = new Project(data)
+        const project = new Project(data, id)
         this.oldProject = project
         this.list.push(project)
         this.onProjectCreated(project)
