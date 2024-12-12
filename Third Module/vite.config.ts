@@ -9,6 +9,7 @@ export default defineConfig({
             "@classes": path.resolve(__dirname, "src/classes"),
             "@reactComponents": path.resolve(__dirname, "src/react-components"),
             "@utils": path.resolve(__dirname, "src/utils"),
+            "@db": path.resolve(__dirname, "src/firebase")
         }
     },
 })

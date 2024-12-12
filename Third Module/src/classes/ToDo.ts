@@ -18,8 +18,7 @@ export class ToDo implements ITodo{
     symbol: string = ""
     colorStatus: string = ""
   
-    constructor(data: ITodo) {
-      this.id = uuidv4()
+    constructor(data: ITodo, id = uuidv4()) {
       for (const key in data) {
         this[key] = data[key]
       }
@@ -33,5 +32,6 @@ export class ToDo implements ITodo{
         this.symbol = "grade";
         this.colorStatus = "#2b69b5";
       }
+      this.id = id
     }
 }

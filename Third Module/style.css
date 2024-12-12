@@ -312,17 +312,20 @@ input:focus, textarea:focus, select:focus{
     margin-bottom: 30px;
 }
 
+
 .edit-button{
     background-color: transparent; 
     outline: 2px solid #969696; 
     width: 100px; 
     text-align: center;
+    margin-right: 8px; 
+    padding: 6px 12px; 
 }
 
 .edit-button:hover{
     background-color: var(--primary);
     outline: none;
-    transition: 0.6s;
+    transition: 0.3s;
 }
 
 .details-info{

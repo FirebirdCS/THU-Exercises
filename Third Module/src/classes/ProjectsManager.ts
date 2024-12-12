@@ -15,7 +15,7 @@ export class ProjectsManager {
     }
 
 
-    onProjectDeleted = () => {
+    onProjectDeleted = (id: string) => {
 
     }
     
@@ -87,7 +87,7 @@ export class ProjectsManager {
             return project.id !== id
         })
         this.list = remaining
-        this.onProjectDeleted()
+        this.onProjectDeleted(id)
     }
 
     updateProject(projectId: string, data: IProject) {
@@ -127,7 +127,7 @@ export class ProjectsManager {
 
     // newTodo updated, added projectId to verify it makes the task in the right project
 
-    newTodo(projectId: string, todoData: ITodo) {
+    newTodo(todoData: ITodo, projectId?: string) {
         if (!todoData.description) {
             throw new Error(`The description should not be empty!`);
         }
@@ -135,7 +135,7 @@ export class ProjectsManager {
         if (!project) {
             throw new Error("Project not found");
         }
-        const todoNew = new ToDo(todoData);
+        const todoNew = new ToDo(todoData, projectId);
         project.todoList.push(todoNew);
         this.todoList.push(todoNew);
         this.onToDoCreated(todoNew);
@@ -218,7 +218,7 @@ export class ProjectsManager {
                             // Only add a toDo if it doesnt exists & the toDo description doesnt exist (experimental)
                             if (!existingProject.todoList.some(existingTodo => existingTodo.id === todo.id) 
                                 && !existingProject.todoList.some(existingTodo => existingTodo.description === todo.description)) {
-                                this.newTodo(existingProject.id, todo); 
+                                this.newTodo(todo, existingProject.id); 
                             }
                         }
                     } else {
@@ -236,7 +236,7 @@ export class ProjectsManager {
                                 // Check if this todo already exists in the project's todoList && the toDo description exists (experimental)
                                 if (!this.oldProject.todoList.some(existingTodo => existingTodo.id === todo.id) 
                                     && !this.oldProject.todoList.some(existingTodo => existingTodo.description === todo.description) ) {
-                                    this.newTodo(this.oldProject.id, todo); // Add the new todo
+                                    this.newTodo(todo, this.oldProject.id); // Add the new todo
                                 }
                             }
                         } catch (e) {
@@ -246,7 +246,7 @@ export class ProjectsManager {
                                 if (typeof todo.date === 'string') {
                                     todo.date = new Date(todo.date);
                                 }
-                                this.newTodo(this.oldProject.id, todo); // Create the imported todo
+                                this.newTodo(todo, this.oldProject.id); // Create the imported todo
                             }
                             nameInUse.add(projectData.name);
                         }

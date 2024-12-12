@@ -5,6 +5,7 @@ import { IProject, Project, projectStatus, userRole } from "@classes/Project";
 import { ToDoPage } from "@reactComponents/todo/ToDoPage";
 import { formattedDateProject, ModalManager } from "@utils/Utils";
 import { ThreeViewer } from "@reactComponents/three/ThreeViewer";
+import { deleteDocument, updateDocument } from "@db/index";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -27,12 +28,18 @@ export function ProjectDetailsPage(props: Props) {
     }
   }, [routeParams.id, props.projectsManager]);
 
-  if (!routeParams.id)
-    return <>{console.log("Project not found", routeParams.id)}</>;
+  if (!routeParams.id) return console.log("Project not found", routeParams.id);
   const project = props.projectsManager.getProject(routeParams.id);
   if (!(project && project instanceof Project)) {
-    return <>{console.log("Project not found in the list", routeParams.id)}</>;
+    return console.log("Project not found in the list", routeParams.id);
   }
+
+  const navigateTo = Router.useNavigate();
+
+  props.projectsManager.onProjectDeleted = async (id) => {
+    await deleteDocument("/projects", id);
+    navigateTo("/");
+  };
 
   const formattedDate = formattedDateProject(new Date(project.date));
 
@@ -72,7 +79,7 @@ export function ProjectDetailsPage(props: Props) {
     }
   };
 
-  const onFormSubmit = (event: React.FormEvent) => {
+  const onFormSubmit = async (event: React.FormEvent) => {
     const updateForm = document.getElementById(
       "update-project-form"
     ) as HTMLFormElement;
@@ -98,6 +105,11 @@ export function ProjectDetailsPage(props: Props) {
     };
     if (routeParams.id) {
       try {
+        await updateDocument<Partial<IProject>>(
+          "/projects",
+          project.id,
+          projectData
+        );
         props.projectsManager.updateProject(routeParams.id, projectData);
         tip.style.display = "grid";
         updateError.style.display = "none";
@@ -235,13 +247,27 @@ export function ProjectDetailsPage(props: Props) {
                 >
                   {iconTitle}
                 </p>
-                <button
-                  onClick={onUpdateProjectClick}
-                  id="edit-btn"
-                  className="edit-button"
+                <div
+                  className="action-buttons"
+                  style={{ display: "flex", alignItems: "center" }}
                 >
-                  <p style={{ width: "100%" }}>Edit</p>
-                </button>
+                  <button
+                    onClick={onUpdateProjectClick}
+                    id="edit-btn"
+                    className="edit-button"
+                  >
+                    <p style={{ margin: 0, width: "100%" }}>Edit</p>
+                  </button>
+                  <span
+                    onClick={() => {
+                      props.projectsManager.deleteProject(project.id);
+                    }}
+                    className="material-icons-round action-icon delete"
+                    style={{ color: "red", cursor: "pointer" }}
+                  >
+                    delete
+                  </span>
+                </div>
               </div>
               <div style={{ padding: "0 30px" }}>
                 <div>
@@ -299,7 +325,7 @@ export function ProjectDetailsPage(props: Props) {
               {/* projectId as an parameter  */}
               <ToDoPage
                 projectsManager={props.projectsManager}
-                projectId={project.id}
+                projectId={routeParams.id}
               />
             </div>
           </div>

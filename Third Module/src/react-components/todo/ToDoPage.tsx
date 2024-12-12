@@ -3,6 +3,8 @@ import { ModalManager } from "@utils/Utils";
 import { ToDoCard } from "@reactComponents/todo/ToDoCard";
 import { ITodo, statusTask, ToDo } from "@classes/ToDo";
 import { ProjectsManager } from "@classes/ProjectsManager";
+import { getCollection } from "@db/index";
+import * as Firestore from "firebase/firestore";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -77,8 +79,11 @@ export function ToDoPage(props: Props) {
         statusToDo: formData.get("statusToDo") as statusTask,
       };
       try {
-        // Add task to the current project
-        props.projectsManager.newTodo(props.projectId, todoData);
+        const fbTodosCollection = getCollection<ITodo>(
+          `/projects/${props.projectId}/todoList`
+        );
+        Firestore.addDoc(fbTodosCollection, todoData);
+        props.projectsManager.newTodo(todoData, props.projectId);
         const currentProject = props.projectsManager.list.find(
           (project) => project.id === props.projectId
         );

@@ -6,11 +6,13 @@ import { ProjectsManager } from "@classes/ProjectsManager";
 import { ProjectCard } from "@reactComponents/project/ProjectCard";
 import { SearchProjectbox } from "@reactComponents/ui/SearchProjectBox";
 import * as Router from "react-router-dom";
-import { firebaseDB } from "../../firebase/index";
+import { getCollection } from "@db/index";
 
 interface Props {
   projectsManager: ProjectsManager;
 }
+
+const projectsCollection = getCollection<IProject>("/projects");
 
 export function ProjectsPage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
@@ -20,15 +22,8 @@ export function ProjectsPage(props: Props) {
   props.projectsManager.onProjectCreated = () => {
     setProjects([...props.projectsManager.list]);
   };
-  props.projectsManager.onProjectDeleted = () => {
-    setProjects([...props.projectsManager.list]);
-  };
 
   const getFirestoreProjects = async () => {
-    const projectsCollection = Firestore.collection(
-      firebaseDB,
-      "/projects"
-    ) as Firestore.CollectionReference<IProject>;
     const firebaseProjects = await Firestore.getDocs(projectsCollection);
     for (const doc of firebaseProjects.docs) {
       const data = doc.data();
@@ -69,7 +64,7 @@ export function ProjectsPage(props: Props) {
   };
 
   // Create new modal logic
-  const onFormSubmit = (event: React.FormEvent) => {
+  const onFormSubmit = async (event: React.FormEvent) => {
     const projectForm = document.getElementById(
       "new-project-form"
     ) as HTMLFormElement;
@@ -92,7 +87,8 @@ export function ProjectsPage(props: Props) {
       todoList: [],
     };
     try {
-      const project = props.projectsManager.newProject(projectData);
+      const doc = await Firestore.addDoc(projectsCollection, projectData);
+      props.projectsManager.newProject(projectData, doc.id);
       tip.style.display = "grid";
       error.style.display = "none";
       projectForm.reset();
