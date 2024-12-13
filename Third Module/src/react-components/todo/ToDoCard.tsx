@@ -2,7 +2,7 @@ import * as React from "react";
 import { ITodo, statusTask, ToDo } from "@classes/ToDo";
 import { formattedDateToDo, ModalManager } from "@utils/Utils";
 import { ProjectsManager } from "@classes/ProjectsManager";
-import { updateDocument } from "@db/index";
+import { deleteDocument, updateDocument } from "@db/index";
 import { Project } from "@classes/Project";
 
 interface Props {
@@ -105,6 +105,10 @@ export function ToDoCard(props: Props) {
     const closeToDoModal = new ModalManager();
     closeToDoModal.showModal("edit-todo-modal", 0);
   };
+  // Test
+  // props.projectsManager.onTodoDeleted = async (id) => {
+  //   await deleteDocument(`/projects/${props.project.id}/todoList`, id);
+  // };
 
   return (
     <>
@@ -173,32 +177,32 @@ export function ToDoCard(props: Props) {
         style={{ backgroundColor: props.todo.colorStatus }}
         className="task-item"
       >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ display: "flex", columnGap: 15, alignItems: "center" }}>
-            <span
-              className="material-icons-round"
-              style={{ padding: 10, borderRadius: 10 }}
-            >
-              {props.todo.symbol}
-            </span>
-            <p className="description" style={{ wordWrap: "break-word" }}>
-              {props.todo.description}
-            </p>
-          </div>
-          <p style={{ textWrap: "nowrap", marginLeft: 10 }}> {formattedDate}</p>
+        <div className="description-container">
+          <span
+            className="material-icons-round"
+            style={{ padding: 10, borderRadius: 10 }}
+          >
+            {props.todo.symbol}
+          </span>
+          <p className="description">{props.todo.description}</p>
+        </div>
+        <div className="action-icons">
+          <p style={{ whiteSpace: "nowrap" }}>{formattedDate}</p>
           <span
             onClick={onEditToDoClick}
             id="editIcon"
             className="edit-icon material-icons-round"
-            style={{ marginLeft: 5 }}
           >
             edit
+          </span>
+          <span
+            // onClick={() => {
+            //   props.projectsManager.deleteTodo(props.todo.id);
+            // }}
+            className="material-icons-round action-icon"
+            style={{ cursor: "pointer" }}
+          >
+            delete
           </span>
         </div>
       </div>

@@ -4,7 +4,7 @@ import { ModalManager } from "@utils/Utils";
 import { IProject, Project, projectStatus, userRole } from "@classes/Project";
 import { ProjectsManager } from "@classes/ProjectsManager";
 import { ProjectCard } from "@reactComponents/project/ProjectCard";
-import { SearchProjectbox } from "@reactComponents/ui/SearchProjectBox";
+import { SearchBox } from "@reactComponents/ui/SearchBox";
 import * as Router from "react-router-dom";
 import { getCollection } from "@db/index";
 import { ITodo, ToDo } from "@classes/ToDo";
@@ -242,10 +242,12 @@ export function ProjectsPage(props: Props) {
       </dialog>
       <header>
         <h2>Project List</h2>
-        <SearchProjectbox
+        <SearchBox
           onChange={(value) => {
             onProjectSearch(value);
           }}
+          searchProp="Project"
+          size="40%"
         />
         <div style={{ display: "flex", alignItems: "center", columnGap: 15 }}>
           <span

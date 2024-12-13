@@ -6,6 +6,7 @@ import { ProjectsManager } from "@classes/ProjectsManager";
 import { getCollection } from "@db/index";
 import * as Firestore from "firebase/firestore";
 import { Project } from "@classes/Project";
+import { SearchBox } from "@reactComponents/ui/SearchBox";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -105,18 +106,20 @@ export function ToDoPage(props: Props) {
     }
   };
 
+  const onTodoSearch = (value: string) => {
+    const todoList = props.project.todoList.filter((todo) => {
+      return todo.description.toLowerCase().includes(value);
+    });
+    setToDos(todoList);
+  };
+
   return (
     <>
       <div className="task-header">
         <h4>To-Do</h4>
         <div className="task-searchbar">
           <div className="task-searchbar-container">
-            <span className="material-icons-round">search</span>
-            <input
-              type="text"
-              placeholder="Search To-Do's by name"
-              style={{ width: "100%" }}
-            />
+            <SearchBox onChange={onTodoSearch} searchProp="ToDo" size="100%" />
           </div>
           <span
             id="create-toDo"

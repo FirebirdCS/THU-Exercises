@@ -352,6 +352,7 @@ input:focus, textarea:focus, select:focus{
 .task-searchbar-container{
     display: flex; 
     align-items: center; 
+    background-color: var(--background-100);
     column-gap: 10px;
 }
 
@@ -389,11 +390,34 @@ input:focus, textarea:focus, select:focus{
     border-radius: 10px;
     cursor: pointer;
     margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .task-item:hover{
     outline: 2px solid #fff;
 }
+
+.task-item .description-container {
+    display: flex;
+    column-gap: 15px;
+    align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.description {
+    word-wrap: break-word;
+    flex-grow: 1; 
+}
+
+.task-item .action-icons {
+    display: flex;
+    align-items: center;
+    column-gap: 10px; 
+}
+
 
 
 #task-container::-webkit-scrollbar {

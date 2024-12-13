@@ -18,6 +18,10 @@ export class ProjectsManager {
     onProjectDeleted = (id: string) => {
 
     }
+
+    onTodoDeleted = (id: string) => {
+
+    }
     
 
     newProject(data: IProject, id?: string) {
@@ -140,6 +144,22 @@ export class ProjectsManager {
         this.todoList.push(todoNew);
         this.onToDoCreated(todoNew);
         return todoNew;
+    }
+    
+    deleteTodo(id: string) {
+        const todo = this.getToDo(id)
+        if (!todo) { return }
+        this.todoList = this.todoList.filter((t) => t.id !== id);
+        // Find the project the ToDo belongs to
+        const projectId = this.getProjectIdForToDo(id);
+        if (projectId) {
+            const project = this.getProject(projectId);
+            if (project) {
+                // Remove the ToDo from the project's todoList
+                project.todoList = project.todoList.filter((t) => t.id !== id);
+            }
+        }
+        this.onTodoDeleted(id)
     }
 
     
