@@ -1,11 +1,13 @@
 import * as React from "react";
 import * as Router from "react-router-dom";
+import * as Firestore from "firebase/firestore";
 import { ProjectsManager } from "@classes/ProjectsManager";
 import { IProject, Project, projectStatus, userRole } from "@classes/Project";
 import { ToDoPage } from "@reactComponents/todo/ToDoPage";
 import { formattedDateProject, ModalManager } from "@utils/Utils";
 import { ThreeViewer } from "@reactComponents/three/ThreeViewer";
-import { deleteDocument, updateDocument } from "@db/index";
+import { deleteDocument, getCollection, updateDocument } from "@db/index";
+import { ITodo } from "@classes/ToDo";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -37,10 +39,21 @@ export function ProjectDetailsPage(props: Props) {
   }
 
   const navigateTo = Router.useNavigate();
+  const todoListCollection = getCollection<ITodo>(
+    `/projects/${routeParams.id}/todoList`
+  );
 
   props.projectsManager.onProjectDeleted = async (id) => {
-    await deleteDocument("/projects", id);
-    navigateTo("/");
+    try {
+      const firebaseProjects = await Firestore.getDocs(todoListCollection);
+      for (const doc of firebaseProjects.docs) {
+        await deleteDocument(`/projects/${routeParams.id}/todoList`, doc.id);
+      }
+      await deleteDocument("/projects", id);
+      navigateTo("/");
+    } catch (error) {
+      console.error("Error deleting project or todo list:", error);
+    }
   };
 
   const formattedDate = formattedDateProject(new Date(project.date));
