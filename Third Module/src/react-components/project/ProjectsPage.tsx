@@ -7,6 +7,7 @@ import { ProjectCard } from "@reactComponents/project/ProjectCard";
 import { SearchProjectbox } from "@reactComponents/ui/SearchProjectBox";
 import * as Router from "react-router-dom";
 import { getCollection } from "@db/index";
+import { ITodo, ToDo } from "@classes/ToDo";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -23,13 +24,38 @@ export function ProjectsPage(props: Props) {
     setProjects([...props.projectsManager.list]);
   };
 
+  // Make sure to get information about the todo collection and push it
+  const getFirestoreProjectTodo = async (
+    collection: Firestore.CollectionReference<ITodo>
+  ): Promise<ToDo[]> => {
+    const firebaseTodos = await Firestore.getDocs(collection);
+    const todoList: ToDo[] = [];
+    for (const doc of firebaseTodos.docs) {
+      const data = doc.data();
+      try {
+        data.date = (data.date as unknown as Firestore.Timestamp).toDate();
+        const todo = new ToDo(data, doc.id);
+        todoList.push(todo);
+        props.projectsManager.todoList.push(todo);
+      } catch (error) {
+        console.log("No ToDo Found");
+      }
+    }
+    return todoList;
+  };
+
   const getFirestoreProjects = async () => {
     const firebaseProjects = await Firestore.getDocs(projectsCollection);
     for (const doc of firebaseProjects.docs) {
       const data = doc.data();
+      const fbTodosCollection = getCollection<ITodo>(
+        `/projects/${doc.id}/todoList`
+      );
+      const todoList = await getFirestoreProjectTodo(fbTodosCollection);
       const project: IProject = {
         ...data,
         date: (data.date as unknown as Firestore.Timestamp).toDate(),
+        todoList: todoList,
       };
       try {
         props.projectsManager.newProject(project, doc.id);

@@ -5,16 +5,21 @@ import { ITodo, statusTask, ToDo } from "@classes/ToDo";
 import { ProjectsManager } from "@classes/ProjectsManager";
 import { getCollection } from "@db/index";
 import * as Firestore from "firebase/firestore";
+import { Project } from "@classes/Project";
 
 interface Props {
   projectsManager: ProjectsManager;
   projectId: string;
+  project: Project;
 }
 
 export function ToDoPage(props: Props) {
   const [toDos, setToDos] = React.useState<ToDo[]>([]);
 
-  // Render tasks
+  // I have to look for a way to add the todoList collection inside the projects (todolist: Map)
+  const todoCollection = getCollection<ITodo>(
+    `/projects/${props.projectId}/todoList`
+  );
   React.useEffect(() => {
     const currentProject = props.projectsManager.list.find(
       (project) => project.id === props.projectId
@@ -36,6 +41,7 @@ export function ToDoPage(props: Props) {
     <ToDoCard
       projectsManager={props.projectsManager}
       todo={todo}
+      project={props.project}
       key={todo.id}
       onUpdate={updateToDo}
     />
@@ -61,7 +67,7 @@ export function ToDoPage(props: Props) {
     closeToDoModal.showModal("create-todo-modal", 0);
   };
 
-  const onFormSubmit = (event: React.FormEvent) => {
+  const onFormSubmit = async (event: React.FormEvent) => {
     const toDoForm = document.getElementById(
       "create-todo-form"
     ) as HTMLFormElement;
@@ -79,11 +85,8 @@ export function ToDoPage(props: Props) {
         statusToDo: formData.get("statusToDo") as statusTask,
       };
       try {
-        const fbTodosCollection = getCollection<ITodo>(
-          `/projects/${props.projectId}/todoList`
-        );
-        Firestore.addDoc(fbTodosCollection, todoData);
-        props.projectsManager.newTodo(todoData, props.projectId);
+        const doc = await Firestore.addDoc(todoCollection, todoData);
+        const todo = props.projectsManager.newTodo(todoData, props.projectId);
         const currentProject = props.projectsManager.list.find(
           (project) => project.id === props.projectId
         );

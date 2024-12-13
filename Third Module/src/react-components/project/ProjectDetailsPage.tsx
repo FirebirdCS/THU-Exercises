@@ -16,6 +16,7 @@ export function ProjectDetailsPage(props: Props) {
   const [projectDetails, setProjectDetails] = React.useState<IProject | null>(
     null
   );
+  const navigate = Router.useNavigate();
 
   React.useEffect(() => {
     if (routeParams.id) {
@@ -24,9 +25,10 @@ export function ProjectDetailsPage(props: Props) {
         setProjectDetails(currentProject);
       } else {
         console.log("Project not found", routeParams.id);
+        setTimeout(() => navigate("/"), 1000);
       }
     }
-  }, [routeParams.id, props.projectsManager]);
+  }, [routeParams.id, props.projectsManager, navigate]);
 
   if (!routeParams.id) return console.log("Project not found", routeParams.id);
   const project = props.projectsManager.getProject(routeParams.id);
@@ -323,9 +325,11 @@ export function ProjectDetailsPage(props: Props) {
             </div>
             <div className="dashboard-card" style={{ flexGrow: "1" }}>
               {/* projectId as an parameter  */}
+              {/* Send the project info to the todoPage for the todoCard so it can retrieve the collection of todolist*/}
               <ToDoPage
                 projectsManager={props.projectsManager}
                 projectId={routeParams.id}
+                project={project}
               />
             </div>
           </div>

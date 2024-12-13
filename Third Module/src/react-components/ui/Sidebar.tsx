@@ -6,7 +6,7 @@ export function Sidebar() {
     <aside id="sidebar">
       <img
         id="company-logo"
-        src="./assets/company-logo.svg"
+        src="/assets/company-logo.svg"
         alt="Construction-site"
       />
       <ul id="nav-buttons">

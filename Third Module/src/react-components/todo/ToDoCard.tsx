@@ -2,10 +2,13 @@ import * as React from "react";
 import { ITodo, statusTask, ToDo } from "@classes/ToDo";
 import { formattedDateToDo, ModalManager } from "@utils/Utils";
 import { ProjectsManager } from "@classes/ProjectsManager";
+import { updateDocument } from "@db/index";
+import { Project } from "@classes/Project";
 
 interface Props {
   todo: ToDo;
   projectsManager: ProjectsManager;
+  project: Project;
   onUpdate: (updatedToDo: ToDo) => void;
 }
 
@@ -24,7 +27,7 @@ export function ToDoCard(props: Props) {
   const parsedDate = new Date(props.todo.date);
   const formattedDate = formattedDateToDo(parsedDate);
 
-  const onFormSubmit = (event: React.FormEvent) => {
+  const onFormSubmit = async (event: React.FormEvent) => {
     const editToDoForm = document.getElementById(
       "edit-todo-form"
     ) as HTMLFormElement;
@@ -41,6 +44,11 @@ export function ToDoCard(props: Props) {
       };
       try {
         const todoId = formData.get("idToDo") as string;
+        await updateDocument<Partial<ITodo>>(
+          `/projects/${props.project.id}/todoList`,
+          todoId,
+          newData
+        );
         props.projectsManager.updateTodo(todoId, newData);
         updateDescriptionError.style.display = "none";
         editToDoForm.reset();
