@@ -26,7 +26,6 @@ export function ToDoPage(props: Props) {
       (project) => project.id === props.projectId
     );
     if (currentProject) {
-      console.log("Current Project todoList:", currentProject.todoList);
       setToDos([...currentProject.todoList]);
     }
   }, [props.projectId, props.projectsManager.list]);
@@ -40,7 +39,6 @@ export function ToDoPage(props: Props) {
   };
 
   const toDoCards = toDos.map((todo) => {
-    console.log("Rendering ToDoCard with ID:", todo.id);
     return (
       <ToDoCard
         projectsManager={props.projectsManager}

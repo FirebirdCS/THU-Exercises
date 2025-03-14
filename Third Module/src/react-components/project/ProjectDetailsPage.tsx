@@ -61,6 +61,7 @@ export function ProjectDetailsPage(props: Props) {
   const iconTitle = project.name.substring(0, 2).toUpperCase();
 
   const onUpdateProjectClick = () => {
+    // Clear any previous errors
     const updateError = document.getElementById(
       "updateNameError"
     ) as HTMLElement;
@@ -73,6 +74,47 @@ export function ProjectDetailsPage(props: Props) {
     }
     const createProjectModal = new ModalManager();
     createProjectModal.showModal("update-project-modal", 1);
+    // I want to populate the info from the project in the update form so I search it using the getProject method
+    const currentProject = props.projectsManager.getProject(routeParams.id!);
+    if (!currentProject) {
+      console.error(
+        "Project not found in onUpdateProjectClick",
+        routeParams.id
+      );
+      return;
+    }
+    // Get the update form
+    const updateProjectForm = document.getElementById(
+      "update-project-form"
+    ) as HTMLFormElement;
+    if (updateProjectForm) {
+      // Get the input fields
+      const nameInput = updateProjectForm.querySelector(
+        "[name='name']"
+      ) as HTMLInputElement;
+      const descriptionInput = updateProjectForm.querySelector(
+        "[name='description']"
+      ) as HTMLTextAreaElement;
+      const roleInput = updateProjectForm.querySelector(
+        "[name='role']"
+      ) as HTMLSelectElement;
+      const statusInput = updateProjectForm.querySelector(
+        "[name='status']"
+      ) as HTMLSelectElement;
+      const dateInput = updateProjectForm.querySelector(
+        "[name='date']"
+      ) as HTMLInputElement;
+
+      // Populate the fields with the current project details
+      if (nameInput) nameInput.value = currentProject.name;
+      if (descriptionInput) descriptionInput.value = currentProject.description;
+      if (roleInput) roleInput.value = currentProject.role;
+      if (statusInput) statusInput.value = currentProject.status;
+      if (dateInput)
+        dateInput.value = new Date(currentProject.date)
+          .toISOString()
+          .split("T")[0];
+    }
   };
 
   const onCloseModal = () => {
@@ -115,7 +157,9 @@ export function ProjectDetailsPage(props: Props) {
       description: formData.get("description") as string,
       status: formData.get("status") as projectStatus,
       role: formData.get("role") as userRole,
-      date: new Date((formData.get("date") as string) || new Date()),
+      date: new Date(
+        (formData.get("date") as string).replace(/-/g, "/") || new Date()
+      ),
       todoList: [],
     };
     if (routeParams.id) {
