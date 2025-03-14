@@ -26,6 +26,7 @@ export function ToDoPage(props: Props) {
       (project) => project.id === props.projectId
     );
     if (currentProject) {
+      console.log("Current Project todoList:", currentProject.todoList);
       setToDos([...currentProject.todoList]);
     }
   }, [props.projectId, props.projectsManager.list]);
@@ -38,16 +39,18 @@ export function ToDoPage(props: Props) {
     );
   };
 
-  const toDoCards = toDos.map((todo) => (
-    <ToDoCard
-      projectsManager={props.projectsManager}
-      todo={todo}
-      project={props.project}
-      key={todo.id}
-      onUpdate={updateToDo}
-    />
-  ));
-
+  const toDoCards = toDos.map((todo) => {
+    console.log("Rendering ToDoCard with ID:", todo.id);
+    return (
+      <ToDoCard
+        projectsManager={props.projectsManager}
+        todo={todo}
+        project={props.project}
+        key={todo.id}
+        onUpdate={updateToDo}
+      />
+    );
+  });
   const onNewToDoClick = () => {
     const error = document.getElementById(
       "createDescriptionError"
@@ -81,13 +84,14 @@ export function ToDoPage(props: Props) {
       const todoData: ITodo = {
         description: formData.get("description") as string,
         date: new Date(
-          (formData.get("date") as string).replace(/-/g, "/") || new Date() // Parsing date
+          (formData.get("date") as string).replace(/-/g, "/") || new Date()
         ),
         statusToDo: formData.get("statusToDo") as statusTask,
       };
       try {
         const doc = await Firestore.addDoc(todoCollection, todoData);
         const todo = props.projectsManager.newTodo(todoData, props.projectId);
+        todo.id = doc.id; // Make sure to asign the correct id to the toDo
         const currentProject = props.projectsManager.list.find(
           (project) => project.id === props.projectId
         );

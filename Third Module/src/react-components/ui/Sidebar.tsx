@@ -15,11 +15,11 @@ export function Sidebar() {
             <span className="material-icons-round">apartment</span>Home
           </li>
         </Router.Link>
-        <Router.Link to="/users">
+        {/* <Router.Link to="/users">
           <li id="users-list-btn">
             <span className="material-icons-round">person </span>Users
           </li>
-        </Router.Link>
+        </Router.Link> */}
       </ul>
     </aside>
   );

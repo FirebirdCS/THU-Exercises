@@ -44,6 +44,7 @@ export function ToDoCard(props: Props) {
       };
       try {
         const todoId = formData.get("idToDo") as string;
+        console.log(todoId);
         await updateDocument<Partial<ITodo>>(
           `/projects/${props.project.id}/todoList`,
           todoId,
@@ -69,6 +70,8 @@ export function ToDoCard(props: Props) {
   };
 
   const onEditToDoClick = () => {
+    const todoToEdit = todo || props.todo;
+    console.log("Editing todo with id:", props.todo.id);
     const editToDoModal = new ModalManager();
     editToDoModal.showModal("edit-todo-modal", 1);
 
