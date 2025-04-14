@@ -2,12 +2,13 @@ import * as React from "react";
 import * as Router from "react-router-dom";
 import * as Firestore from "firebase/firestore";
 import { ProjectsManager } from "@classes/ProjectsManager";
-import { IProject, Project, projectStatus, userRole } from "@classes/Project";
+import { IProject, Project } from "@classes/Project";
 import { ToDoPage } from "@reactComponents/todo/ToDoPage";
 import { formattedDateProject, ModalManager } from "@utils/Utils";
 import { ThreeViewer } from "@reactComponents/three/ThreeViewer";
 import { deleteDocument, getCollection, updateDocument } from "@db/index";
 import { ITodo } from "@classes/ToDo";
+import { ProjectForm } from "@reactComponents/project/ProjectForm";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -19,6 +20,7 @@ export function ProjectDetailsPage(props: Props) {
     null
   );
   const navigate = Router.useNavigate();
+  const modal = new ModalManager();
 
   React.useEffect(() => {
     if (routeParams.id) {
@@ -61,226 +63,32 @@ export function ProjectDetailsPage(props: Props) {
   const iconTitle = project.name.substring(0, 2).toUpperCase();
 
   const onUpdateProjectClick = () => {
-    // Clear any previous errors
-    const updateError = document.getElementById(
-      "updateNameError"
-    ) as HTMLElement;
-    const updateError2 = document.getElementById(
-      "updateNameError2"
-    ) as HTMLElement;
-    if (updateError || updateError2) {
-      updateError.style.display = "none";
-      updateError2.style.display = "none";
-    }
-    const createProjectModal = new ModalManager();
-    createProjectModal.showModal("update-project-modal", 1);
-    // I want to populate the info from the project in the update form so I search it using the getProject method
-    const currentProject = props.projectsManager.getProject(routeParams.id!);
-    if (!currentProject) {
-      console.error(
-        "Project not found in onUpdateProjectClick",
-        routeParams.id
-      );
-      return;
-    }
-    // Get the update form
-    const updateProjectForm = document.getElementById(
-      "update-project-form"
-    ) as HTMLFormElement;
-    if (updateProjectForm) {
-      // Get the input fields
-      const nameInput = updateProjectForm.querySelector(
-        "[name='name']"
-      ) as HTMLInputElement;
-      const descriptionInput = updateProjectForm.querySelector(
-        "[name='description']"
-      ) as HTMLTextAreaElement;
-      const roleInput = updateProjectForm.querySelector(
-        "[name='role']"
-      ) as HTMLSelectElement;
-      const statusInput = updateProjectForm.querySelector(
-        "[name='status']"
-      ) as HTMLSelectElement;
-      const dateInput = updateProjectForm.querySelector(
-        "[name='date']"
-      ) as HTMLInputElement;
-
-      // Populate the fields with the current project details
-      if (nameInput) nameInput.value = currentProject.name;
-      if (descriptionInput) descriptionInput.value = currentProject.description;
-      if (roleInput) roleInput.value = currentProject.role;
-      if (statusInput) statusInput.value = currentProject.status;
-      if (dateInput)
-        dateInput.value = new Date(currentProject.date)
-          .toISOString()
-          .split("T")[0];
-    }
+    modal.showModal("update-project-modal", 1);
   };
 
-  const onCloseModal = () => {
-    const projectForm = document.getElementById(
-      "update-project-form"
-    ) as HTMLFormElement;
-    projectForm.reset();
-    const closeProjectModal = new ModalManager();
-    closeProjectModal.showModal("update-project-modal", 0);
-    const updateError = document.getElementById(
-      "updateNameError"
-    ) as HTMLElement;
-    const updateError2 = document.getElementById(
-      "updateNameError2"
-    ) as HTMLElement;
-    if (updateError || updateError2) {
-      updateError.style.display = "none";
-      updateError2.style.display = "none";
-    }
-  };
-
-  const onFormSubmit = async (event: React.FormEvent) => {
-    const updateForm = document.getElementById(
-      "update-project-form"
-    ) as HTMLFormElement;
-    const updateError = document.getElementById(
-      "updateNameError"
-    ) as HTMLElement;
-    const updateError2 = document.getElementById(
-      "updateNameError2"
-    ) as HTMLElement;
-    const tip = document.getElementById("tip") as HTMLElement;
-    if (!(updateForm && updateForm instanceof HTMLFormElement)) {
-      return;
-    }
-    event.preventDefault();
-    const formData = new FormData(updateForm);
-    const projectData: IProject = {
-      name: formData.get("name") as string,
-      description: formData.get("description") as string,
-      status: formData.get("status") as projectStatus,
-      role: formData.get("role") as userRole,
-      date: new Date(
-        (formData.get("date") as string).replace(/-/g, "/") || new Date()
-      ),
-      todoList: [],
-    };
+  const handleUpdate = async (data: IProject) => {
     if (routeParams.id) {
-      try {
-        await updateDocument<Partial<IProject>>(
-          "/projects",
-          project.id,
-          projectData
-        );
-        props.projectsManager.updateProject(routeParams.id, projectData);
-        tip.style.display = "grid";
-        updateError.style.display = "none";
-        setProjectDetails(projectData);
-        updateForm.reset();
-        const updateBtn = new ModalManager();
-        updateBtn.showModal("update-project-modal", 0);
-      } catch (e) {
-        if (e.message.includes("description")) {
-          updateError2.innerHTML = `${e}`;
-          updateError2.style.display = "grid";
-          tip.style.display = "none";
-          updateError.style.display = "none";
-        } else {
-          updateError.innerHTML = `${e}`;
-          tip.style.display = "none";
-          updateError.style.display = "grid";
-          updateError2.style.display = "none";
-        }
-      }
-    } else {
-      console.error("Project ID not found in URL.");
+      await updateDocument<Partial<IProject>>("/projects", project.id, data);
+      props.projectsManager.updateProject(routeParams.id, data);
+      setProjectDetails(data);
+      modal.showModal("update-project-modal", 0);
     }
+  };
+
+  const handleCancel = () => {
+    modal.showModal("update-project-modal", 0);
   };
 
   return (
     <>
       <div className="page" id="project-details">
         <dialog id="update-project-modal">
-          <form onSubmit={(e) => onFormSubmit(e)} id="update-project-form">
-            <h2>Edit project</h2>
-            <div className="input-list">
-              <div className="form-field-container">
-                <label>
-                  <span className="material-icons-round">apartment</span>Name
-                </label>
-                <input name="name" type="text" />
-                <p
-                  id="tip"
-                  style={{
-                    color: "#5d616f",
-                    fontStyle: "italic",
-                    marginTop: 5,
-                  }}
-                >
-                  TIP: Give it a short name
-                </p>
-                <p
-                  id="updateNameError"
-                  style={{ color: "red", marginTop: 5, display: "none" }}
-                />
-              </div>
-              <div className="form-field-container">
-                <label>
-                  <span className="material-icons-round">notes</span>Description
-                </label>
-                <textarea
-                  name="description"
-                  cols={30}
-                  rows={5}
-                  placeholder="Give your description"
-                  defaultValue={""}
-                />
-                <p
-                  id="updateNameError2"
-                  style={{ color: "red", marginTop: 5, display: "none" }}
-                />
-              </div>
-              <div className="form-field-container">
-                <label>
-                  <span className="material-icons-round">account_circle</span>
-                  Role
-                </label>
-                <select name="role">
-                  <option>Architect</option>
-                  <option>Engineer</option>
-                  <option>Developer</option>
-                </select>
-              </div>
-              <div className="form-field-container">
-                <label>
-                  <span className="material-icons-round">help</span>Status
-                </label>
-                <select name="status">
-                  <option>Pending</option>
-                  <option>Active</option>
-                  <option>Finished</option>
-                </select>
-              </div>
-              <div className="form-field-container">
-                <label>
-                  <span className="material-icons-round">calendar_month</span>
-                  Finish date
-                </label>
-                <input name="date" type="date" />
-              </div>
-            </div>
-            <div className="modals-buttons">
-              <button
-                onClick={onCloseModal}
-                id="close-edit-modal"
-                type="button"
-                value="cancel"
-                className="cancel-button"
-              >
-                Cancel
-              </button>
-              <button type="submit" className="update-button">
-                Update
-              </button>
-            </div>
-          </form>
+          <ProjectForm
+            mode="edit"
+            initialData={project}
+            onSubmit={handleUpdate}
+            onCancel={handleCancel}
+          />
         </dialog>
         <header>
           <div>

@@ -22,24 +22,25 @@ export class ProjectsManager {
     onTodoDeleted = (id: string) => {
 
     }
+
+    validateProject(data: IProject){
+        const names = this.list.map(p => p.name)
+    if (names.includes(data.name)) {
+      throw new Error(`A project with the name "${data.name}" already exists`)
+    }
+    if (data.name.length < 5) {
+      throw new Error(
+        `The project name "${data.name}" should be at least 5 characters long`
+      )
+    }
+    if (!data.description.trim()) {
+      throw new Error(`There isn't a description for this project`)
+    }
+    }
     
 
     newProject(data: IProject, id?: string) {
-        const projectNames = this.list.map((project) => {
-            return project.name
-        })
-        const nameInUse = projectNames.includes(data.name)
-        if (nameInUse) {
-            throw new Error(`A project with the name "${data.name}" already exists`)
-        }
-        if (data.name.length < 5) {
-            throw new Error(`The project name "${data.name}" should be at least 5 characters long`);
-        }
-
-        if(!data.description){
-            throw new Error(`There isn't a description for this project`);
-        }
-
+        this.validateProject(data)
         const project = new Project(data, id)
         this.oldProject = project
         this.list.push(project)
