@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { IProject, projectStatus, userRole } from "@classes/Project";
+import { parseDateInput } from "@utils/Utils";
 
 interface Props {
   initialData?: IProject;
@@ -60,7 +61,7 @@ export const ProjectForm: React.FC<Props> = ({
       description: description.trim(),
       role,
       status,
-      date: date ? new Date(date) : new Date(),
+      date: date ? parseDateInput(date) : new Date(),
       todoList: [],
     };
 

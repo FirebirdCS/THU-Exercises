@@ -23,6 +23,7 @@ export class ProjectsManager {
 
     }
 
+    /* Validate the requiered inputs */
     validateProject(data: IProject){
         const names = this.list.map(p => p.name)
     if (names.includes(data.name)) {
@@ -151,7 +152,7 @@ export class ProjectsManager {
         const todo = this.getToDo(id)
         if (!todo) { return }
         this.todoList = this.todoList.filter((t) => t.id !== id);
-        // Find the project the ToDo belongs to
+        // Find the project where the ToDo belongs to
         const projectId = this.getProjectIdForToDo(id);
         if (projectId) {
             const project = this.getProject(projectId);

@@ -39,3 +39,9 @@ export function selectRandomColor(): string {
     const colors = ["#212B37", "#EF6337", "#781239", "#3b95bf", "#48bf3b"];
     return colors[Math.floor(Math.random() * colors.length)];
 }
+
+export function parseDateInput(dateStr: string): Date {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    // En JS los meses van 0–11
+    return new Date(year, month - 1, day);
+  }

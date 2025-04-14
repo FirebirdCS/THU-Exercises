@@ -7,6 +7,7 @@ import { getCollection } from "@db/index";
 import * as Firestore from "firebase/firestore";
 import { Project } from "@classes/Project";
 import { SearchBox } from "@reactComponents/ui/SearchBox";
+import { ToDoForm } from "@reactComponents/todo/ToDoForm";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -38,6 +39,10 @@ export function ToDoPage(props: Props) {
     );
   };
 
+  const deleteToDoFromState = (id: string) => {
+    setToDos((prev) => prev.filter((todo) => todo.id !== id));
+  };
+
   const toDoCards = toDos.map((todo) => {
     return (
       <ToDoCard
@@ -46,9 +51,13 @@ export function ToDoPage(props: Props) {
         project={props.project}
         key={todo.id}
         onUpdate={updateToDo}
+        onDelete={deleteToDoFromState}
       />
     );
   });
+
+  const modal = new ModalManager();
+
   const onNewToDoClick = () => {
     const error = document.getElementById(
       "createDescriptionError"
@@ -60,52 +69,15 @@ export function ToDoPage(props: Props) {
     createToDoModal.showModal("create-todo-modal", 1);
   };
 
-  const onCloseModal = () => {
-    const toDoForm = document.getElementById(
-      "create-todo-form"
-    ) as HTMLFormElement;
-    toDoForm.reset();
-    const closeToDoModal = new ModalManager();
-    closeToDoModal.showModal("create-todo-modal", 0);
-  };
-
-  const onFormSubmit = async (event: React.FormEvent) => {
-    const toDoForm = document.getElementById(
-      "create-todo-form"
-    ) as HTMLFormElement;
-    const createToDoError = document.getElementById(
-      "createDescriptionError"
-    ) as HTMLElement;
-    if (toDoForm && toDoForm instanceof HTMLFormElement) {
-      const formData = new FormData(toDoForm);
-      event.preventDefault();
-      const todoData: ITodo = {
-        description: formData.get("description") as string,
-        date: new Date(
-          (formData.get("date") as string).replace(/-/g, "/") || new Date()
-        ),
-        statusToDo: formData.get("statusToDo") as statusTask,
-      };
-      try {
-        const doc = await Firestore.addDoc(todoCollection, todoData);
-        const todo = props.projectsManager.newTodo(todoData, props.projectId);
-        todo.id = doc.id; // Make sure to asign the correct id to the toDo
-        const currentProject = props.projectsManager.list.find(
-          (project) => project.id === props.projectId
-        );
-        if (currentProject) {
-          setToDos([...currentProject.todoList]);
-        }
-        toDoForm.reset();
-        const toDoBtn = new ModalManager();
-        toDoBtn.showModal("create-todo-modal", 0);
-      } catch (e) {
-        if (e.message.includes("description")) {
-          createToDoError.innerHTML = `${e}`;
-          createToDoError.style.display = "grid";
-        }
-      }
-    }
+  const handleCreateToDo = async (data: ITodo) => {
+    const doc = await Firestore.addDoc(todoCollection, data);
+    const todoInstance = props.projectsManager.newTodo(data, props.projectId);
+    todoInstance.id = doc.id;
+    const current = props.projectsManager.list.find(
+      (p) => p.id === props.projectId
+    );
+    if (current) setToDos([...current.todoList]);
+    modal.showModal("create-todo-modal", 0);
   };
 
   const onTodoSearch = (value: string) => {
@@ -137,59 +109,11 @@ export function ToDoPage(props: Props) {
         {toDoCards}
       </div>
       <dialog id="create-todo-modal">
-        <form onSubmit={(e) => onFormSubmit(e)} id="create-todo-form">
-          <h2>Create a toDo</h2>
-          <div className="input-list">
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">notes</span>
-                Description
-              </label>
-              <textarea
-                name="description"
-                cols={30}
-                rows={5}
-                placeholder="Give the description of the task"
-                defaultValue={""}
-              />
-              <p
-                id="createDescriptionError"
-                style={{ color: "red", marginTop: 5, display: "none" }}
-              />
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">calendar_month</span>
-                Finish date
-              </label>
-              <input name="date" type="date" />
-            </div>
-            <div className="form-field-container">
-              <label>
-                <span className="material-icons-round">help</span>Status
-              </label>
-              <select name="statusToDo">
-                <option>important</option>
-                <option>completed</option>
-                <option>on-going</option>
-              </select>
-            </div>
-          </div>
-          <div className="modals-buttons">
-            <button
-              id="close-todo-modal"
-              type="button"
-              value="cancel"
-              className="cancel-button"
-              onClick={onCloseModal}
-            >
-              Cancel
-            </button>
-            <button type="submit" className="update-button">
-              Create
-            </button>
-          </div>
-        </form>
+        <ToDoForm
+          mode="create"
+          onSubmit={handleCreateToDo}
+          onCancel={() => modal.showModal("new-project-modal", 0)}
+        />
       </dialog>
     </>
   );
