@@ -9,7 +9,7 @@ import { ThreeViewer } from "@reactComponents/three/ThreeViewer";
 import { deleteDocument, getCollection, updateDocument } from "@db/index";
 import { ITodo } from "@classes/ToDo";
 import { ProjectForm } from "@reactComponents/project/ProjectForm";
-import { ConfirmModal } from "@utils/ConfirmModal";
+import { ConfirmModal } from "@reactComponents/ui/ConfirmModal";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

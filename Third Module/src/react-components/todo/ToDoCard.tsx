@@ -9,7 +9,7 @@ import { ToDoForm } from "@reactComponents/todo/ToDoForm";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ConfirmModal } from "@utils/ConfirmModal";
+import { ConfirmModal } from "@reactComponents/ui/ConfirmModal";
 
 interface Props {
   todo: ToDo;

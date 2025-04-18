@@ -93,6 +93,12 @@ export function ToDoPage(props: Props) {
 
   return (
     <>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        theme="dark"
+      />
       <div className="task-header">
         <h4>To-Do</h4>
         <div className="task-searchbar">
