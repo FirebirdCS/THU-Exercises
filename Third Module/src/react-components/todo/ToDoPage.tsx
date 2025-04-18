@@ -9,6 +9,9 @@ import { Project } from "@classes/Project";
 import { SearchBox } from "@reactComponents/ui/SearchBox";
 import { ToDoForm } from "@reactComponents/todo/ToDoForm";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 interface Props {
   projectsManager: ProjectsManager;
   projectId: string;
@@ -78,6 +81,7 @@ export function ToDoPage(props: Props) {
     );
     if (current) setToDos([...current.todoList]);
     modal.showModal("create-todo-modal", 0);
+    toast.success("Todo added successfully!");
   };
 
   const onTodoSearch = (value: string) => {
@@ -112,7 +116,7 @@ export function ToDoPage(props: Props) {
         <ToDoForm
           mode="create"
           onSubmit={handleCreateToDo}
-          onCancel={() => modal.showModal("new-project-modal", 0)}
+          onCancel={() => modal.showModal("create-todo-modal", 0)}
         />
       </dialog>
     </>

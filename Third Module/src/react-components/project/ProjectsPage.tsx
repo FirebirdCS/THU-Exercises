@@ -10,6 +10,9 @@ import * as Router from "react-router-dom";
 import { getCollection } from "@db/index";
 import { ITodo, ToDo } from "@classes/ToDo";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 interface Props {
   projectsManager: ProjectsManager;
 }
@@ -89,6 +92,7 @@ export function ProjectsPage(props: Props) {
     const doc = await Firestore.addDoc(projectsCollection, data);
     props.projectsManager.newProject(data, doc.id);
     modal.showModal("new-project-modal", 0);
+    toast.success("Project created successfully!");
   };
 
   // Open new modal logic
@@ -118,6 +122,12 @@ export function ProjectsPage(props: Props) {
 
   return (
     <div className="page" id="projects-page">
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        theme="dark"
+      />
       <dialog id="new-project-modal">
         <ProjectForm
           mode="create"

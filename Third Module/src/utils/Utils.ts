@@ -12,6 +12,7 @@ export class ModalManager {
             console.warn(`The modal with id ${id} wasn't found`);
         }
     }
+    
 }
 
 

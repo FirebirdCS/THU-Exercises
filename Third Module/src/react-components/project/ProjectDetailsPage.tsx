@@ -9,6 +9,10 @@ import { ThreeViewer } from "@reactComponents/three/ThreeViewer";
 import { deleteDocument, getCollection, updateDocument } from "@db/index";
 import { ITodo } from "@classes/ToDo";
 import { ProjectForm } from "@reactComponents/project/ProjectForm";
+import { ConfirmModal } from "@utils/ConfirmModal";
+
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -52,9 +56,11 @@ export function ProjectDetailsPage(props: Props) {
         await deleteDocument(`/projects/${routeParams.id}/todoList`, doc.id);
       }
       await deleteDocument("/projects", id);
-      navigateTo("/");
+      toast.success("Project deleted successfully!");
+      setTimeout(() => navigateTo("/"), 1500);
     } catch (error) {
-      console.error("Error deleting project or todo list:", error);
+      toast.error("Error deleting project or todo list");
+      console.error(error);
     }
   };
 
@@ -72,6 +78,7 @@ export function ProjectDetailsPage(props: Props) {
       props.projectsManager.updateProject(routeParams.id, data);
       setProjectDetails(data);
       modal.showModal("update-project-modal", 0);
+      toast.success("Project updated successfully!");
     }
   };
 
@@ -79,9 +86,30 @@ export function ProjectDetailsPage(props: Props) {
     modal.showModal("update-project-modal", 0);
   };
 
+  const openConfirmModal = () => {
+    modal.showModal("confirm-delete-modal", 1);
+  };
+
+  const closeConfirmModal = () => {
+    modal.showModal("confirm-delete-modal", 0);
+  };
+
   return (
     <>
       <div className="page" id="project-details">
+        <ToastContainer
+          position="bottom-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          theme="dark"
+        />
+        <ConfirmModal
+          id="confirm-delete-modal"
+          title="Delete Project"
+          message={`Are you sure you want to delete project ${project.name}?`}
+          onConfirm={() => props.projectsManager.deleteProject(project.id)}
+          onCancel={closeConfirmModal}
+        />
         <dialog id="update-project-modal">
           <ProjectForm
             mode="edit"
@@ -126,9 +154,7 @@ export function ProjectDetailsPage(props: Props) {
                     <p style={{ margin: 0, width: "100%" }}>Edit</p>
                   </button>
                   <span
-                    onClick={() => {
-                      props.projectsManager.deleteProject(project.id);
-                    }}
+                    onClick={openConfirmModal}
                     className="material-icons-round action-icon delete"
                     style={{ color: "red", cursor: "pointer" }}
                   >
