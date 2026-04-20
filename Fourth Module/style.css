@@ -505,3 +505,7 @@ input:focus, textarea:focus, select:focus{
     background-color: var(--primary-300);
     transition: 0.6s;
 }
+
+.project-card bim-label{
+    white-space: normal;
+}

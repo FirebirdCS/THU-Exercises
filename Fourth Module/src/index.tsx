@@ -6,6 +6,9 @@ import { ProjectsPage } from "./react-components/project/ProjectsPage";
 import { ProjectDetailsPage } from "./react-components/project/ProjectDetailsPage";
 import { UserPage } from "./react-components/user/UserPage";
 import { ProjectsManager } from "./classes/ProjectsManager";
+import * as BUI from "@thatopen/ui";
+
+BUI.Manager.init()
 
 const projectsManager = new ProjectsManager();
 

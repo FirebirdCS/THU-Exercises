@@ -18,7 +18,8 @@
         "@classes/*": ["src/classes/*"],
         "@reactComponents/*": ["src/react-components/*"],
         "@utils/*": ["src/utils/*"],
-        "@db/*": ["src/firebase/*"]
+        "@db/*": ["src/firebase/*"],
+        "@icons": ["src/index.ts"]
       },
       
       /* Linting */
