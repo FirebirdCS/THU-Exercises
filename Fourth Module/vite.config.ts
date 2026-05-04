@@ -6,6 +6,8 @@ export default defineConfig({
     plugins: [react()],
     resolve: {
         alias: {
+            // Supports imports like `src/bim-components/setup`
+            src: path.resolve(__dirname, "src"),
             "@classes": path.resolve(__dirname, "src/classes"),
             "@reactComponents": path.resolve(__dirname, "src/react-components"),
             "@uiTemplates": path.resolve(__dirname, "src/react-components/ui/ui-templates"),

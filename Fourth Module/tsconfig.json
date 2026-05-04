@@ -15,6 +15,7 @@
       "jsx": "react",
       "baseUrl": ".",
       "paths": {
+        "src/*": ["src/*"],
         "@classes/*": ["src/classes/*"],
         "@reactComponents/*": ["src/react-components/*"],
         "@uiTemplates": ["src/react-components/ui/ui-templates/index.ts"],

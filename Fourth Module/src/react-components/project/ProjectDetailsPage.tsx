@@ -16,6 +16,7 @@ import type { ViewerGrid } from "@uiTemplates";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { setupComponents } from "src/bim-components/setup";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -41,10 +42,14 @@ export function ProjectDetailsPage(props: Props) {
     }
   }, [routeParams.id, props.projectsManager, navigate]);
 
-  if (!routeParams.id) return console.log("Project not found", routeParams.id);
+  if (!routeParams.id) {
+    console.log("Project not found", routeParams.id);
+    return null;
+  }
   const project = props.projectsManager.getProject(routeParams.id);
   if (!(project && project instanceof Project)) {
-    return console.log("Project not found in the list", routeParams.id);
+    console.log("Project not found in the list", routeParams.id);
+    return null;
   }
 
   const navigateTo = Router.useNavigate();
@@ -98,9 +103,12 @@ export function ProjectDetailsPage(props: Props) {
   };
 
   const viewerGrid = React.useRef<ViewerGrid>(null);
-  React.useEffect(() => {
+
+  const setupGrid = async () => {
     const { current: grid } = viewerGrid;
     if (!grid) return;
+
+    const { viewport } = await setupComponents();
 
     grid.elements = {
       header: {
@@ -113,7 +121,7 @@ export function ProjectDetailsPage(props: Props) {
       },
       componentsGrid: {
         template: TEMPLATES.componentsGridTemplate,
-        initialState: {},
+        initialState: { viewport },
       },
     };
 
@@ -125,6 +133,10 @@ export function ProjectDetailsPage(props: Props) {
     };
 
     grid.layout = "Main";
+  };
+
+  React.useEffect(() => {
+    setupGrid();
   }, []);
 
   return (
