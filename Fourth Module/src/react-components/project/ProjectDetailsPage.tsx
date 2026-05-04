@@ -12,6 +12,7 @@ import { ProjectForm } from "@reactComponents/project/ProjectForm";
 import { ConfirmModal } from "@reactComponents/ui/ConfirmModal";
 import * as BUI from "@thatopen/ui";
 import * as TEMPLATES from "@uiTemplates";
+import type { ViewerGrid } from "@uiTemplates";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -96,7 +97,7 @@ export function ProjectDetailsPage(props: Props) {
     modal.showModal("confirm-delete-modal", 0);
   };
 
-  const viewerGrid = React.useRef<BUI.Grid<["Main"]>>(null);
+  const viewerGrid = React.useRef<ViewerGrid>(null);
   React.useEffect(() => {
     const { current: grid } = viewerGrid;
     if (!grid) return;
