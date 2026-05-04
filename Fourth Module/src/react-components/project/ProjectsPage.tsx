@@ -9,7 +9,7 @@ import { ProjectForm } from "@reactComponents/project/ProjectForm";
 import * as Router from "react-router-dom";
 import { getCollection } from "@db/index";
 import { ITodo, ToDo } from "@classes/ToDo";
-
+import { appIcons } from "@icons";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -21,7 +21,7 @@ const projectsCollection = getCollection<IProject>("/projects");
 
 export function ProjectsPage(props: Props) {
   const [projects, setProjects] = React.useState<Project[]>(
-    props.projectsManager.list
+    props.projectsManager.list,
   );
 
   props.projectsManager.onProjectCreated = () => {
@@ -30,7 +30,7 @@ export function ProjectsPage(props: Props) {
 
   // Make sure to get information about the todo collection and push it
   const getFirestoreProjectTodo = async (
-    collection: Firestore.CollectionReference<ITodo>
+    collection: Firestore.CollectionReference<ITodo>,
   ): Promise<ToDo[]> => {
     const firebaseTodos = await Firestore.getDocs(collection);
     const todoList: ToDo[] = [];
@@ -53,7 +53,7 @@ export function ProjectsPage(props: Props) {
     for (const doc of firebaseProjects.docs) {
       const data = doc.data();
       const fbTodosCollection = getCollection<ITodo>(
-        `/projects/${doc.id}/todoList`
+        `/projects/${doc.id}/todoList`,
       );
       const todoList = await getFirestoreProjectTodo(fbTodosCollection);
       const project: IProject = {
@@ -136,7 +136,9 @@ export function ProjectsPage(props: Props) {
         />
       </dialog>
       <header>
-        <h2>Project List</h2>
+        <bim-label style={{ fontSize: "1.3rem", color: "white" }}>
+          Project List
+        </bim-label>
         <SearchBox
           onChange={(value) => {
             onProjectSearch(value);
@@ -145,29 +147,21 @@ export function ProjectsPage(props: Props) {
           size="40%"
         />
         <div style={{ display: "flex", alignItems: "center", columnGap: 15 }}>
-          <span
-            onClick={onImportProject}
-            id="import-projects-btn"
-            style={{ cursor: "pointer" }}
-            className="material-icons-round action-icon"
-          >
-            file_upload
-          </span>
-          <span
-            onClick={onExportProject}
-            id="export-projects-btn"
-            style={{ cursor: "pointer" }}
-            className="material-icons-round action-icon"
-          >
-            file_download
-          </span>
-          <button
-            onClick={onNewProjectClick}
-            id="new-project-btn"
-            className="project-button"
-          >
-            <span className="material-icons-round">add</span>New project
-          </button>
+          <bim-button
+            onclick={onImportProject}
+            icon={appIcons.UPLOAD}
+            label="Upload"
+          ></bim-button>
+          <bim-button
+            onclick={onExportProject}
+            icon={appIcons.DOWNLOAD}
+            label="Download"
+          ></bim-button>
+          <bim-button
+            onclick={onNewProjectClick}
+            icon={appIcons.ADD}
+            label="New project"
+          ></bim-button>
         </div>
       </header>
       {projects.length > 0 ? (

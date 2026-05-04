@@ -16,19 +16,19 @@ export function SearchBox(props: Props) {
         width: props.size || "40%",
       }}
     >
-      <span className="material-icons-round">search</span>
-      <input
-        onChange={(e) => {
+      <bim-text-input
+        debounce="200"
+        style={
+          {
+            minHeight: "2.5rem",
+            "--bim-input--p": "0.75rem 0.75rem",
+          } as React.CSSProperties
+        }
+        oninput={(e) => {
           props.onChange(e.target.value.toLowerCase());
         }}
-        type="text"
         placeholder={`Search ${props.searchProp} by name...`}
-        style={{
-          width: "100%",
-          height: "40px",
-          backgroundColor: "var(--background-100)",
-        }}
-      />
+      ></bim-text-input>
     </div>
   );
 }

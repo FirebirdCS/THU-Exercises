@@ -9,19 +9,22 @@
     --background: #242220;
     --background-100: #26282b;
     --background-200: #3b3c3f;
-    --font-xs: 10px;
-    --font-sm: 12px;
-    --font-base: 14px;
-    --font-lg: 16px;
-    --font-xl: 18px;
-    --font-2xl: 20px;
-    --font-3xl: 22px;
+    --bim-ui_main-base: var(--primary);
+    --bim-ui_accent-base: var(--primary);
 }
 
 *{
     font-family: 'Montserrat', 'sans-serif';
     margin: 0;
     padding: 0;
+}
+
+html{
+    font-size: 16px;
+}
+
+body{
+    background-color: var(--background);
 }
 
 /* General Styles */
@@ -47,7 +50,7 @@ h5 {
     display: grid;
     grid-template-columns: 300px 1fr;
     grid-template-areas: 'sidebar content';
-    height: 100vh;
+    min-height: 100vh;
     background-color: var(--background);
     color: white;
 
@@ -82,6 +85,7 @@ button {
     display: flex;
     flex-direction: column;
     height: 100%;
+    min-height: 0;
 }
 
 
@@ -107,24 +111,9 @@ button {
     height: 65px;
 }
 
-#nav-buttons li {
-    list-style-type: none;
-    padding: 15px;
-    border-radius: 10px;
-    font-size: var(--font-lg);
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    flex-direction: row;
-    column-gap: 10px;
+#nav-buttons bim-button {
+    background-color: transparent;
  }
-
-
-#nav-buttons li:hover{
-    background-color: var(--primary);
-}
-
 
 
 /* Content styles */
@@ -136,11 +125,27 @@ header {
     justify-content: space-between;
 }
 
+#projects-page{
+    height: 100vh;
+    overflow: hidden;
+}
+
+#projects-page header{
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: var(--background);
+}
+
 #projects-lists{
   display: grid;
   padding: 20px 40px;
   gap: 30px;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  align-content: start;
 }
 
 #projects-lists a{

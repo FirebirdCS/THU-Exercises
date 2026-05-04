@@ -18,12 +18,15 @@ export function ProjectCard(props: Props) {
             padding: 10,
             borderRadius: 8,
             aspectRatio: 1,
+            color: "white",
           }}
         >
           {iconTitle}
         </bim-label>
         <div>
-          <p style={{ color: "white", fontSize: "1rem" }}>{props.project.name}</p>
+          <p style={{ color: "white", fontSize: "1rem" }}>
+            {props.project.name}
+          </p>
           <p style={{ color: "#969696", fontSize: "0.9rem" }}>
             {props.project.description}
           </p>
@@ -31,28 +34,48 @@ export function ProjectCard(props: Props) {
       </div>
       <div className="card-content">
         <div className="card-property">
-          <bim-label icon={appIcons.STATUS} style={{ color: "#969696", fontSize: "1rem"}}>
+          <bim-label
+            icon={appIcons.STATUS}
+            style={{ color: "#969696", fontSize: "1rem" }}
+          >
             Status
           </bim-label>
-          <bim-label style={{ color: "white", fontSize: "1rem" }}>{props.project.status}</bim-label>
+          <bim-label style={{ color: "white", fontSize: "1rem" }}>
+            {props.project.status}
+          </bim-label>
         </div>
         <div className="card-property">
-          <bim-label icon={appIcons.ROLE} style={{ color: "#969696", fontSize: "1rem" }}>
+          <bim-label
+            icon={appIcons.ROLE}
+            style={{ color: "#969696", fontSize: "1rem" }}
+          >
             Role
           </bim-label>
-          <bim-label style={{ color: "white", fontSize: "1rem" }}>{props.project.role}</bim-label>
+          <bim-label style={{ color: "white", fontSize: "1rem" }}>
+            {props.project.role}
+          </bim-label>
         </div>
         <div className="card-property">
-          <bim-label icon={appIcons.COST} style={{ color: "#969696", fontSize: "1rem" }}>
+          <bim-label
+            icon={appIcons.COST}
+            style={{ color: "#969696", fontSize: "1rem" }}
+          >
             Cost
           </bim-label>
-          <bim-label style={{ color: "white", fontSize: "1rem" }}>{props.project.cost}</bim-label>
+          <bim-label style={{ color: "white", fontSize: "1rem" }}>
+            {props.project.cost}
+          </bim-label>
         </div>
         <div className="card-property">
-          <bim-label icon={appIcons.PROGRESS} style={{ color: "#969696", fontSize: "1rem" }}>
+          <bim-label
+            icon={appIcons.PROGRESS}
+            style={{ color: "#969696", fontSize: "1rem" }}
+          >
             Estimated Progress
           </bim-label>
-          <bim-label style={{ color: "white", fontSize: "1rem" }}>{progressPercent}%</bim-label>
+          <bim-label style={{ color: "white", fontSize: "1rem" }}>
+            {progressPercent}%
+          </bim-label>
         </div>
       </div>
     </div>
