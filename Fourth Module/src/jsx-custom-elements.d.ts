@@ -6,6 +6,7 @@ declare global {
       "bim-button": any;
       "bim-label": any;
       "bim-text-input": any;
+      "bim-grid": any;
     }
   }
 }

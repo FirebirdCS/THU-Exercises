@@ -10,6 +10,7 @@ import { deleteDocument, getCollection, updateDocument } from "@db/index";
 import { ITodo } from "@classes/ToDo";
 import { ProjectForm } from "@reactComponents/project/ProjectForm";
 import { ConfirmModal } from "@reactComponents/ui/ConfirmModal";
+import * as BUI from "@thatopen/ui";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -21,7 +22,7 @@ interface Props {
 export function ProjectDetailsPage(props: Props) {
   const routeParams = Router.useParams<{ id: string }>();
   const [projectDetails, setProjectDetails] = React.useState<IProject | null>(
-    null
+    null,
   );
   const navigate = Router.useNavigate();
   const modal = new ModalManager();
@@ -46,7 +47,7 @@ export function ProjectDetailsPage(props: Props) {
 
   const navigateTo = Router.useNavigate();
   const todoListCollection = getCollection<ITodo>(
-    `/projects/${routeParams.id}/todoList`
+    `/projects/${routeParams.id}/todoList`,
   );
 
   props.projectsManager.onProjectDeleted = async (id) => {
@@ -94,10 +95,40 @@ export function ProjectDetailsPage(props: Props) {
     modal.showModal("confirm-delete-modal", 0);
   };
 
+  const viewerGrid = React.useRef<BUI.Grid<["Main"]>>(null);
+  React.useEffect(() => {
+    const { current: grid } = viewerGrid;
+    if (!grid) return;
+
+    grid.elements = {
+      header: {
+        template: () => BUI.html`<div></div>`,
+        initialState: {},
+      },
+      sidebar: {
+        template: () => BUI.html`<div></div>`,
+        initialState: {},
+      },
+      componentsGrid: {
+        template: () => BUI.html`<div></div>`,
+        initialState: {},
+      },
+    };
+
+    grid.layouts = {
+      Main: {
+        template: `"header header" auto, 
+                  "sidebar componentsGrid" 1fr / auto 1fr`,
+      },
+    };
+
+    grid.layout = "Main";
+  }, []);
+
   return (
     <>
-      <div className="page" id="project-details">
-        <ToastContainer
+      <bim-grid ref={viewerGrid} className="viewer-grid">
+        {/* <ToastContainer
           position="bottom-right"
           autoClose={3000}
           hideProgressBar={false}
@@ -216,8 +247,8 @@ export function ProjectDetailsPage(props: Props) {
             </div>
             <div className="dashboard-card" style={{ flexGrow: "1" }}>
               {/* projectId as an parameter  */}
-              {/* Send the project info to the todoPage for the todoCard so it can retrieve the collection of todolist*/}
-              <ToDoPage
+        {/* Send the project info to the todoPage for the todoCard so it can retrieve the collection of todolist*/}
+        {/* <ToDoPage
                 projectsManager={props.projectsManager}
                 projectId={routeParams.id}
                 project={project}
@@ -225,8 +256,8 @@ export function ProjectDetailsPage(props: Props) {
             </div>
           </div>
           <ThreeViewer />
-        </div>
-      </div>
+        </div> */}
+      </bim-grid>
     </>
   );
 }

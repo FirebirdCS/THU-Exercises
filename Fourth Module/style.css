@@ -146,11 +146,34 @@ header {
   min-height: 0;
   overflow-y: auto;
   align-content: start;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: var(--primary-300) var(--background-100); /* Firefox */
 }
 
 #projects-lists a{
     color: white;
     text-decoration: none;
+}
+
+/* Projects list scrollbar (WebKit) */
+#projects-lists::-webkit-scrollbar{
+    width: 10px;
+}
+
+#projects-lists::-webkit-scrollbar-track{
+    background: var(--background-200);
+    border-left: 1px solid rgba(255,255,255,0.06);
+}
+
+#projects-lists::-webkit-scrollbar-thumb{
+    background: linear-gradient(180deg, var(--primary-300), var(--primary));
+    border-radius: 999px;
+    border: 2px solid var(--background-200);
+}
+
+#projects-lists::-webkit-scrollbar-thumb:hover{
+    background: linear-gradient(180deg, var(--primary), var(--primary-400));
 }
 
 .project-card{
