@@ -8,6 +8,7 @@ export default defineConfig({
         alias: {
             "@classes": path.resolve(__dirname, "src/classes"),
             "@reactComponents": path.resolve(__dirname, "src/react-components"),
+            "@uiTemplates": path.resolve(__dirname, "src/react-components/ui/ui-templates"),
             "@utils": path.resolve(__dirname, "src/utils"),
             "@db": path.resolve(__dirname, "src/firebase"),
             "@icons": path.resolve(__dirname, "src/index.ts")

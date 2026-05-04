@@ -17,6 +17,8 @@
       "paths": {
         "@classes/*": ["src/classes/*"],
         "@reactComponents/*": ["src/react-components/*"],
+        "@uiTemplates": ["src/react-components/ui/ui-templates/index.ts"],
+        "@uiTemplates/*": ["src/react-components/ui/ui-templates/*"],
         "@utils/*": ["src/utils/*"],
         "@db/*": ["src/firebase/*"],
         "@icons": ["src/index.ts"]

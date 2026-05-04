@@ -11,6 +11,7 @@ import { ITodo } from "@classes/ToDo";
 import { ProjectForm } from "@reactComponents/project/ProjectForm";
 import { ConfirmModal } from "@reactComponents/ui/ConfirmModal";
 import * as BUI from "@thatopen/ui";
+import * as TEMPLATES from "@uiTemplates";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -102,15 +103,15 @@ export function ProjectDetailsPage(props: Props) {
 
     grid.elements = {
       header: {
-        template: () => BUI.html`<div></div>`,
+        template: (_) => BUI.html`<div></div>`,
         initialState: {},
       },
       sidebar: {
-        template: () => BUI.html`<div></div>`,
+        template: (_) => BUI.html`<div></div>`,
         initialState: {},
       },
       componentsGrid: {
-        template: () => BUI.html`<div></div>`,
+        template: TEMPLATES.componentsGridTemplate,
         initialState: {},
       },
     };
