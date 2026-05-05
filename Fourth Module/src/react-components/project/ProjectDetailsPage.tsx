@@ -69,7 +69,7 @@ export function ProjectDetailsPage(props: Props) {
       const { current: grid } = viewerGrid;
       if (!grid) return;
 
-      const { viewport } = await setupComponents();
+      const { components, viewport } = await setupComponents();
 
       grid.elements = {
         header: {
@@ -82,7 +82,7 @@ export function ProjectDetailsPage(props: Props) {
         },
         componentsGrid: {
           template: TEMPLATES.componentsGridTemplate,
-          initialState: { viewport },
+          initialState: { viewport, components },
         },
       };
 

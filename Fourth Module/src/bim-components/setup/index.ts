@@ -1,7 +1,7 @@
 import * as OBC from "@thatopen/components"
-import { createWorld, setupIfcLoader, setupFragmentsManager } from "./src"
+import { createWorld, setupIfcLoader, setupFragmentsManager, setupHighlighter } from "./src"
 import * as BUI from "@thatopen/ui"
-import { loadModelBtnTemplate } from "src/react-components/ui/ui-templates"
+import { loadModelBtnTemplate } from "@uiTemplates"
 
 export const setupComponents = async () => {
     const components = new OBC.Components()
@@ -9,6 +9,7 @@ export const setupComponents = async () => {
 
     setupIfcLoader(components)
     setupFragmentsManager(components, world)
+    setupHighlighter(components, world)
 
     const [loadModelsBtn] = BUI.Component.create(loadModelBtnTemplate, { components })
     loadModelsBtn.style.position = "absolute"
@@ -19,5 +20,5 @@ export const setupComponents = async () => {
 
     components.init()
 
-    return { world, viewport }
+    return { components, viewport }
 }

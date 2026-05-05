@@ -1,4 +1,5 @@
 import * as BUI from "@thatopen/ui";
+import * as OBC from "@thatopen/components";
 
 type Header = {
     name: "header";
@@ -12,7 +13,10 @@ type Sidebar = {
 
 type ComponentsGrid = {
     name: "componentsGrid";
-    state: {};
+    state: {
+        components: OBC.Components;
+        viewport?: BUI.Viewport;
+    };
 };
 
 type ViewerGridElements = [Header, Sidebar, ComponentsGrid];
