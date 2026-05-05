@@ -11,6 +11,7 @@
     --background-200: #3b3c3f;
     --bim-ui_main-base: var(--primary);
     --bim-ui_accent-base: var(--primary);
+    --bim-ui_bg-base: var(--background);
 }
 
 *{
@@ -536,4 +537,65 @@ input:focus, textarea:focus, select:focus{
 
 .project-card bim-label{
     white-space: normal;
+}
+
+/* New styles for the components grid */
+
+bim-grid {
+    background-color: transparent;
+}
+  
+.components-grid {
+    gap: 1rem;
+}
+  
+.viewer-grid, .viewport-grid {
+    padding: 1rem;
+}
+  
+bim-panel-section {
+    --bim-panel-section_hc: var(--primary);
+    overflow: auto;
+}
+  
+:not(bim-panel) > bim-panel-section {
+    border: 1px solid var(--bim-ui_bg-contrast-40);
+    border-radius: 0.25rem;
+}
+  
+bim-panel-section > bim-table {
+    flex: 1;
+}
+  
+bim-grid[floating] {
+    z-index: 100;
+}
+  
+bim-table {
+    border-radius: var(--bim-ui_size-4xs);
+}
+  
+bim-context-menu {
+    padding: 0.5rem;
+    background-color: var(--bim-ui_bg-base);
+    outline: 1px solid var(--bim-ui_bg-contrast-20);
+}
+  
+.transparent {
+    background-color: transparent;
+}
+  
+.viewport-container {
+    box-sizing: border-box;
+    position: relative;
+    border: 1px solid var(--bim-ui_bg-contrast-40);
+    border-radius: 0.25rem;
+    overflow: auto;
+    height: 100%;
+}
+  
+bim-grid[floating] > bim-toolbar {
+    border: none;
+    justify-self: center;
+    outline: 1px solid var(--bim-ui_bg-contrast-40);
 }

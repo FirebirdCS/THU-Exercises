@@ -11,13 +11,6 @@ export const setupComponents = async () => {
     setupFragmentsManager(components, world)
     setupHighlighter(components, world)
 
-    const [loadModelsBtn] = BUI.Component.create(loadModelBtnTemplate, { components })
-    loadModelsBtn.style.position = "absolute"
-    loadModelsBtn.style.top = "1rem"
-    loadModelsBtn.style.left = "1rem"
-
-    viewport.append(loadModelsBtn)
-
     components.init()
 
     return { components, viewport }

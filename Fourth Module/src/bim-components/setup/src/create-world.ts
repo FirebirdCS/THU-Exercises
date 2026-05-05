@@ -26,7 +26,7 @@ export const createWorld = (components: OBC.Components) => {
           world.camera.updateAspect();
         } catch (error) {
           console.warn("Resizing the world was not possible")
-        }  
+        }
     };
 
     viewport.addEventListener("resize", resizeWorld);
