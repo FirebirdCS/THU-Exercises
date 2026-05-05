@@ -6,7 +6,12 @@ interface ImportMetaEnv {
   readonly VITE_MESSAGING_SENDER_ID: string;
   readonly VITE_FIREBASE_APP_ID: string;
   }
-  
+
   interface ImportMeta {
     readonly env: ImportMetaEnv;
   }
+
+declare module "*?url" {
+  const src: string;
+  export default src;
+}

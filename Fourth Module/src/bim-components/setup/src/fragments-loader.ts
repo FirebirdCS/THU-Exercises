@@ -1,8 +1,9 @@
 import * as OBC from "@thatopen/components"
+import fragmentsWorkerUrl from "@thatopen/fragments/dist/Worker/worker.mjs?url"
 
 export const setupFragmentsManager = (components: OBC.Components, world: OBC.SimpleWorld<OBC.SimpleScene, OBC.OrthoPerspectiveCamera, OBC.SimpleRenderer>) => {
   const fragments = components.get(OBC.FragmentsManager);
-  fragments.init("/node_modules/@thatopen/fragments/dist/Worker/worker.mjs");
+  fragments.init(fragmentsWorkerUrl);
 
   fragments.list.onItemSet.add(async ({ value: model }) => {
 

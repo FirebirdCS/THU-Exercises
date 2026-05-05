@@ -28,7 +28,8 @@ export function ProjectDetailsPage(props: Props) {
     null,
   );
   const navigate = Router.useNavigate();
-  const modal = new ModalManager();
+  const modal = React.useMemo(() => new ModalManager(), []);
+  const viewerGrid = React.useRef<ViewerGrid>(null);
 
   React.useEffect(() => {
     if (routeParams.id) {
@@ -42,6 +43,61 @@ export function ProjectDetailsPage(props: Props) {
     }
   }, [routeParams.id, props.projectsManager, navigate]);
 
+  React.useEffect(() => {
+    if (!routeParams.id) return;
+    const todoListCollection = getCollection<ITodo>(
+      `/projects/${routeParams.id}/todoList`,
+    );
+    props.projectsManager.onProjectDeleted = async (id) => {
+      try {
+        const firebaseProjects = await Firestore.getDocs(todoListCollection);
+        for (const doc of firebaseProjects.docs) {
+          await deleteDocument(`/projects/${routeParams.id}/todoList`, doc.id);
+        }
+        await deleteDocument("/projects", id);
+        toast.success("Project deleted successfully!");
+        setTimeout(() => navigate("/"), 1500);
+      } catch (error) {
+        toast.error("Error deleting project or todo list");
+        console.error(error);
+      }
+    };
+  }, [routeParams.id, props.projectsManager, navigate]);
+
+  React.useEffect(() => {
+    const setupGrid = async () => {
+      const { current: grid } = viewerGrid;
+      if (!grid) return;
+
+      const { viewport } = await setupComponents();
+
+      grid.elements = {
+        header: {
+          template: (_) => BUI.html`<div></div>`,
+          initialState: {},
+        },
+        sidebar: {
+          template: (_) => BUI.html`<div></div>`,
+          initialState: {},
+        },
+        componentsGrid: {
+          template: TEMPLATES.componentsGridTemplate,
+          initialState: { viewport },
+        },
+      };
+
+      grid.layouts = {
+        Main: {
+          template: `"header header" auto,
+                    "sidebar componentsGrid" 1fr / auto 1fr`,
+        },
+      };
+
+      grid.layout = "Main";
+    };
+    setupGrid();
+  }, []);
+
   if (!routeParams.id) {
     console.log("Project not found", routeParams.id);
     return null;
@@ -51,26 +107,6 @@ export function ProjectDetailsPage(props: Props) {
     console.log("Project not found in the list", routeParams.id);
     return null;
   }
-
-  const navigateTo = Router.useNavigate();
-  const todoListCollection = getCollection<ITodo>(
-    `/projects/${routeParams.id}/todoList`,
-  );
-
-  props.projectsManager.onProjectDeleted = async (id) => {
-    try {
-      const firebaseProjects = await Firestore.getDocs(todoListCollection);
-      for (const doc of firebaseProjects.docs) {
-        await deleteDocument(`/projects/${routeParams.id}/todoList`, doc.id);
-      }
-      await deleteDocument("/projects", id);
-      toast.success("Project deleted successfully!");
-      setTimeout(() => navigateTo("/"), 1500);
-    } catch (error) {
-      toast.error("Error deleting project or todo list");
-      console.error(error);
-    }
-  };
 
   const formattedDate = formattedDateProject(new Date(project.date));
 
@@ -101,43 +137,6 @@ export function ProjectDetailsPage(props: Props) {
   const closeConfirmModal = () => {
     modal.showModal("confirm-delete-modal", 0);
   };
-
-  const viewerGrid = React.useRef<ViewerGrid>(null);
-
-  const setupGrid = async () => {
-    const { current: grid } = viewerGrid;
-    if (!grid) return;
-
-    const { viewport } = await setupComponents();
-
-    grid.elements = {
-      header: {
-        template: (_) => BUI.html`<div></div>`,
-        initialState: {},
-      },
-      sidebar: {
-        template: (_) => BUI.html`<div></div>`,
-        initialState: {},
-      },
-      componentsGrid: {
-        template: TEMPLATES.componentsGridTemplate,
-        initialState: { viewport },
-      },
-    };
-
-    grid.layouts = {
-      Main: {
-        template: `"header header" auto, 
-                  "sidebar componentsGrid" 1fr / auto 1fr`,
-      },
-    };
-
-    grid.layout = "Main";
-  };
-
-  React.useEffect(() => {
-    setupGrid();
-  }, []);
 
   return (
     <>
