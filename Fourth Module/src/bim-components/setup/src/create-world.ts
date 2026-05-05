@@ -1,5 +1,6 @@
 import * as OBC from "@thatopen/components"
 import * as BUI from "@thatopen/ui"
+import * as TEMPLATES from "@uiTemplates"
 
 export const createWorld = (components: OBC.Components) => {
     const worlds = components.get(OBC.Worlds)
@@ -12,7 +13,10 @@ export const createWorld = (components: OBC.Components) => {
 
     const viewport = BUI.Component.create<BUI.Viewport>(
         () => {
-          return BUI.html`<bim-viewport></bim-viewport>`
+          const [viewportGrid] = BUI.Component.create(TEMPLATES.viewportGridTemplate, {
+            components,
+          });
+          return BUI.html`<bim-viewport>${viewportGrid}</bim-viewport>`
         },
       );
     
