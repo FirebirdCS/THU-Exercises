@@ -1,5 +1,6 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components"
+import { appIcons } from "src/index";
 
 export interface LoadModelBtnState {
   components: OBC.Components
@@ -29,8 +30,37 @@ export const loadModelBtnTemplate: BUI.StatefullComponent<LoadModelBtnState> = (
       );
     })
 
+    
+
     input.click();
   }
 
-  return BUI.html`<bim-button @click=${onLoadIfc} label="Load IFC"></bim-button>`
+  const onLoadFrag = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.multiple = false;
+    input.accept = ".frag";
+
+    input.addEventListener("change", async () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      const buffer = await file.arrayBuffer();
+
+      const fragments = components.get(OBC.FragmentsManager)
+      fragments.core.load(buffer, {
+        modelId: file.name.replace(".frag", ""),
+      })
+    })
+
+    
+
+    input.click();
+  }
+
+  return BUI.html`<bim-button icon=${appIcons.ADD}>
+  <bim-context-menu>
+  <bim-button class="transparent" @click=${onLoadIfc} label="Load IFC"></bim-button>
+  <bim-button class="transparent" @click=${onLoadFrag} label="Load FRAG"></bim-button>
+  </bim-context-menu></bim-button>`
 }
