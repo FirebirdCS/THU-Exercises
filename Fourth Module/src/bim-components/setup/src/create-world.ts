@@ -1,3 +1,4 @@
+import * as THREE from "three"
 import * as OBC from "@thatopen/components"
 import * as BUI from "@thatopen/ui"
 import * as TEMPLATES from "@uiTemplates"
@@ -8,7 +9,7 @@ export const createWorld = (components: OBC.Components) => {
 
     world.scene = new OBC.SimpleScene(components)
     world.scene.setup()
-    world.scene.three.background = null
+    world.scene.three.background = new THREE.Color("white")
 
 
     const viewport = BUI.Component.create<BUI.Viewport>(

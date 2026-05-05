@@ -62,8 +62,49 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
         target.loading = false;
     };
 
+    const onToggleBackground = ({ target: button }: { target: BUI.Button }) => {
+        const [world] = components.get(OBC.Worlds).list.values()
+        if (!world?.scene) return
+        const scene = world.scene.three as THREE.Scene
+        scene.background = scene.background ? null : new THREE.Color("white")
+        button.label = scene.background ? "White" : "Transparent"
+    }
+
+    const onHide = async ({ target }: { target: BUI.Button }) => {
+        const highlighter = components.get(OBF.Highlighter);
+        const selection = highlighter.selection.select;
+        if (OBC.ModelIdMapUtils.isEmpty(selection)) return;
+        target.loading = true;
+        const hider = components.get(OBC.Hider);
+        const promises = [hider.set(false, selection), highlighter.clear("select")];
+        await Promise.all(promises);
+        target.loading = false;
+    }
+
+    const onIsolate = async ({ target }: { target: BUI.Button }) => {
+        const highlighter = components.get(OBF.Highlighter);
+        const selection = highlighter.selection.select;
+        if (OBC.ModelIdMapUtils.isEmpty(selection)) return;
+        target.loading = true;
+        const hider = components.get(OBC.Hider);
+        await hider.isolate(selection);
+        target.loading = false;
+    };
+
+    const onShowAll = async ({ target }: { target: BUI.Button }) => {
+        target.loading = true;
+        const hider = components.get(OBC.Hider);
+        await hider.set(true);
+        target.loading = false;
+    };
+
     return BUI.html`<bim-toolbar>
+     <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
+        <bim-button icon=${appIcons.SHOW} label="Show All" @click=${onShowAll}></bim-button> 
+      </bim-toolbar-section>
      <bim-toolbar-section label="Selection" icon=${appIcons.SELECT}>
+        <bim-button icon=${appIcons.HIDE} label="Hide" @click=${onHide}></bim-button> 
+        <bim-button icon=${appIcons.ISOLATE} label="Isolate" @click=${onIsolate}></bim-button>
         <bim-button icon=${appIcons.COLORIZE} label="Colorize">
         <bim-context-menu>
             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
@@ -75,6 +116,9 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
             </div>
         </bim-context-menu>
         </bim-button>
+     </bim-toolbar-section>
+     <bim-toolbar-section icon=${appIcons.SCENE} label="Scene">
+        <bim-button label="White" @click=${onToggleBackground}></bim-button>
      </bim-toolbar-section>
     </bim-toolbar>`
 }
