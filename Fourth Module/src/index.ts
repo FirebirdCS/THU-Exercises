@@ -13,6 +13,7 @@ export const appIcons = {
   SHOW: "mingcute:eye-line",
   HIDE: "mingcute:eye-close-line",
   ISOLATE: "mingcute:filter-line",
+  FOCUS: "mingcute:target-line",
   REFRESH: "mingcute:refresh-2-line",
   DOWNLOAD: "mingcute:download-2-line",
   UPLOAD: "mingcute:upload-2-line",

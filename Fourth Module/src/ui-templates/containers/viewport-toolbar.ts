@@ -7,6 +7,7 @@ import * as FRAGS from "@thatopen/fragments"
 
 export interface ViewerToolbarState {
     components: OBC.Components
+    world: OBC.World
 }
 
 const originalMaterialsData = new Map<
@@ -16,7 +17,7 @@ const originalMaterialsData = new Map<
 
 
 export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> = (state) => {
-    const { components } = state
+    const { components, world } = state
 
     let colorInput: BUI.ColorInput | undefined
 
@@ -164,12 +165,24 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
         }
       }
 
+      const onFocus = async ({ target }: { target: BUI.Button }) => {
+        if (!(world.camera instanceof OBC.SimpleCamera)) return;
+        const highlighter = components.get(OBF.Highlighter)
+        const selection = highlighter.selection.select;
+        target.loading = true;
+        await world.camera.fitToItems(
+          OBC.ModelIdMapUtils.isEmpty(selection) ? undefined : selection,
+        );
+        target.loading = false;
+      };
+
     return BUI.html`<bim-toolbar>
      <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
         <bim-button icon=${appIcons.SHOW} label="Show All" @click=${onShowAll}></bim-button> 
         <bim-button icon=${appIcons.TRANSPARENCY} label="Toggle Ghost" @click=${onToggleGhost}></bim-button>
       </bim-toolbar-section>
      <bim-toolbar-section label="Selection" icon=${appIcons.SELECT}>
+        <bim-button icon=${appIcons.FOCUS} label="Fit" @click=${onFocus}></bim-button>
         <bim-button icon=${appIcons.HIDE} label="Hide" @click=${onHide}></bim-button> 
         <bim-button icon=${appIcons.ISOLATE} label="Isolate" @click=${onIsolate}></bim-button>
         <bim-button icon=${appIcons.COLORIZE} label="Colorize">

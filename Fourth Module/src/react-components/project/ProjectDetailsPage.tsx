@@ -17,6 +17,7 @@ import type { ViewerGrid } from "@uiTemplates";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setupComponents } from "src/bim-components/setup";
+import * as OBC from "@thatopen/components";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -30,17 +31,22 @@ export function ProjectDetailsPage(props: Props) {
   const navigate = Router.useNavigate();
   const modal = React.useMemo(() => new ModalManager(), []);
   const viewerGrid = React.useRef<ViewerGrid>(null);
+  let engineManager: OBC.Components | null = null;
 
   React.useEffect(() => {
+    let redirectTimer: ReturnType<typeof setTimeout> | null = null;
     if (routeParams.id) {
       const currentProject = props.projectsManager.getProject(routeParams.id);
       if (currentProject && currentProject instanceof Project) {
         setProjectDetails(currentProject);
       } else {
         console.log("Project not found", routeParams.id);
-        setTimeout(() => navigate("/"), 1000);
+        redirectTimer = setTimeout(() => navigate("/"), 1000);
       }
     }
+    return () => {
+      if (redirectTimer) clearTimeout(redirectTimer);
+    };
   }, [routeParams.id, props.projectsManager, navigate]);
 
   React.useEffect(() => {
@@ -48,6 +54,7 @@ export function ProjectDetailsPage(props: Props) {
     const todoListCollection = getCollection<ITodo>(
       `/projects/${routeParams.id}/todoList`,
     );
+    let navigateTimer: ReturnType<typeof setTimeout> | null = null;
     props.projectsManager.onProjectDeleted = async (id) => {
       try {
         const firebaseProjects = await Firestore.getDocs(todoListCollection);
@@ -56,46 +63,58 @@ export function ProjectDetailsPage(props: Props) {
         }
         await deleteDocument("/projects", id);
         toast.success("Project deleted successfully!");
-        setTimeout(() => navigate("/"), 1500);
+        navigateTimer = setTimeout(() => navigate("/"), 1500);
       } catch (error) {
         toast.error("Error deleting project or todo list");
         console.error(error);
       }
     };
+    return () => {
+      if (navigateTimer) clearTimeout(navigateTimer);
+    };
   }, [routeParams.id, props.projectsManager, navigate]);
 
-  React.useEffect(() => {
-    const setupGrid = async () => {
-      const { current: grid } = viewerGrid;
-      if (!grid) return;
+  const setupGrid = async () => {
+    const { current: grid } = viewerGrid;
+    if (!grid) return;
 
-      const { components, viewport } = await setupComponents();
+    const { components, viewport } = await setupComponents();
+    engineManager = components;
 
-      grid.elements = {
-        header: {
-          template: (_) => BUI.html`<div></div>`,
-          initialState: {},
-        },
-        sidebar: {
-          template: (_) => BUI.html`<div></div>`,
-          initialState: {},
-        },
-        componentsGrid: {
-          template: TEMPLATES.componentsGridTemplate,
-          initialState: { viewport, components },
-        },
-      };
-
-      grid.layouts = {
-        Main: {
-          template: `"header header" auto,
-                    "sidebar componentsGrid" 1fr / auto 1fr`,
-        },
-      };
-
-      grid.layout = "Main";
+    grid.elements = {
+      header: {
+        template: (_) => BUI.html`<div></div>`,
+        initialState: {},
+      },
+      sidebar: {
+        template: (_) => BUI.html`<div></div>`,
+        initialState: {},
+      },
+      componentsGrid: {
+        template: TEMPLATES.componentsGridTemplate,
+        initialState: { components, viewport },
+      },
     };
+
+    grid.layouts = {
+      Main: {
+        template: `
+          "header header" auto
+          "sidebar componentsGrid" 1fr
+          /auto 1fr
+        `,
+      },
+    };
+
+    grid.layout = "Main";
+  };
+
+  React.useEffect(() => {
     setupGrid();
+    return () => {
+      engineManager?.dispose();
+      engineManager = null;
+    };
   }, []);
 
   if (!routeParams.id) {

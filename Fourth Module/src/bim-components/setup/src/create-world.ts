@@ -16,6 +16,7 @@ export const createWorld = (components: OBC.Components) => {
         () => {
           const [viewportGrid] = BUI.Component.create(TEMPLATES.viewportGridTemplate, {
             components,
+            world,
           });
           return BUI.html`<bim-viewport>${viewportGrid}</bim-viewport>`
         },

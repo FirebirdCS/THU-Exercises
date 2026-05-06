@@ -13,17 +13,18 @@ export type ViewportGrid = BUI.Grid<ViewportGridLayouts, ViewportGridElements>
 
 interface ViewportGridState {
   components: OBC.Components;
+  world: OBC.World;
 }
 
 export const viewportGridTemplate: BUI.StatefullComponent<ViewportGridState> = (
   state,
 ) => {
-  const { components } = state;
+  const { components, world } = state;
 
   const elements: BUI.GridComponents<ViewportGridElements> = {
     bottomToolbar: {
       template: viewerToolbarTemplate,
-      initialState: { components },
+      initialState: { components, world },
     },
   };
 
