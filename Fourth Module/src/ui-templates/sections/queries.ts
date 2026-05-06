@@ -25,7 +25,7 @@ export const queriesPanelTemplate: BUI.StatefullComponent<
   return BUI.html`
   <bim-panel-section fixed label="Queries List">
     <div style="display: flex; gap: 0.5rem;">
-      <bim-text-input @input=${onSearch} placeholder="Search..." debounce="200"></bim-text-input>
+      <bim-text-input @input=${onSearch} placeholder="Search families..." debounce="200"></bim-text-input>
     </div>
     ${modelsList}
   </bim-panel-section>`;

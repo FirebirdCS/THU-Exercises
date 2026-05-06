@@ -7,6 +7,11 @@ export const setupFragmentsManager = (components: OBC.Components, world: OBC.Sim
 
   fragments.list.onItemSet.add(async ({ value: model }) => {
 
+    const finder = components.get(OBC.ItemsFinder)
+    for (const [, query] of finder.list) {
+      query.clearCache()
+    }
+
     model.useCamera(world.camera.three);
 
 
