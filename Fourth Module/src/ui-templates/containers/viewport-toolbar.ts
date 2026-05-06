@@ -3,10 +3,16 @@ import * as OBC from "@thatopen/components"
 import * as OBF from "@thatopen/components-front"
 import { appIcons } from "src/index"
 import * as THREE from "three"
+import * as FRAGS from "@thatopen/fragments"
 
 export interface ViewerToolbarState {
     components: OBC.Components
 }
+
+const originalMaterialsData = new Map<
+  FRAGS.BIMMaterial,
+  { color: number; transparent: boolean; opacity: number; lodOpacity?: number }
+>();
 
 
 export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> = (state) => {
@@ -98,9 +104,70 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
         target.loading = false;
     };
 
+    const setModelTransparency = (opacity: number) => {
+        const fragments = components.get(OBC.FragmentsManager);
+        const materials = [...fragments.core.models.materials.list.values()];
+    
+        for (const material of materials) {
+          if (material.userData.customId) continue;
+          let color: number | undefined;
+          let lodOpacity: number | undefined
+          if ("color" in material) {
+            color = material.color.getHex();
+          } else {
+            color = material.lodColor.getHex();
+            lodOpacity = material.uniforms.lodOpacity.value
+          }
+    
+          originalMaterialsData.set(material, {
+            color,
+            transparent: material.transparent,
+            opacity: material.opacity,
+            lodOpacity
+          });
+    
+          material.transparent = true;
+          if ("color" in material) {
+            material.opacity = opacity;
+            material.color.setColorName("white");
+          } else {
+            material.uniforms.lodColor.value.setColorName("white")
+            material.uniforms.lodOpacity.value = opacity
+          }
+          material.needsUpdate = true;
+        }
+      }
+    
+      const restoreTransparency = () => {
+        for (const [material, data] of originalMaterialsData) {
+          const { color, transparent, opacity, lodOpacity } = data;
+    
+          material.transparent = transparent;
+          if ("color" in material) {
+            material.opacity = opacity;
+            material.color.setHex(color);
+          } else {
+            material.uniforms.lodColor.value.setHex(color)
+            material.uniforms.lodOpacity.value = lodOpacity
+          }
+          material.needsUpdate = true;
+        }
+    
+        originalMaterialsData.clear();
+      }
+    
+      const onToggleGhost = () => {
+        if (originalMaterialsData.size > 0) {
+          restoreTransparency();
+        }  else {
+          setModelTransparency(0.05);
+        }
+      }
+
     return BUI.html`<bim-toolbar>
      <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
         <bim-button icon=${appIcons.SHOW} label="Show All" @click=${onShowAll}></bim-button> 
+        <bim-button icon=${appIcons.TRANSPARENCY} label="Toggle Ghost" @click=${onToggleGhost}></bim-button>
       </bim-toolbar-section>
      <bim-toolbar-section label="Selection" icon=${appIcons.SELECT}>
         <bim-button icon=${appIcons.HIDE} label="Hide" @click=${onHide}></bim-button> 

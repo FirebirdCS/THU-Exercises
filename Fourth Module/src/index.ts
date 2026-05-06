@@ -7,6 +7,7 @@ export const appIcons = {
   APPLY: "mingcute:check-line",
   CLEAR: "mingcute:eraser-line",
   COLORIZE: "mingcute:palette-line",
+  TRANSPARENCY: "mingcute:layers-line",
   SELECT: "mingcute:cursor-2-line",
   SCENE: "mingcute:cube-3d-line",
   SHOW: "mingcute:eye-line",
