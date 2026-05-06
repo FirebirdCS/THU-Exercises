@@ -1,5 +1,6 @@
 import * as BUI from "@thatopen/ui";
 import * as OBC from "@thatopen/components";
+import { Project } from "@classes/Project";
 
 type Header = {
     name: "header";
@@ -16,6 +17,9 @@ type ComponentsGrid = {
     state: {
         components: OBC.Components;
         viewport?: BUI.Viewport;
+        project: Project;
+        onEditProject?: () => void;
+        onDeleteProject?: () => void;
     };
 };
 

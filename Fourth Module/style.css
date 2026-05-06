@@ -49,7 +49,7 @@ h5 {
 
 #app{
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 12rem 1fr;
     grid-template-areas: 'sidebar content';
     min-height: 100vh;
     background-color: var(--background);
@@ -93,13 +93,13 @@ button {
 /* Sidebar styles */
 
 #sidebar {
-    background-color: var(--background-100);
+    background-color: 1px solid var(--bim-ui_bg-contrast-40);
     color: #fff;
     padding: 25px;
     display: flex;
     flex-direction: column;
     row-gap: 40px;
-    
+    border-right: 1px solid var(--bim-ui_bg-contrast-40);
 }
 
 #nav-buttons{
@@ -551,7 +551,7 @@ bim-grid {
     min-height: 0;
 }
 
-.viewer-grid, .viewport-grid {
+.components-grid, .viewport-grid {
     padding: 1rem;
 }
 

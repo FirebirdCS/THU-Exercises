@@ -1,5 +1,5 @@
 import * as BUI from "@thatopen/ui";
-import { ModelsPanelState, QueriesPanelState } from "src/ui-templates/sections";
+import { ModelsPanelState, QueriesPanelState, ProjectInfoPanelState } from "src/ui-templates/sections";
 import { ItemsDataPanelState } from "src/ui-templates/sections/items-data";
 
 type Viewport = {
@@ -22,7 +22,12 @@ export type Models = {
     state: ModelsPanelState
 }
 
-type ComponentsGridElements = [Viewport, ItemsData, Models, Queries];
-type ComponentsGridLayout = ["Models"];
+export type ProjectInfo = {
+    name: "projectInfo";
+    state: ProjectInfoPanelState
+}
+
+type ComponentsGridElements = [Viewport, ItemsData, Models, Queries, ProjectInfo];
+type ComponentsGridLayout = ["Models", "Queries", "Viewer", "Project"];
 
 export type ComponentsGrid = BUI.Grid<ComponentsGridLayout, ComponentsGridElements>;

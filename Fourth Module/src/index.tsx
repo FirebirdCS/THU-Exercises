@@ -8,7 +8,7 @@ import { UserPage } from "./react-components/user/UserPage";
 import { ProjectsManager } from "./classes/ProjectsManager";
 import * as BUI from "@thatopen/ui";
 
-BUI.Manager.init()
+BUI.Manager.init();
 
 const projectsManager = new ProjectsManager();
 
@@ -30,5 +30,5 @@ appRoot.render(
         <Router.Route path="/users" element={<UserPage />} />
       </Router.Routes>
     </Router.BrowserRouter>
-  </>
+  </>,
 );

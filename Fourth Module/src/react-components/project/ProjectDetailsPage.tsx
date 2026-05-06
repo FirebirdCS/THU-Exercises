@@ -18,6 +18,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { setupComponents } from "src/bim-components/setup";
 import * as OBC from "@thatopen/components";
+import { ComponentsGrid } from "src/ui-templates/grids/components/src";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -31,6 +32,7 @@ export function ProjectDetailsPage(props: Props) {
   const navigate = Router.useNavigate();
   const modal = React.useMemo(() => new ModalManager(), []);
   const viewerGrid = React.useRef<ViewerGrid>(null);
+  const componentsGridRef = React.useRef<ComponentsGrid | null>(null);
   let engineManager: OBC.Components | null = null;
 
   React.useEffect(() => {
@@ -40,7 +42,6 @@ export function ProjectDetailsPage(props: Props) {
       if (currentProject && currentProject instanceof Project) {
         setProjectDetails(currentProject);
       } else {
-        console.log("Project not found", routeParams.id);
         redirectTimer = setTimeout(() => navigate("/"), 1000);
       }
     }
@@ -77,34 +78,48 @@ export function ProjectDetailsPage(props: Props) {
   const setupGrid = async () => {
     const { current: grid } = viewerGrid;
     if (!grid) return;
+    if (!routeParams.id) return;
+    const currentProject = props.projectsManager.getProject(routeParams.id);
+    if (!(currentProject && currentProject instanceof Project)) return;
 
     const { components, viewport } = await setupComponents();
     engineManager = components;
 
     grid.elements = {
-      header: {
-        template: (_) => BUI.html`<div></div>`,
-        initialState: {},
-      },
       sidebar: {
-        template: (_) => BUI.html`<div></div>`,
+        template: TEMPLATES.gridSidebarTemplate,
         initialState: {},
       },
       componentsGrid: {
         template: TEMPLATES.componentsGridTemplate,
-        initialState: { components, viewport },
+        initialState: {
+          components,
+          viewport,
+          project: currentProject,
+          onEditProject: () => modal.showModal("update-project-modal", 1),
+          onDeleteProject: () => modal.showModal("confirm-delete-modal", 1),
+        },
       },
     };
 
     grid.layouts = {
       Main: {
         template: `
-          "header header" auto
-          "sidebar componentsGrid" 1fr
-          /auto 1fr
+          "sidebar" auto
+          "componentsGrid" 1fr
+          /1fr
         `,
       },
     };
+
+    grid.addEventListener("elementcreated", (e) => {
+      const { name, element: componentsGrid } = (
+        e as CustomEvent<BUI.ElementCreatedEventDetail<ComponentsGrid>>
+      ).detail;
+      if (name !== "componentsGrid") return;
+      componentsGridRef.current = componentsGrid;
+      grid.updateComponent.sidebar({ grid: componentsGrid });
+    });
 
     grid.layout = "Main";
   };
@@ -118,12 +133,10 @@ export function ProjectDetailsPage(props: Props) {
   }, []);
 
   if (!routeParams.id) {
-    console.log("Project not found", routeParams.id);
     return null;
   }
   const project = props.projectsManager.getProject(routeParams.id);
   if (!(project && project instanceof Project)) {
-    console.log("Project not found in the list", routeParams.id);
     return null;
   }
 
@@ -140,6 +153,12 @@ export function ProjectDetailsPage(props: Props) {
       await updateDocument<Partial<IProject>>("/projects", project.id, data);
       props.projectsManager.updateProject(routeParams.id, data);
       setProjectDetails(data);
+      const updatedProject = props.projectsManager.getProject(routeParams.id);
+      if (updatedProject instanceof Project) {
+        componentsGridRef.current?.updateComponent.projectInfo({
+          project: updatedProject,
+        });
+      }
       modal.showModal("update-project-modal", 0);
       toast.success("Project updated successfully!");
     }
@@ -159,136 +178,33 @@ export function ProjectDetailsPage(props: Props) {
 
   return (
     <>
+      <ConfirmModal
+        id="confirm-delete-modal"
+        title="Delete Project"
+        message={`Are you sure you want to delete project ${project.name}?`}
+        onConfirm={() => props.projectsManager.deleteProject(project.id)}
+        onCancel={closeConfirmModal}
+      />
+      <dialog id="update-project-modal">
+        <ProjectForm
+          mode="edit"
+          initialData={project}
+          onSubmit={handleUpdate}
+          onCancel={handleCancel}
+        />
+      </dialog>
       <bim-grid ref={viewerGrid} className="viewer-grid">
         {/* <ToastContainer
           position="bottom-right"
           autoClose={3000}
           hideProgressBar={false}
           theme="dark"
-        />
-        <ConfirmModal
-          id="confirm-delete-modal"
-          title="Delete Project"
-          message={`Are you sure you want to delete project ${project.name}?`}
-          onConfirm={() => props.projectsManager.deleteProject(project.id)}
-          onCancel={closeConfirmModal}
-        />
-        <dialog id="update-project-modal">
-          <ProjectForm
-            mode="edit"
-            initialData={project}
-            onSubmit={handleUpdate}
-            onCancel={handleCancel}
-          />
-        </dialog>
-        <header>
-          <div>
-            <h2 data-project-info="name">{project.name}</h2>
-            <p data-project-info="description" style={{ color: "#969696" }}>
-              {project.description}
-            </p>
-          </div>
-        </header>
-        <div className="main-page-content">
-          <div className="details-column">
-            <div className="dashboard-card" style={{ padding: "30px 0" }}>
-              <div className="details-header">
-                <p
-                  data-project-info="icon"
-                  style={{
-                    fontSize: 20,
-                    backgroundColor: `${project.cardColor}`,
-                    aspectRatio: 1,
-                    borderRadius: "100%",
-                    padding: 12,
-                  }}
-                >
-                  {iconTitle}
-                </p>
-                <div
-                  className="action-buttons"
-                  style={{ display: "flex", alignItems: "center" }}
-                >
-                  <button
-                    onClick={onUpdateProjectClick}
-                    id="edit-btn"
-                    className="edit-button"
-                  >
-                    <p style={{ margin: 0, width: "100%" }}>Edit</p>
-                  </button>
-                  <span
-                    onClick={openConfirmModal}
-                    className="material-icons-round action-icon delete"
-                    style={{ color: "red", cursor: "pointer" }}
-                  >
-                    delete
-                  </span>
-                </div>
-              </div>
-              <div style={{ padding: "0 30px" }}>
-                <div>
-                  <h5 data-project-info="name">{project.name}</h5>
-                  <p data-project-info="description">{project.description}</p>
-                </div>
-                <div className="details-info">
-                  <div>
-                    <p style={{ color: "#969696", fontSize: "var(--font-sm)" }}>
-                      Status
-                    </p>
-                    <p data-project-info="status">{project.status}</p>
-                  </div>
-                  <div>
-                    <p style={{ color: "#969696", fontSize: "var(--font-sm)" }}>
-                      Cost
-                    </p>
-                    <p data-project-info="cost">{project.cost}</p>
-                  </div>
-                  <div>
-                    <p style={{ color: "#969696", fontSize: "var(--font-sm)" }}>
-                      Role
-                    </p>
-                    <p data-project-info="role">{project.role}</p>
-                  </div>
-                  <div>
-                    <p style={{ color: "#969696", fontSize: "var(--font-sm)" }}>
-                      Finish Date
-                    </p>
-                    <p data-project-info="date">{formattedDate}</p>
-                  </div>
-                </div>
-                <div
-                  style={{
-                    backgroundColor: "#404040",
-                    borderRadius: 9999,
-                    overflow: "auto",
-                  }}
-                >
-                  <div
-                    data-project-info="progress"
-                    style={{
-                      width: `${project.progress * 100}%`,
-                      backgroundColor: "green",
-                      padding: "4px 0",
-                      textAlign: "center",
-                    }}
-                  >
-                    {project.progress * 100}%
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="dashboard-card" style={{ flexGrow: "1" }}>
-              {/* projectId as an parameter  */}
-        {/* Send the project info to the todoPage for the todoCard so it can retrieve the collection of todolist*/}
+        /> */}
         {/* <ToDoPage
-                projectsManager={props.projectsManager}
-                projectId={routeParams.id}
-                project={project}
-              />
-            </div>
-          </div>
-          <ThreeViewer />
-        </div> */}
+          projectsManager={props.projectsManager}
+          projectId={routeParams.id}
+          project={project}
+        /> */}
       </bim-grid>
     </>
   );

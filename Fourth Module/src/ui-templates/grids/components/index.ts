@@ -1,17 +1,22 @@
 import * as BUI from "@thatopen/ui";
 import { ComponentsGrid } from "./src";
 import { viewportContainerTemplate } from "../../containers";
-import { itemsDataPanelTemplate, modelsPanelTemplate, queriesPanelTemplate } from "src/ui-templates/sections";
+import { itemsDataPanelTemplate, modelsPanelTemplate, queriesPanelTemplate, projectInfoPanelTemplate } from "src/ui-templates/sections";
 import * as OBC from "@thatopen/components"
+import { appIcons } from "src/index";
+import { Project } from "@classes/Project";
 
 interface ComponentsGridState {
     components: OBC.Components
     viewport?: BUI.Viewport;
+    project: Project
+    onEditProject?: () => void
+    onDeleteProject?: () => void
 }
 
 export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState> = (state) => {
     const onCreated = (e?: Element) => {
-        const { components, viewport } = state;
+        const { components, viewport, project, onEditProject, onDeleteProject } = state;
         if (!e) return;
         const grid = e as ComponentsGrid;
 
@@ -31,15 +36,41 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
             queries: {
               template: queriesPanelTemplate,
               initialState: { components }
+            },
+            projectInfo: {
+              template: projectInfoPanelTemplate,
+              initialState: { project, onEdit: onEditProject, onDelete: onDeleteProject }
             }
         };
 
         grid.layouts = {
           Models: {
+            icon: appIcons.MODELS,
             template: `
               "models viewport itemsData" 1fr
               "queries viewport itemsData" 1fr
               /22rem 1fr 22rem
+            `,
+          },
+          Queries: {
+            icon: appIcons.QUERIES,
+            template: `
+              "viewport queries" 1fr
+              /1fr 22rem
+            `,
+          },
+          Viewer: {
+            icon: appIcons.VIEWER,
+            template: `
+              "viewport" 1fr
+              /1fr
+            `,
+          },
+          Project: {
+            icon: appIcons.PROJECTS,
+            template: `
+              "projectInfo" 1fr
+              /1fr
             `,
           },
         }

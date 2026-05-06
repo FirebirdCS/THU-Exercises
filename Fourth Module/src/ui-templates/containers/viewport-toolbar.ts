@@ -77,6 +77,13 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
         button.label = scene.background ? "White" : "Transparent"
     }
 
+    const onToggleGrid = ({ target: button }: { target: BUI.Button }) => {
+        const grid = components.get(OBC.Grids).list.get(world.uuid)
+        if (!grid) return
+        grid.three.visible = !grid.three.visible
+        button.label = grid.three.visible ? "Hide Grid" : "Show Grid"
+    }
+
     const onHide = async ({ target }: { target: BUI.Button }) => {
         const highlighter = components.get(OBF.Highlighter);
         const selection = highlighter.selection.select;
@@ -199,6 +206,7 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
      </bim-toolbar-section>
      <bim-toolbar-section icon=${appIcons.SCENE} label="Scene">
         <bim-button label="White" @click=${onToggleBackground}></bim-button>
+        <bim-button icon=${appIcons.GRID} label="Hide Grid" @click=${onToggleGrid}></bim-button>
      </bim-toolbar-section>
     </bim-toolbar>`
 }
