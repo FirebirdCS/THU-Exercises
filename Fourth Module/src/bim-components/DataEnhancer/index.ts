@@ -11,6 +11,25 @@ export class DataEnhancer extends OBC.Component {
 
     readonly sources = new FRAGS.DataMap<string, DataEnhancerSource>()
 
+    constructor(components: OBC.Components) {
+        super(components)
+        const fragments = components.get(OBC.FragmentsManager)
+        fragments.list.onItemDeleted.add((modelId) => {
+            delete this._itemsDataCache[modelId]
+        })
+        fragments.list.onCleared.add(() => {
+            this._itemsDataCache = {}
+        })
+
+        const invalidateSource = (source: string) => {
+            delete this._sourcesDataCache[source]
+            this._itemsDataCache = {}
+        }
+        this.sources.onItemSet.add(({ key }) => invalidateSource(key))
+        this.sources.onItemUpdated.add(({ key }) => invalidateSource(key))
+        this.sources.onItemDeleted.add((key) => invalidateSource(key))
+    }
+
     async getSourceData(source: string) {
         const config = this.sources.get(source)
         if (!config) {
@@ -40,6 +59,32 @@ export class DataEnhancer extends OBC.Component {
             modelCache[localId] = data
         }
         return data
+    }
+
+    async getItemsByEntry(source: string, entry: any) {
+        if (!this.sources.has(source)) {
+            throw new Error(`Data Enhancer: Source ${source} not found`)
+        }
+        const fragments = this.components.get(OBC.FragmentsManager)
+        const result: OBC.ModelIdMap = {}
+        for (const [modelId, model] of fragments.list) {
+            const localIds = await model.getLocalIds()
+            if (!this._itemsDataCache[modelId]) this._itemsDataCache[modelId] = {}
+            const modelCache = this._itemsDataCache[modelId]
+            const uncachedIds = localIds.filter((id) => !(id in modelCache))
+            const uncachedData = uncachedIds.length > 0 ? await model.getItemsData(uncachedIds) : []
+            const attributesByLocalId = new Map(uncachedIds.map((id, i) => [id, uncachedData[i]]))
+            const matchingIds = new Set<number>()
+            for (const localId of localIds) {
+                const itemData = await this.getItemData(modelId, localId, attributesByLocalId.get(localId))
+                const matched = itemData[source]
+                if (Array.isArray(matched) && matched.includes(entry)) {
+                    matchingIds.add(localId)
+                }
+            }
+            if (matchingIds.size > 0) result[modelId] = matchingIds
+        }
+        return result
     }
 
     async getData(items: OBC.ModelIdMap) {

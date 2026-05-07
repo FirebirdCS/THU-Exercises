@@ -5,6 +5,7 @@ import { itemsDataPanelTemplate, modelsPanelTemplate, queriesPanelTemplate, proj
 import * as OBC from "@thatopen/components"
 import { appIcons } from "src/index";
 import { Project } from "@classes/Project";
+import { dataSourcesPanelTemplate } from "src/ui-templates/tables/datasources/src/datasources";
 
 interface ComponentsGridState {
     components: OBC.Components
@@ -40,6 +41,10 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
             projectInfo: {
               template: projectInfoPanelTemplate,
               initialState: { project, onEdit: onEditProject, onDelete: onDeleteProject }
+            },
+            datasources: {
+              template: dataSourcesPanelTemplate,
+              initialState: { components }
             }
         };
 
@@ -48,7 +53,7 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
             icon: appIcons.MODELS,
             template: `
               "models viewport itemsData" 1fr
-              "queries viewport itemsData" 1fr
+              "queries viewport datasources" 1fr
               /22rem 1fr 22rem
             `,
           },

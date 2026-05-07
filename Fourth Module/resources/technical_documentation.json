@@ -10,5 +10,97 @@
   {
     "category": "IFCRAILING",
     "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcRailing.htm"
+  },
+  {
+    "category": "IFCDOOR",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcDoor.htm"
+  },
+  {
+    "category": "IFCSLAB",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcSlab.htm"
+  },
+  {
+    "category": "IFCCOLUMN",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcColumn.htm"
+  },
+  {
+    "category": "IFCBEAM",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcBeam.htm"
+  },
+  {
+    "category": "IFCROOF",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcRoof.htm"
+  },
+  {
+    "category": "IFCSTAIR",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcStair.htm"
+  },
+  {
+    "category": "IFCRAMP",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcRamp.htm"
+  },
+  {
+    "category": "IFCFOOTING",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcFooting.htm"
+  },
+  {
+    "category": "IFCPILE",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcPile.htm"
+  },
+  {
+    "category": "IFCCURTAINWALL",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcCurtainWall.htm"
+  },
+  {
+    "category": "IFCMEMBER",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcMember.htm"
+  },
+  {
+    "category": "IFCPLATE",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcPlate.htm"
+  },
+  {
+    "category": "IFCCOVERING",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcCovering.htm"
+  },
+  {
+    "category": "IFCSPACE",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcSpace.htm"
+  },
+  {
+    "category": "IFCFURNISHINGELEMENT",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcFurnishingElement.htm"
+  },
+  {
+    "category": "IFCFURNITURE",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcFurniture.htm"
+  },
+  {
+    "category": "IFCBUILDINGELEMENTPROXY",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcBuildingElementProxy.htm"
+  },
+  {
+    "category": "IFCPIPESEGMENT",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcPipeSegment.htm"
+  },
+  {
+    "category": "IFCPIPEFITTING",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcPipeFitting.htm"
+  },
+  {
+    "category": "IFCDUCTSEGMENT",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcDuctSegment.htm"
+  },
+  {
+    "category": "IFCDUCTFITTING",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcDuctFitting.htm"
+  },
+  {
+    "category": "IFCCABLESEGMENT",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcCableSegment.htm"
+  },
+  {
+    "category": "IFCCABLECARRIERSEGMENT",
+    "url": "https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/lexical/IfcCableCarrierSegment.htm"
   }
 ]
