@@ -2,6 +2,8 @@ import * as OBC from "@thatopen/components"
 import { DataEnhancer } from "../../DataEnhancer"
 import { ItemData } from "@thatopen/fragments"
 import * as OBF from "@thatopen/components-front"
+import { getCollection } from "src/firebase"
+import { getDocs } from "firebase/firestore"
 
 export const setupDataEnhancer = (components: OBC.Components) => {
   const enhancer = components.get(DataEnhancer)
@@ -17,6 +19,29 @@ export const setupDataEnhancer = (components: OBC.Components) => {
       if (!(categoryData && "value" in categoryData)) return null
       const category = categoryData.value
       const dataSubset = data.filter(entry => entry.category === category)
+      return dataSubset.length > 0 ? dataSubset : null
+    }
+  })
+
+  enhancer.sources.set("Activities", {
+    data: async () => {
+      const url = location.href
+      const match = url.match(/\/project\/([^\/]+)/);
+      const projectId = match ? match[1] : null;
+      if (!projectId) return [];
+      const activitiesCollection = getCollection(`/projects/${projectId}/activities`);
+      const firebaseProjects = await getDocs(activitiesCollection);
+      const sourceData: any[] = [];
+      for (const doc of firebaseProjects.docs) {
+        sourceData.push(doc.data());
+      }
+      return sourceData;
+    },
+    matcher: (attrs: ItemData, data: any[]) => {
+      const guidData = attrs._guid
+      if (!(guidData && "value" in guidData)) return null
+      const guid = guidData.value
+      const dataSubset = data.filter(entry => entry.guids.includes(guid))
       return dataSubset.length > 0 ? dataSubset : null
     }
   })
