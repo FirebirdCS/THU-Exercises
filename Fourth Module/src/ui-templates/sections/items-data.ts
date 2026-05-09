@@ -21,7 +21,7 @@ export const itemsDataPanelTemplate: BUI.StatefullComponent<ItemsDataPanelState>
     propsTable.dataTransform.Value = (value) => {
         const onClick = ({ target }: { target: BUI.Label }) => {
           navigator.clipboard.writeText(value)
-          target.textContent = "Copied!"
+          target.textContent = "¡Copiado!"
           setTimeout(() => {
             target.textContent = value
           }, 500)
@@ -56,9 +56,9 @@ export const itemsDataPanelTemplate: BUI.StatefullComponent<ItemsDataPanelState>
         updatePropsTable({modelIdMap: selection})
       }
 
-    return BUI.html`<bim-panel-section fixed label="Selection Data">
+    return BUI.html`<bim-panel-section fixed label="Datos de selección">
         <div style="display: flex; gap: 0.5rem;">
-            <bim-text-input @input=${onSearch} placeholder="Search data..." debounce="200"></bim-text-input>
+            <bim-text-input @input=${onSearch} placeholder="Buscar datos..." debounce="200"></bim-text-input>
             <bim-button style="flex: 0" icon=${appIcons.REFRESH} @click=${onRefresh}></bim-button>
         </div>
     ${propsTable}

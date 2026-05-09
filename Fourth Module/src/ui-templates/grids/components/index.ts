@@ -49,7 +49,7 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
         };
 
         grid.layouts = {
-          Models: {
+          Modelos: {
             icon: appIcons.MODELS,
             template: `
               "models viewport itemsData" 1fr
@@ -57,21 +57,21 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
               /22rem 1fr 22rem
             `,
           },
-          Queries: {
+          Consultas: {
             icon: appIcons.QUERIES,
             template: `
               "viewport queries" 1fr
               /1fr 22rem
             `,
           },
-          Viewer: {
+          Visor: {
             icon: appIcons.VIEWER,
             template: `
               "viewport" 1fr
               /1fr
             `,
           },
-          Project: {
+          Proyecto: {
             icon: appIcons.PROJECTS,
             template: `
               "projectInfo" 1fr
@@ -80,7 +80,7 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
           },
         }
 
-        grid.layout = "Models";
+        grid.layout = "Modelos";
     }
     return BUI.html`<bim-grid ${BUI.ref(onCreated)} class="components-grid"></bim-grid>`;
 };

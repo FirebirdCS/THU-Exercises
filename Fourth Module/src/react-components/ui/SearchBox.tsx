@@ -27,7 +27,7 @@ export function SearchBox(props: Props) {
         oninput={(e) => {
           props.onChange(e.target.value.toLowerCase());
         }}
-        placeholder={`Search ${props.searchProp} by name...`}
+        placeholder={`Buscar ${props.searchProp} por nombre...`}
       ></bim-text-input>
     </div>
   );

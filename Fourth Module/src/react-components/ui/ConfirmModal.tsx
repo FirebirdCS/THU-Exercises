@@ -30,10 +30,10 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
         </div>
         <div className="modals-buttons">
           <button type="button" className="cancel-button" onClick={onCancel}>
-            Cancel
+            Cancelar
           </button>
           <button type="submit" className="accept-button">
-            Accept
+            Aceptar
           </button>
         </div>
       </form>

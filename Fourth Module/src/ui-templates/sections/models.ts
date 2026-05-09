@@ -22,9 +22,9 @@ export const modelsPanelTemplate: BUI.StatefullComponent<ModelsPanelState> = (st
         modelsList.queryString = input.value
     }
 
-    return BUI.html`<bim-panel-section fixed label="Models List">
+    return BUI.html`<bim-panel-section fixed label="Lista de modelos">
         <div style="display: flex; gap: 0.5rem;">
-        <bim-text-input @input=${onSearch} placeholder="Search models..." debounce="200"></bim-text-input>
+        <bim-text-input @input=${onSearch} placeholder="Buscar modelos..." debounce="200"></bim-text-input>
             ${loadModelsBtn}
         </div>
     ${modelsList}

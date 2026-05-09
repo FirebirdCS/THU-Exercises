@@ -74,14 +74,14 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
         if (!world?.scene) return
         const scene = world.scene.three as THREE.Scene
         scene.background = scene.background ? null : new THREE.Color("white")
-        button.label = scene.background ? "White" : "Transparent"
+        button.label = scene.background ? "Blanco" : "Transparente"
     }
 
     const onToggleGrid = ({ target: button }: { target: BUI.Button }) => {
         const grid = components.get(OBC.Grids).list.get(world.uuid)
         if (!grid) return
         grid.three.visible = !grid.three.visible
-        button.label = grid.three.visible ? "Hide Grid" : "Show Grid"
+        button.label = grid.three.visible ? "Ocultar cuadrícula" : "Mostrar cuadrícula"
     }
 
     const onHide = async ({ target }: { target: BUI.Button }) => {
@@ -184,29 +184,29 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
       };
 
     return BUI.html`<bim-toolbar>
-     <bim-toolbar-section label="Visibility" icon=${appIcons.SHOW}>
-        <bim-button icon=${appIcons.SHOW} label="Show All" @click=${onShowAll}></bim-button> 
-        <bim-button icon=${appIcons.TRANSPARENCY} label="Toggle Ghost" @click=${onToggleGhost}></bim-button>
+     <bim-toolbar-section label="Visibilidad" icon=${appIcons.SHOW}>
+        <bim-button icon=${appIcons.SHOW} label="Mostrar todo" @click=${onShowAll}></bim-button>
+        <bim-button icon=${appIcons.TRANSPARENCY} label="Modo fantasma" @click=${onToggleGhost}></bim-button>
       </bim-toolbar-section>
-     <bim-toolbar-section label="Selection" icon=${appIcons.SELECT}>
-        <bim-button icon=${appIcons.FOCUS} label="Fit" @click=${onFocus}></bim-button>
-        <bim-button icon=${appIcons.HIDE} label="Hide" @click=${onHide}></bim-button> 
-        <bim-button icon=${appIcons.ISOLATE} label="Isolate" @click=${onIsolate}></bim-button>
-        <bim-button icon=${appIcons.COLORIZE} label="Colorize">
+     <bim-toolbar-section label="Selección" icon=${appIcons.SELECT}>
+        <bim-button icon=${appIcons.FOCUS} label="Encuadrar" @click=${onFocus}></bim-button>
+        <bim-button icon=${appIcons.HIDE} label="Ocultar" @click=${onHide}></bim-button>
+        <bim-button icon=${appIcons.ISOLATE} label="Aislar" @click=${onIsolate}></bim-button>
+        <bim-button icon=${appIcons.COLORIZE} label="Colorear">
         <bim-context-menu>
             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                <bim-color-input ${BUI.ref(onInputCreated)} ></bim-color-input>
                <div style="display: flex; gap: 0.5rem;">
-                    <bim-button @click=${onApplyColor} icon=${appIcons.APPLY} label="Apply"></bim-button>
-                    <bim-button icon=${appIcons.CLEAR} label="Reset" @click=${onReset}></bim-buttom>
+                    <bim-button @click=${onApplyColor} icon=${appIcons.APPLY} label="Aplicar"></bim-button>
+                    <bim-button icon=${appIcons.CLEAR} label="Restablecer" @click=${onReset}></bim-buttom>
                </div>
             </div>
         </bim-context-menu>
         </bim-button>
      </bim-toolbar-section>
-     <bim-toolbar-section icon=${appIcons.SCENE} label="Scene">
-        <bim-button label="White" @click=${onToggleBackground}></bim-button>
-        <bim-button icon=${appIcons.GRID} label="Hide Grid" @click=${onToggleGrid}></bim-button>
+     <bim-toolbar-section icon=${appIcons.SCENE} label="Escena">
+        <bim-button label="Blanco" @click=${onToggleBackground}></bim-button>
+        <bim-button icon=${appIcons.GRID} label="Ocultar cuadrícula" @click=${onToggleGrid}></bim-button>
      </bim-toolbar-section>
     </bim-toolbar>`
 }

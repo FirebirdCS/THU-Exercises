@@ -11,14 +11,14 @@ export interface ProjectInfoPanelState {
 export const projectInfoPanelTemplate: BUI.StatefullComponent<ProjectInfoPanelState> = (state) => {
     const { project, onEdit, onDelete } = state
     if (!project) {
-        return BUI.html`<bim-panel-section fixed label="Project Information"></bim-panel-section>`
+        return BUI.html`<bim-panel-section fixed label="Información del proyecto"></bim-panel-section>`
     }
     const formattedDate = formattedDateProject(new Date(project.date))
     const iconTitle = project.name.substring(0, 2).toUpperCase()
 
     return BUI.html`
-    <bim-panel-section fixed label="Project Information">
-      <div style="max-width: 475px; padding: 30px 0; border: 1px solid var(--bim-ui_bg-contrast-40); border-radius: 0.25rem;">
+    <bim-panel-section fixed label="Información del proyecto">
+      <div style="max-width: 475px; padding: 30px 0; border: 1px solid var(--gris); border-radius: 0.25rem; background-color: var(--blanco);">
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 30px; margin-bottom: 30px;">
           <p style="
             font-size: 20px;
@@ -26,44 +26,44 @@ export const projectInfoPanelTemplate: BUI.StatefullComponent<ProjectInfoPanelSt
             aspect-ratio: 1;
             border-radius: 100%;
             padding: 12px;
-            color: white;
+            color: var(--blanco);
             margin: 0;
           ">${iconTitle}</p>
           <div style="display: flex; align-items: center; gap: 8px;">
-            <bim-button label="Edit" @click=${onEdit}></bim-button>
-            <bim-button label="Delete" @click=${onDelete}></bim-button>
+            <bim-button label="Editar" @click=${onEdit}></bim-button>
+            <bim-button label="Eliminar" @click=${onDelete}></bim-button>
           </div>
         </div>
         <div style="padding: 0 30px;">
           <div>
-            <h5 style="margin: 0;">${project.name}</h5>
-            <p style="margin: 0; color: #969696;">${project.description}</p>
+            <h5 style="margin: 0; color: var(--azul);">${project.name}</h5>
+            <p style="margin: 0; color: var(--gris-texto);">${project.description}</p>
           </div>
           <div style="display: flex; column-gap: 30px; padding: 30px 0; justify-content: space-between;">
             <div>
-              <p style="color: #969696; font-size: var(--font-sm); margin: 0;">Status</p>
-              <p style="margin: 0;">${project.status}</p>
+              <p style="color: var(--gris-texto); font-size: var(--font-sm); margin: 0;">Estado</p>
+              <p style="margin: 0; color: var(--azul);">${project.status}</p>
             </div>
             <div>
-              <p style="color: #969696; font-size: var(--font-sm); margin: 0;">Cost</p>
-              <p style="margin: 0;">${project.cost}</p>
+              <p style="color: var(--gris-texto); font-size: var(--font-sm); margin: 0;">Costo</p>
+              <p style="margin: 0; color: var(--azul);">${project.cost}</p>
             </div>
             <div>
-              <p style="color: #969696; font-size: var(--font-sm); margin: 0;">Role</p>
-              <p style="margin: 0;">${project.role}</p>
+              <p style="color: var(--gris-texto); font-size: var(--font-sm); margin: 0;">Rol</p>
+              <p style="margin: 0; color: var(--azul);">${project.role}</p>
             </div>
             <div>
-              <p style="color: #969696; font-size: var(--font-sm); margin: 0;">Finish Date</p>
-              <p style="margin: 0;">${formattedDate}</p>
+              <p style="color: var(--gris-texto); font-size: var(--font-sm); margin: 0;">Fecha de finalización</p>
+              <p style="margin: 0; color: var(--azul);">${formattedDate}</p>
             </div>
           </div>
-          <div style="background-color: #404040; border-radius: 9999px; overflow: hidden;">
+          <div style="background-color: var(--gris); border-radius: 9999px; overflow: hidden;">
             <div style="
               width: ${project.progress * 100}%;
-              background-color: green;
+              background-color: var(--naranja);
               padding: 4px 0;
               text-align: center;
-              color: white;
+              color: var(--blanco);
             ">${project.progress * 100}%</div>
           </div>
         </div>

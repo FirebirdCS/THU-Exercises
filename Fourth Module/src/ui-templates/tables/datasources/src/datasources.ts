@@ -25,9 +25,9 @@ export const dataSourcesPanelTemplate: BUI.StatefullComponent<
   }
 
   return BUI.html`
-  <bim-panel-section fixed label="Sources">
+  <bim-panel-section fixed label="Fuentes">
     <div style="display: flex; gap: 0.5rem;">
-      <bim-dropdown @change=${onSourceChange} placeholder="Select a datasource...">
+      <bim-dropdown @change=${onSourceChange} placeholder="Selecciona una fuente de datos...">
         ${[...enhancer.sources.keys()].map(source => BUI.html`<bim-option label=${source}></bim-option>`)}
       </bim-dropdown>
     </div>

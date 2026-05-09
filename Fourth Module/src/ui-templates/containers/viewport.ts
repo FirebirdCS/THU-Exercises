@@ -8,7 +8,7 @@ export const viewportContainerTemplate: BUI.StatefullComponent<ViewportContainer
     let content: HTMLElement | undefined = state.viewport;
     if (!content) {
       content = BUI.Component.create(() => BUI.html`
-          <bim-label>No viewer viewport has been defined.</bim-label>
+          <bim-label>No se ha definido un visor.</bim-label>
         `,)
     }
     return BUI.html`<div class="viewport-container">${content}</div>`;

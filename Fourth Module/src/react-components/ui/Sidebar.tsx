@@ -7,15 +7,15 @@ export function Sidebar() {
     <aside id="sidebar">
       <img
         id="company-logo"
-        src="/assets/company-logo.svg"
-        alt="Construction-site"
+        src="/assets/BCA-LogoNegro.webp"
+        alt="BCA"
       />
       <ul id="nav-buttons">
         <Router.Link to="/">
           <bim-button
-            style={{ color: "white", fontSize: "1rem", lineHeight: "1.2" }}
+            style={{ color: "var(--blanco)", fontSize: "1rem", lineHeight: "1.2" }}
             icon={appIcons.PROJECTS}
-            label="Projects"
+            label="Proyectos"
           ></bim-button>
         </Router.Link>
         {/* <Router.Link to="/users">

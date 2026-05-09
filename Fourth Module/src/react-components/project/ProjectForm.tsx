@@ -103,11 +103,11 @@ export const ProjectForm: React.FC<Props> = ({
 
   return (
     <form onSubmit={handleSubmit} className="input-list">
-      <h2>{mode === "create" ? "New project" : "Edit project"}</h2>
+      <h2>{mode === "create" ? "Nuevo proyecto" : "Editar proyecto"}</h2>
       <div className="input-list">
         <div className="form-field-container">
           <label>
-            <span className="material-icons-round">apartment</span>Name
+            <span className="material-icons-round">apartment</span>Nombre
           </label>
           <input
             name="name"
@@ -119,7 +119,7 @@ export const ProjectForm: React.FC<Props> = ({
             id="tip"
             style={{ color: "#5d616f", fontStyle: "italic", marginTop: 5 }}
           >
-            TIP: Give it a short name
+            TIP: Usa un nombre corto
           </p>
           {errors.name && (
             <p
@@ -137,7 +137,7 @@ export const ProjectForm: React.FC<Props> = ({
 
         <div className="form-field-container">
           <label>
-            <span className="material-icons-round">notes</span>Description
+            <span className="material-icons-round">notes</span>Descripción
           </label>
           <textarea
             name="description"
@@ -161,38 +161,38 @@ export const ProjectForm: React.FC<Props> = ({
 
         <div className="form-field-container">
           <label>
-            <span className="material-icons-round">account_circle</span>Role
+            <span className="material-icons-round">account_circle</span>Rol
           </label>
           <select
             name="role"
             value={role}
             onChange={(e) => setRole(e.target.value as userRole)}
           >
-            <option value="architect">Architect</option>
-            <option value="engineer">Engineer</option>
-            <option value="developer">Developer</option>
+            <option value="architect">Arquitecto</option>
+            <option value="engineer">Ingeniero</option>
+            <option value="developer">Desarrollador</option>
           </select>
         </div>
 
         <div className="form-field-container">
           <label>
-            <span className="material-icons-round">help</span>Status
+            <span className="material-icons-round">help</span>Estado
           </label>
           <select
             name="status"
             value={status}
             onChange={(e) => setStatus(e.target.value as projectStatus)}
           >
-            <option value="pending">Pending</option>
-            <option value="active">Active</option>
-            <option value="finished">Finished</option>
+            <option value="pending">Pendiente</option>
+            <option value="active">Activo</option>
+            <option value="finished">Finalizado</option>
           </select>
         </div>
 
         <div className="form-field-container">
           <label>
-            <span className="material-icons-round">calendar_month</span>Finish
-            Date
+            <span className="material-icons-round">calendar_month</span>Fecha
+            de finalización
           </label>
           <input
             name="date"
@@ -208,13 +208,13 @@ export const ProjectForm: React.FC<Props> = ({
             className="cancel-button"
             onClick={handleCancel}
           >
-            Cancel
+            Cancelar
           </button>
           <button
             type="submit"
             className={mode === "create" ? "accept-button" : "update-button"}
           >
-            {mode === "create" ? "Create" : "Update"}
+            {mode === "create" ? "Crear" : "Actualizar"}
           </button>
         </div>
       </div>

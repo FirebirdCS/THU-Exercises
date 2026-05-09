@@ -60,7 +60,7 @@ export const loadModelBtnTemplate: BUI.StatefullComponent<LoadModelBtnState> = (
 
   return BUI.html`<bim-button icon=${appIcons.ADD}>
   <bim-context-menu>
-  <bim-button class="transparent" @click=${onLoadIfc} label="Load IFC"></bim-button>
-  <bim-button class="transparent" @click=${onLoadFrag} label="Load FRAG"></bim-button>
+  <bim-button class="transparent" @click=${onLoadIfc} label="Cargar IFC"></bim-button>
+  <bim-button class="transparent" @click=${onLoadFrag} label="Cargar FRAG"></bim-button>
   </bim-context-menu></bim-button>`
 }

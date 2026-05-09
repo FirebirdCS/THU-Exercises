@@ -92,7 +92,7 @@ export function ProjectsPage(props: Props) {
     const doc = await Firestore.addDoc(projectsCollection, data);
     props.projectsManager.newProject(data, doc.id);
     modal.showModal("new-project-modal", 0);
-    toast.success("Project created successfully!");
+    toast.success("¡Proyecto creado exitosamente!");
   };
 
   // Open new modal logic
@@ -136,31 +136,31 @@ export function ProjectsPage(props: Props) {
         />
       </dialog>
       <header>
-        <bim-label style={{ fontSize: "1.3rem", color: "white" }}>
-          Project List
+        <bim-label style={{ fontSize: "1.3rem", color: "var(--azul)" }}>
+          Lista de proyectos
         </bim-label>
         <SearchBox
           onChange={(value) => {
             onProjectSearch(value);
           }}
-          searchProp="Project"
+          searchProp="Proyecto"
           size="40%"
         />
         <div style={{ display: "flex", alignItems: "center", columnGap: 15 }}>
           <bim-button
             onclick={onImportProject}
             icon={appIcons.UPLOAD}
-            label="Upload"
+            label="Importar"
           ></bim-button>
           <bim-button
             onclick={onExportProject}
             icon={appIcons.DOWNLOAD}
-            label="Download"
+            label="Exportar"
           ></bim-button>
           <bim-button
             onclick={onNewProjectClick}
             icon={appIcons.ADD}
-            label="New project"
+            label="Nuevo proyecto"
           ></bim-button>
         </div>
       </header>
@@ -171,12 +171,12 @@ export function ProjectsPage(props: Props) {
           style={{
             textAlign: "center",
             marginTop: "50px",
-            color: "#FF6347",
+            color: "var(--naranja)",
             fontSize: "18px",
             fontWeight: "bold",
           }}
         >
-          🚫 No projects found! Please try a different search.
+          🚫 ¡No se encontraron proyectos! Intenta con otra búsqueda.
         </div>
       )}
     </div>

@@ -63,10 +63,10 @@ export function ProjectDetailsPage(props: Props) {
           await deleteDocument(`/projects/${routeParams.id}/todoList`, doc.id);
         }
         await deleteDocument("/projects", id);
-        toast.success("Project deleted successfully!");
+        toast.success("¡Proyecto eliminado exitosamente!");
         navigateTimer = setTimeout(() => navigate("/"), 1500);
       } catch (error) {
-        toast.error("Error deleting project or todo list");
+        toast.error("Error al eliminar el proyecto o la lista de tareas");
         console.error(error);
       }
     };
@@ -160,7 +160,7 @@ export function ProjectDetailsPage(props: Props) {
         });
       }
       modal.showModal("update-project-modal", 0);
-      toast.success("Project updated successfully!");
+      toast.success("¡Proyecto actualizado exitosamente!");
     }
   };
 
@@ -180,8 +180,8 @@ export function ProjectDetailsPage(props: Props) {
     <>
       <ConfirmModal
         id="confirm-delete-modal"
-        title="Delete Project"
-        message={`Are you sure you want to delete project ${project.name}?`}
+        title="Eliminar proyecto"
+        message={`¿Estás seguro de que deseas eliminar el proyecto ${project.name}?`}
         onConfirm={() => props.projectsManager.deleteProject(project.id)}
         onCancel={closeConfirmModal}
       />
