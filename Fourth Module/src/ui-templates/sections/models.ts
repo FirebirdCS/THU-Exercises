@@ -5,16 +5,17 @@ import { loadModelBtnTemplate } from "../buttons"
 
 export interface ModelsPanelState {
     components: OBC.Components
+    projectId: string
 }
 
 export const modelsPanelTemplate: BUI.StatefullComponent<ModelsPanelState> = (state) => {
-    const { components } = state
+    const { components, projectId } = state
 
     const [ modelsList ] = CUI.tables.modelsList({
         components,
     })
 
-    const [loadModelsBtn] = BUI.Component.create(loadModelBtnTemplate, { components })
+    const [loadModelsBtn] = BUI.Component.create(loadModelBtnTemplate, { components, projectId })
     loadModelsBtn.style.flex = "0"
 
     const onSearch = (e: Event) => {

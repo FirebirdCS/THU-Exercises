@@ -32,7 +32,7 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
             },
             models: {
               template: modelsPanelTemplate,
-              initialState: { components }
+              initialState: { components, projectId: project.id }
             },
             queries: {
               template: queriesPanelTemplate,

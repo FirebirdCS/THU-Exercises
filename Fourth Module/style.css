@@ -136,6 +136,19 @@ h5 {
 
 }
 
+/* Pin the layout by area so it never depends on child order/count. */
+#sidebar {
+    grid-area: sidebar;
+}
+
+#app-content {
+    grid-area: content;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
 button {
     cursor: pointer;
     padding: 8px 15px;
@@ -761,4 +774,137 @@ bim-grid[floating] > bim-toolbar {
     border: none;
     justify-self: center;
     outline: 1px solid var(--bim-ui_bg-contrast-40);
+}
+
+/* ---------------------------------------------------------------------------
+ * Login screen
+ * ------------------------------------------------------------------------- */
+
+.login-screen {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--crema);
+    z-index: 1000;
+    padding: 20px;
+}
+
+.login-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 380px;
+    background-color: var(--blanco);
+    border: 1px solid var(--gris);
+    border-radius: 12px;
+    padding: 40px 32px;
+    row-gap: 20px;
+    box-shadow: 0 10px 30px rgba(33, 43, 55, 0.08);
+}
+
+.login-logo {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+    align-self: center;
+    margin-bottom: 8px;
+}
+
+.login-title {
+    text-align: center;
+    color: var(--azul);
+    margin: 0;
+}
+
+.login-subtitle {
+    text-align: center;
+    color: var(--gris-texto);
+    font-size: var(--font-base);
+    margin: 0 0 8px;
+}
+
+.login-card .form-field-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.login-error {
+    color: #cf0e28;
+    background-color: rgba(207, 14, 40, 0.08);
+    border: 1px solid rgba(207, 14, 40, 0.25);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: var(--font-base);
+    margin: 0;
+    text-align: center;
+}
+
+.login-button {
+    margin-top: 8px;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.login-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.login-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 12px;
+    color: var(--gris-texto);
+}
+
+.login-loader .spin {
+    font-size: 42px;
+    color: var(--naranja);
+    animation: login-spin 1s linear infinite;
+}
+
+@keyframes login-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ---------------------------------------------------------------------------
+ * Sidebar footer (user + logout)
+ * ------------------------------------------------------------------------- */
+
+#sidebar-footer {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+    border-top: 1px solid var(--gris);
+    padding-top: 16px;
+}
+
+#sidebar-user {
+    display: flex;
+    align-items: center;
+    column-gap: 6px;
+    font-size: 0.78rem;
+    color: var(--gris-texto);
+    margin: 0;
+    max-width: 100%;
+}
+
+#sidebar-user .material-icons-round {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+#sidebar-user .sidebar-user-email {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
