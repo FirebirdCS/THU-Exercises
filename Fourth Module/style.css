@@ -78,6 +78,21 @@ bim-button[active] {
     --bim-label--c: var(--azul);
 }
 
+/* Keep content/panel bim-buttons (e.g. Editar / Eliminar) orange on
+   click/focus instead of flashing the shadow-DOM's near-white pressed bg.
+   Scoped to panel sections so the transparent sidebar/toolbar buttons
+   keep their own styling. */
+bim-panel-section bim-button:hover,
+bim-panel-section bim-button:focus,
+bim-panel-section bim-button:focus-visible,
+bim-panel-section bim-button:focus-within,
+bim-panel-section bim-button:active {
+    --bim-button--bgc: var(--naranja);
+    --bim-label--c: var(--azul);
+    background-color: var(--naranja);
+    outline: none;
+}
+
 /* bim-text-input: white background, dark blue text, orange focus outline */
 bim-text-input {
     --bim-input--bgc: var(--blanco);
@@ -848,6 +863,9 @@ bim-grid[floating] > bim-toolbar {
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
+    /* base `button` rule is display:flex; center the label instead of
+       it defaulting to flex-start (left-aligned). */
+    justify-content: center;
 }
 
 .login-button:disabled {
