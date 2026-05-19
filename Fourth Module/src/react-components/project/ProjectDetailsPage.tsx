@@ -37,6 +37,7 @@ interface Props {
 async function loadStoredModels(
   components: OBC.Components,
   projectId: string,
+  shouldStop: () => boolean,
 ) {
   let models;
   try {
@@ -45,7 +46,7 @@ async function loadStoredModels(
     console.error("No se pudieron obtener los modelos del proyecto", e);
     return;
   }
-  if (!models.length) return;
+  if (!models.length || shouldStop()) return;
 
   const fragments = components.get(OBC.FragmentsManager);
   const loadingToast = toast.loading(
@@ -53,13 +54,21 @@ async function loadStoredModels(
   );
   let ok = 0;
   for (const model of models) {
+    // The page may have unmounted (e.g. logout) mid-load; stop touching
+    // the now-disposed engine instead of erroring per remaining model.
+    if (shouldStop()) break;
     try {
       const buffer = await downloadProjectModel(model.storagePath);
+      if (shouldStop()) break;
       await fragments.core.load(buffer, { modelId: model.name });
       ok++;
     } catch (e) {
       console.error(`Error al cargar el modelo "${model.name}"`, e);
     }
+  }
+  if (shouldStop()) {
+    toast.dismiss(loadingToast);
+    return;
   }
   toast.update(loadingToast, {
     render:
@@ -142,7 +151,9 @@ export function ProjectDetailsPage(props: Props) {
     const currentProject = props.projectsManager.getProject(projectId);
     if (!(currentProject && currentProject instanceof Project)) return;
 
-    const { components, viewport } = await setupComponents();
+    const { components, viewport } = await setupComponents(
+      () => tearingDownRef.current,
+    );
     engineManager = components;
 
     // When the user removes a model from the panel, also delete its
@@ -201,7 +212,7 @@ export function ProjectDetailsPage(props: Props) {
     grid.layout = "Main";
 
     // Restore the project's models from the cloud (non-blocking).
-    void loadStoredModels(components, projectId);
+    void loadStoredModels(components, projectId, () => tearingDownRef.current);
   };
 
   React.useEffect(() => {
