@@ -19,7 +19,7 @@ const appRoot = ReactDOM.createRoot(rootElement);
 appRoot.render(
   <>
     <AuthProvider>
-      <Router.BrowserRouter>
+      <Router.HashRouter>
         <Router.Routes>
           <Router.Route path="/login" element={<LoginPage />} />
           <Router.Route element={<RequireAuth />}>
@@ -36,7 +36,7 @@ appRoot.render(
             <Router.Route path="/users" element={<UserPage />} />
           </Router.Route>
         </Router.Routes>
-      </Router.BrowserRouter>
+      </Router.HashRouter>
     </AuthProvider>
   </>,
 );

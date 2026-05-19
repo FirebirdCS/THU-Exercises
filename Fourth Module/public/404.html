@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Redirecting…</title>
+  <script>
+    // GitHub Pages serves this for any path with no matching file. The app
+    // uses HashRouter, so an old non-hash link like /project/abc must become
+    // /#/project/abc. index.html exists (200), so this does not loop.
+    var loc = window.location;
+    loc.replace(loc.origin + "/#" + loc.pathname + loc.search);
+  </script>
+</head>
+<body>Redirecting…</body>
+</html>

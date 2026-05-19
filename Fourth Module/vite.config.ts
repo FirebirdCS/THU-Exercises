@@ -1,25 +1,12 @@
-import {defineConfig, type Plugin} from 'vite'
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from "path"
-import fs from "fs"
 
-// GitHub Pages has no SPA rewrite: a hard refresh / direct link to a client
-// route (e.g. /project/123, /users) returns the host's 404 page. Publishing a
-// 404.html that is a copy of the built index.html lets React Router boot and
-// resolve the route on the client.
-const spaFallback = (): Plugin => ({
-    name: "spa-fallback-404",
-    closeBundle() {
-        const dist = path.resolve(__dirname, "dist")
-        const index = path.join(dist, "index.html")
-        if (fs.existsSync(index)) {
-            fs.copyFileSync(index, path.join(dist, "404.html"))
-        }
-    },
-})
-
+// Routing uses HashRouter, so every request hits "/" (always 200 on
+// GitHub Pages) and the route lives after the "#". No 404.html SPA
+// fallback is needed.
 export default defineConfig({
-    plugins: [react(), spaFallback()],
+    plugins: [react()],
     resolve: {
         alias: {
             // Supports imports like `src/bim-components/setup`
