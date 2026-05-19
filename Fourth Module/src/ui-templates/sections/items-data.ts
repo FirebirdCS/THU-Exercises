@@ -40,8 +40,20 @@ export const itemsDataPanelTemplate: BUI.StatefullComponent<ItemsDataPanelState>
         `
       }
     
+      // Every highlight style (the "select" selection plus any custom color
+      // styles applied via "Colorear") is registered in highlighter.selection.
+      // Joining them gives every item the user can currently see highlighted.
+      const getHighlightedItems = () =>
+        OBC.ModelIdMapUtils.join(Object.values(highlighter.selection))
+
       highlighter.events.select.onClear.add(() => {
-        updatePropsTable({modelIdMap: {}})
+        // "select" is also cleared when a custom color is applied to the
+        // selection. In that case the items are still highlighted under the
+        // color's style, so keep showing their data instead of blanking it.
+        const highlighted = getHighlightedItems()
+        updatePropsTable({
+          modelIdMap: OBC.ModelIdMapUtils.isEmpty(highlighted) ? {} : highlighted,
+        })
       })
 
     const onSearch = (e: Event) => {
@@ -51,9 +63,9 @@ export const itemsDataPanelTemplate: BUI.StatefullComponent<ItemsDataPanelState>
     }
 
     const onRefresh = () => {
-        const selection = highlighter.selection.select
-        if (OBC.ModelIdMapUtils.isEmpty(selection)) return
-        updatePropsTable({modelIdMap: selection})
+        const highlighted = getHighlightedItems()
+        if (OBC.ModelIdMapUtils.isEmpty(highlighted)) return
+        updatePropsTable({modelIdMap: highlighted})
       }
 
     return BUI.html`<bim-panel-section fixed label="Datos de selección">

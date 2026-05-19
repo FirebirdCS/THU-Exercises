@@ -49,13 +49,13 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
             })
         }
         
-        await Promise.all([highlighter.highlightByID(
-            color,
-            selection,
-            false,
-            false
-        ),
-        highlighter.clear("select")])
+        // Apply the custom color first so the elements stay registered as a
+        // highlighted selection (under the color's style id), then drop the
+        // "select" tint so the chosen color is visible. Order matters: the
+        // items must be registered before "select" is cleared so the data
+        // panel can keep showing them.
+        await highlighter.highlightByID(color, selection, false, false)
+        await highlighter.clear("select")
 
         button.loading = false
         BUI.ContextMenu.removeMenus()

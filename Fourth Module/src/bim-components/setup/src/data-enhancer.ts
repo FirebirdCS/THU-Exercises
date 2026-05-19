@@ -1,7 +1,6 @@
 import * as OBC from "@thatopen/components"
 import { DataEnhancer } from "../../DataEnhancer"
 import { ItemData } from "@thatopen/fragments"
-import * as OBF from "@thatopen/components-front"
 import { getCollection } from "src/firebase"
 import { getDocs } from "firebase/firestore"
 
@@ -44,11 +43,5 @@ export const setupDataEnhancer = (components: OBC.Components) => {
       const dataSubset = data.filter(entry => entry.guids.includes(guid))
       return dataSubset.length > 0 ? dataSubset : null
     }
-  })
-
-  const highlighter = components.get(OBF.Highlighter)
-  highlighter.events.select.onHighlight.add(async items => {
-    const data = await enhancer.getData(items)
-    console.log(data)
   })
 }

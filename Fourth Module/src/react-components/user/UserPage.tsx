@@ -70,7 +70,7 @@ export function UserPage() {
         <div className="user-card">
           <div className="user-content">
             <div className="user-property">
-              <img src="assets/p1.png" alt="" className="profile-image" />
+              <img src="/assets/p1.png" alt="" className="profile-image" />
             </div>
             <div className="user-property">
               <p style={{ color: "#969696" }}>Name</p>
@@ -105,7 +105,7 @@ export function UserPage() {
         <div className="user-card">
           <div className="user-content">
             <div className="user-property">
-              <img src="assets/p3.png" alt="" className="profile-image" />
+              <img src="/assets/p3.png" alt="" className="profile-image" />
             </div>
             <div className="user-property">
               <p style={{ color: "#969696" }}>Name</p>
@@ -140,7 +140,7 @@ export function UserPage() {
         <div className="user-card">
           <div className="user-content">
             <div className="user-property">
-              <img src="assets/p2.png" alt="" className="profile-image" />
+              <img src="/assets/p2.png" alt="" className="profile-image" />
             </div>
             <div className="user-property">
               <p style={{ color: "#969696" }}>Name</p>
@@ -175,7 +175,7 @@ export function UserPage() {
         <div className="user-card">
           <div className="user-content">
             <div className="user-property">
-              <img src="assets/p4.png" alt="" className="profile-image" />
+              <img src="/assets/p4.png" alt="" className="profile-image" />
             </div>
             <div className="user-property">
               <p style={{ color: "#969696" }}>Name</p>
