@@ -25,7 +25,7 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
         if (!e) return
         colorInput = e as BUI.ColorInput
     }
-    
+
     const onApplyColor = async ({target: button}: {target: BUI.Button}) => {
         if (!colorInput) return
         const { color } = colorInput
@@ -48,7 +48,7 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
                 transparent: false,
             })
         }
-        
+
         // Apply the custom color first so the elements stay registered as a
         // highlighted selection (under the color's style id), then drop the
         // "select" tint so the chosen color is visible. Order matters: the
@@ -115,7 +115,7 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
     const setModelTransparency = (opacity: number) => {
         const fragments = components.get(OBC.FragmentsManager);
         const materials = [...fragments.core.models.materials.list.values()];
-    
+
         for (const material of materials) {
           if (material.userData.customId) continue;
           let color: number | undefined;
@@ -126,14 +126,14 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
             color = material.lodColor.getHex();
             lodOpacity = material.uniforms.lodOpacity.value
           }
-    
+
           originalMaterialsData.set(material, {
             color,
             transparent: material.transparent,
             opacity: material.opacity,
             lodOpacity
           });
-    
+
           material.transparent = true;
           if ("color" in material) {
             material.opacity = opacity;
@@ -145,11 +145,11 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
           material.needsUpdate = true;
         }
       }
-    
+
       const restoreTransparency = () => {
         for (const [material, data] of originalMaterialsData) {
           const { color, transparent, opacity, lodOpacity } = data;
-    
+
           material.transparent = transparent;
           if ("color" in material) {
             material.opacity = opacity;
@@ -160,16 +160,21 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
           }
           material.needsUpdate = true;
         }
-    
+
         originalMaterialsData.clear();
       }
-    
+
       const onToggleGhost = () => {
         if (originalMaterialsData.size > 0) {
           restoreTransparency();
         }  else {
           setModelTransparency(0.05);
         }
+      }
+
+      const onDeleteAllClippers = () => {
+        const clipper = components.get(OBC.Clipper)
+        clipper.deleteAll()
       }
 
       const onFocus = async ({ target }: { target: BUI.Button }) => {
@@ -203,6 +208,9 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
             </div>
         </bim-context-menu>
         </bim-button>
+     </bim-toolbar-section>
+     <bim-toolbar-section label="Cortes" icon=${appIcons.CLIPPER}>
+        <bim-button icon=${appIcons.CLEAR} label="Eliminar planos" @click=${onDeleteAllClippers}></bim-button>
      </bim-toolbar-section>
      <bim-toolbar-section icon=${appIcons.SCENE} label="Escena">
         <bim-button label="Blanco" @click=${onToggleBackground}></bim-button>

@@ -1,5 +1,5 @@
 import * as OBC from "@thatopen/components"
-import { createWorld, setupIfcLoader, setupFragmentsManager, setupHighlighter, setupItemsFinder, setupDataEnhancer } from "./src"
+import { createWorld, setupIfcLoader, setupFragmentsManager, setupHighlighter, setupItemsFinder, setupDataEnhancer, setupClipper } from "./src"
 
 export const setupComponents = async (isTorndown: () => boolean = () => false) => {
     const components = new OBC.Components()
@@ -10,6 +10,7 @@ export const setupComponents = async (isTorndown: () => boolean = () => false) =
     setupHighlighter(components, world)
     setupItemsFinder(components)
     setupDataEnhancer(components)
+    setupClipper(components, world, viewport)
 
     components.init()
 

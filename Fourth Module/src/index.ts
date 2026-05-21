@@ -23,4 +23,5 @@ export const appIcons = {
   DOWNLOAD: "mingcute:download-2-line",
   UPLOAD: "mingcute:upload-2-line",
   PROJECTS: "mingcute:building-2-line",
+  CLIPPER: "mingcute:scissors-line",
 };
