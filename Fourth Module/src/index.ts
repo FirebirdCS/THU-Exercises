@@ -24,4 +24,6 @@ export const appIcons = {
   UPLOAD: "mingcute:upload-2-line",
   PROJECTS: "mingcute:building-2-line",
   CLIPPER: "mingcute:scissors-line",
+  FIRST_PERSON: "mingcute:walk-line",
+  EXPORT: "mingcute:file-export-line",
 };

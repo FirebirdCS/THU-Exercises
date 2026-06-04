@@ -26,6 +26,12 @@ export const setupClipper = (
   // the highlighter and the clipper don't fight over the same gesture).
   viewport.addEventListener("dblclick", () => {
     if (!clipper.enabled) return
+    // While in first-person navigation, free-look dragging makes accidental
+    // plane drops likely — skip the gesture entirely in that mode.
+    if (
+      world.camera instanceof OBC.OrthoPerspectiveCamera &&
+      world.camera.mode.id === "FirstPerson"
+    ) return
     clipper.create(world)
   })
 

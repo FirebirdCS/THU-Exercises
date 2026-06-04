@@ -177,6 +177,33 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
         clipper.deleteAll()
       }
 
+      // First-person rotates around the camera instead of a far orbit target,
+      // so the view doesn't drift out of tight spaces (rooms, apartments).
+      const onToggleFirstPerson = ({ target: button }: { target: BUI.Button }) => {
+        if (!(world.camera instanceof OBC.OrthoPerspectiveCamera)) return
+        const next = world.camera.mode.id === "FirstPerson" ? "Orbit" : "FirstPerson"
+        world.camera.set(next)
+
+        // Workaround for OBC's OrbitMode.activateOrbitControls: it computes the
+        // orbit target as `position-from-origin` units in front of the camera,
+        // which can land far outside the building. Re-anchor the target to a
+        // point ~5m ahead so rotation pivots around what the user is looking at.
+        if (next === "Orbit") {
+          const { controls, three } = world.camera
+          const camPos = new THREE.Vector3()
+          controls.getPosition(camPos)
+          const dir = new THREE.Vector3()
+          three.getWorldDirection(dir)
+          const targetX = camPos.x + dir.x * 5
+          const targetY = camPos.y + dir.y * 5
+          const targetZ = camPos.z + dir.z * 5
+          controls.setLookAt(camPos.x, camPos.y, camPos.z, targetX, targetY, targetZ, false)
+        }
+
+        button.active = next === "FirstPerson"
+        button.label = next === "FirstPerson" ? "Salir 1ª persona" : "1ª persona"
+      }
+
       const onFocus = async ({ target }: { target: BUI.Button }) => {
         if (!(world.camera instanceof OBC.SimpleCamera)) return;
         const highlighter = components.get(OBF.Highlighter)
@@ -215,6 +242,7 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
      <bim-toolbar-section icon=${appIcons.SCENE} label="Escena">
         <bim-button label="Blanco" @click=${onToggleBackground}></bim-button>
         <bim-button icon=${appIcons.GRID} label="Ocultar cuadrícula" @click=${onToggleGrid}></bim-button>
+        <bim-button icon=${appIcons.FIRST_PERSON} label="1ª persona" @click=${onToggleFirstPerson}></bim-button>
      </bim-toolbar-section>
     </bim-toolbar>`
 }
