@@ -1,9 +1,11 @@
 import * as OBC from "@thatopen/components";
 import * as OBF from "@thatopen/components-front";
 import * as BUI from "@thatopen/ui";
+import * as THREE from "three";
 import * as XLSX from "xlsx";
 import { QueriesListState, QueriesListTableData } from "./types";
 import { appIcons } from "src/index";
+import { SmartViews } from "src/bim-components";
 
 type ExportRow = {
   Model: string
@@ -110,10 +112,55 @@ export const setDefaults = (
         }
       }
 
+      let colorInput: BUI.ColorInput | undefined;
+      const onColorInputCreated = (e?: Element) => {
+        if (!e) return;
+        colorInput = e as BUI.ColorInput;
+      };
+
+      const onApplyColor = async ({ target: button }: { target: BUI.Button }) => {
+        if (!colorInput) return
+        button.loading = true
+        const items = await query.test()
+        if (OBC.ModelIdMapUtils.isEmpty(items)) {
+          button.loading = false
+          return
+        }
+
+        const { color } = colorInput
+        const highlighter = components.get(OBF.Highlighter)
+        if (!highlighter.styles.has(color)) {
+          highlighter.styles.set(color, {
+            color: new THREE.Color(color),
+            renderedFaces: 1,
+            opacity: 1,
+            transparent: false
+          })
+        }
+
+        await highlighter.highlightByID(color, items)
+        const smartViews = components.get(SmartViews)
+        smartViews.addQueryColor(color, Name)
+        button.loading = false
+        BUI.ContextMenu.removeMenus()
+      }
+
       return BUI.html`
         <div style="display: flex; gap: 0.25rem;">
           <bim-button icon=${appIcons.SELECT} tooltip-text="Seleccionar" @click=${onSelect}></bim-button>
           <bim-button icon=${appIcons.EXPORT} tooltip-text="Exportar a Excel" @click=${onExport}></bim-button>
+          <bim-button style="flex: 0;" icon=${appIcons.CONTEXT_MENU} tooltip-text="Más opciones">
+            <bim-context-menu>
+              <bim-button style="flex: 0;" icon=${appIcons.COLORIZE} label="Colorize">
+                <bim-context-menu>
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <bim-color-input ${BUI.ref(onColorInputCreated)}></bim-color-input>
+                    <bim-button @click=${onApplyColor} icon=${appIcons.APPLY} label="Apply"></bim-button>
+                  </div>
+                </bim-context-menu>
+              </bim-button>
+            </bim-context-menu>
+          </bim-button>
         </div>
       `
     }

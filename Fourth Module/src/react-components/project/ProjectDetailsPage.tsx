@@ -25,6 +25,13 @@ import {
   deleteProjectModelByName,
   deleteAllProjectModels,
 } from "@db/models";
+import {
+  getProjectSmartViews,
+  saveProjectSmartView,
+  deleteProjectSmartView,
+  deleteAllProjectSmartViews,
+} from "@db/smart-views";
+import { SmartViews } from "src/bim-components";
 
 interface Props {
   projectsManager: ProjectsManager;
@@ -81,6 +88,38 @@ async function loadStoredModels(
   });
 }
 
+/**
+ * Loads the project's stored smart views from Firebase and rebuilds them in
+ * the SmartViews component so they show up in the panel when the project is
+ * opened. `loadingRef` is raised while importing so the persistence listeners
+ * don't write the just-loaded views straight back to the cloud.
+ */
+async function loadStoredSmartViews(
+  components: OBC.Components,
+  projectId: string,
+  shouldStop: () => boolean,
+  loadingRef: React.MutableRefObject<boolean>,
+) {
+  let stored;
+  try {
+    stored = await getProjectSmartViews(projectId);
+  } catch (e) {
+    console.error("No se pudieron obtener las vistas inteligentes", e);
+    return;
+  }
+  if (!stored.length || shouldStop()) return;
+
+  const smartViews = components.get(SmartViews);
+  loadingRef.current = true;
+  try {
+    const data: Record<string, (typeof stored)[number]["json"]> = {};
+    for (const { id, json } of stored) data[id] = json;
+    smartViews.import(data);
+  } finally {
+    loadingRef.current = false;
+  }
+}
+
 export function ProjectDetailsPage(props: Props) {
   const routeParams = Router.useParams<{ id: string }>();
   const [projectDetails, setProjectDetails] = React.useState<IProject | null>(
@@ -94,6 +133,9 @@ export function ProjectDetailsPage(props: Props) {
   // model on teardown, which fires the same "model deleted" event as the
   // delete button — this flag stops us wiping all cloud files on navigation.
   const tearingDownRef = React.useRef(false);
+  // Raised while smart views are being imported from the cloud, so the
+  // persistence listeners don't echo the freshly loaded views back to Firebase.
+  const loadingSmartViewsRef = React.useRef(false);
   let engineManager: OBC.Components | null = null;
 
   React.useEffect(() => {
@@ -129,6 +171,12 @@ export function ProjectDetailsPage(props: Props) {
           await deleteAllProjectModels(id);
         } catch (e) {
           console.error("No se pudieron eliminar los modelos del proyecto", e);
+        }
+        // Remove the project's smart views too.
+        try {
+          await deleteAllProjectSmartViews(id);
+        } catch (e) {
+          console.error("No se pudieron eliminar las vistas inteligentes", e);
         }
         await deleteDocument("/projects", id);
         toast.success("¡Proyecto eliminado exitosamente!");
@@ -173,6 +221,31 @@ export function ProjectDetailsPage(props: Props) {
       }
     });
 
+    // Persist smart views to the cloud as they are created/updated/deleted.
+    // Skipped during teardown and while loading (so we don't echo back the
+    // views we just imported).
+    const smartViews = components.get(SmartViews);
+    const persistSmartView = async (id: string) => {
+      if (tearingDownRef.current || loadingSmartViewsRef.current) return;
+      const view = smartViews.list.get(id);
+      if (!view) return;
+      try {
+        await saveProjectSmartView(projectId, id, smartViews.serializeView(view));
+      } catch (e) {
+        console.error("No se pudo guardar la vista inteligente en la nube", e);
+      }
+    };
+    smartViews.list.onItemSet.add(({ key }) => void persistSmartView(key));
+    smartViews.list.onItemUpdated.add(({ key }) => void persistSmartView(key));
+    smartViews.list.onItemDeleted.add(async (id: string) => {
+      if (tearingDownRef.current || loadingSmartViewsRef.current) return;
+      try {
+        await deleteProjectSmartView(projectId, id);
+      } catch (e) {
+        console.error("No se pudo eliminar la vista inteligente de la nube", e);
+      }
+    });
+
     grid.elements = {
       sidebar: {
         template: TEMPLATES.gridSidebarTemplate,
@@ -213,6 +286,14 @@ export function ProjectDetailsPage(props: Props) {
 
     // Restore the project's models from the cloud (non-blocking).
     void loadStoredModels(components, projectId, () => tearingDownRef.current);
+
+    // Restore the project's smart views from the cloud (non-blocking).
+    void loadStoredSmartViews(
+      components,
+      projectId,
+      () => tearingDownRef.current,
+      loadingSmartViewsRef,
+    );
   };
 
   React.useEffect(() => {

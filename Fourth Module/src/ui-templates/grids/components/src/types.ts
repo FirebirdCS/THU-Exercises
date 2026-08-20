@@ -1,5 +1,5 @@
 import * as BUI from "@thatopen/ui";
-import { ModelsPanelState, QueriesPanelState, ProjectInfoPanelState } from "src/ui-templates/sections";
+import { ModelsPanelState, QueriesPanelState, ProjectInfoPanelState, SmartViewsPanelState, SpatialTreePanelState, GisPanelState } from "src/ui-templates/sections";
 import { ItemsDataPanelState } from "src/ui-templates/sections/items-data";
 import { DataSourcesListState } from "src/ui-templates/tables/datasources/src";
 
@@ -33,7 +33,23 @@ export type DataSources = {
     state: DataSourcesListState
 }
 
-type ComponentsGridElements = [Viewport, ItemsData, Models, Queries, ProjectInfo, DataSources];
-type ComponentsGridLayout = ["Models", "Queries", "Viewer", "Project"];
+export type SmartViewsElement = {
+    name: "smartViews";
+    state: SmartViewsPanelState
+}
+
+export type SpatialTreeElement = {
+    name: "spatialTree";
+    state: SpatialTreePanelState
+}
+
+export type Gis = {
+    name: "gis";
+    state: GisPanelState
+}
+  
+
+type ComponentsGridElements = [Viewport, ItemsData, Models, Queries, ProjectInfo, DataSources, SmartViewsElement, SpatialTreeElement, Gis];
+type ComponentsGridLayout = ["Modelos", "Consultas", "Visor", "Vistas", "GIS", "Proyecto"];
 
 export type ComponentsGrid = BUI.Grid<ComponentsGridLayout, ComponentsGridElements>;

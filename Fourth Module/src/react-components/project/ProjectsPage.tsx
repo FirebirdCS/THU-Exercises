@@ -107,15 +107,6 @@ export function ProjectsPage(props: Props) {
     createProjectModal.showModal("new-project-modal", 1);
   };
 
-  // Import & Export Logic
-  const onExportProject = () => {
-    props.projectsManager.exportToJSON();
-  };
-
-  const onImportProject = () => {
-    props.projectsManager.importFromJSON();
-  };
-
   const onProjectSearch = (value: string) => {
     setProjects(props.projectsManager.filterProjects(value));
   };
@@ -147,16 +138,6 @@ export function ProjectsPage(props: Props) {
           size="40%"
         />
         <div style={{ display: "flex", alignItems: "center", columnGap: 15 }}>
-          <bim-button
-            onclick={onImportProject}
-            icon={appIcons.UPLOAD}
-            label="Importar"
-          ></bim-button>
-          <bim-button
-            onclick={onExportProject}
-            icon={appIcons.DOWNLOAD}
-            label="Exportar"
-          ></bim-button>
           <bim-button
             onclick={onNewProjectClick}
             icon={appIcons.ADD}

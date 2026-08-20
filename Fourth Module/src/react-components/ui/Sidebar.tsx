@@ -41,7 +41,7 @@ export function Sidebar() {
           marginBottom: "-0.5rem",
         }}
       >
-        Version 0.0.3
+        Version 0.0.4
       </bim-label>
 
       <div id="sidebar-footer" style={{ marginTop: 0 }}>

@@ -1,4 +1,5 @@
 import * as BUI from "@thatopen/ui";
+import { refreshIcons } from "@utils/Utils";
 
 export interface GridSidebarState {
   grid?: BUI.Grid<any, any>;
@@ -18,6 +19,9 @@ export const gridSidebarTemplate: BUI.StatefullComponent<GridSidebarState> = (
           const onClick = () => {
             grid.layout = layout
             update()
+            // Los iconos de los toolbars pueden quedar en blanco al
+            // remontar el viewport en el nuevo layout (bug de iconify-icon).
+            refreshIcons()
           }
           return BUI.html`
             <bim-button ?active=${grid.layout === layout} @click=${onClick} style="flex: 0" icon=${grid.layouts[layout].icon} label=${layout}></bim-button> 

@@ -6,6 +6,7 @@ export const appIcons = {
   ADD: "mingcute:add-line",
   APPLY: "mingcute:check-line",
   CLEAR: "mingcute:eraser-line",
+  CONTEXT_MENU: "mingcute:dots-vertical-line",
   COLORIZE: "mingcute:palette-line",
   TRANSPARENCY: "mingcute:layers-line",
   SELECT: "mingcute:cursor-2-line",
@@ -26,4 +27,7 @@ export const appIcons = {
   CLIPPER: "mingcute:scissors-line",
   FIRST_PERSON: "mingcute:walk-line",
   EXPORT: "mingcute:file-export-line",
+  SMART_VIEWS: "mingcute:eye-2-line",
+  DELETE: "mingcute:delete-2-line",
+  GIS: "mingcute:earth-line",
 };

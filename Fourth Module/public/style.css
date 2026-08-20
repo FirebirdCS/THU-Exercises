@@ -791,6 +791,20 @@ bim-grid[floating] > bim-toolbar {
     outline: 1px solid var(--bim-ui_bg-contrast-40);
 }
 
+/* Hide the floating viewport toolbar while the "Vistas" (smart views) layout
+   is active. bim-grid reflects its current layout to a `layout` attribute, so
+   this needs no JS and reacts automatically on tab changes. */
+.components-grid[layout="Vistas"] bim-toolbar {
+    display: none;
+}
+
+/* In the "GIS" layout, keep only the "Escena" toolbar section visible.
+   bim-toolbar-section reflects its `label` to an attribute, so we can hide
+   every other section by label. */
+.components-grid[layout="GIS"] bim-toolbar-section:not([label="Escena"]) {
+    display: none;
+}
+
 /* ---------------------------------------------------------------------------
  * Login screen
  * ------------------------------------------------------------------------- */
@@ -926,3 +940,8 @@ bim-grid[floating] > bim-toolbar {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.cesium-viewer-geocoderContainer {
+    width: 16.5rem;
+    overflow-x: clip;
+  }

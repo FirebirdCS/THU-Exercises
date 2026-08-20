@@ -12,9 +12,6 @@ export const setupClipper = (
   clipper.config.color = new THREE.Color("#202932")
   clipper.config.opacity = 0.2
   clipper.config.size = 5
-  // Scale each plane to the scene bounds; otherwise size=5 is tiny on a
-  // building-scale IFC and the plane helper becomes hard to hit on hover-delete.
-  clipper.autoScalePlanes = true
 
   // Bump the raycaster's line/point thresholds so the plane's thin arrow
   // indicator is easier to land on when pressing Delete/Backspace.
