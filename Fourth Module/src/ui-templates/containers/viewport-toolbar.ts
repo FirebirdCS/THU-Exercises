@@ -10,6 +10,33 @@ export interface ViewerToolbarState {
     world: OBC.World
 }
 
+// El tooltip de bim-button vive en su shadow DOM (gris, contorno y sombra
+// fuertes, fuera de marca) y no se puede estilar desde fuera. Se le inyecta
+// una hoja con el estilo BIM·CA®: navy con texto crema, sin contorno.
+const tooltipStyles = new CSSStyleSheet()
+tooltipStyles.replaceSync(`
+    .tooltip {
+        background-color: var(--azul, #202B37);
+        color: var(--crema, #FAF9F8);
+        outline: none;
+        box-shadow: 0 4px 16px rgba(32, 43, 55, 0.18);
+        border-radius: 4px;
+        padding: 0.375rem 0.625rem;
+        pointer-events: none;
+        white-space: nowrap;
+    }
+    .tooltip strong {
+        font-weight: 700;
+    }
+`)
+
+const applyTooltipStyles = async (button: BUI.Button) => {
+    await button.updateComplete
+    const root = button.shadowRoot
+    if (!root || root.adoptedStyleSheets.includes(tooltipStyles)) return
+    root.adoptedStyleSheets = [...root.adoptedStyleSheets, tooltipStyles]
+}
+
 const originalMaterialsData = new Map<
   FRAGS.BIMMaterial,
   { color: number; transparent: boolean; opacity: number; lodOpacity?: number }
@@ -261,6 +288,10 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
             observer = new ResizeObserver(() => fit())
             observer.observe(grid)
         })
+
+        for (const button of toolbar.querySelectorAll(":scope > bim-toolbar-section > bim-button")) {
+            void applyTooltipStyles(button as BUI.Button)
+        }
     }
 
     return BUI.html`<bim-toolbar ${BUI.ref(onToolbarCreated)}>

@@ -896,13 +896,14 @@ bim-grid[floating] > bim-toolbar {
     border: none;
     justify-self: center;
     outline: 1px solid var(--bim-ui_bg-contrast-40);
-    /* Limita la barra al ancho del visor (no lo ensancha). Si ni el modo
-       solo-iconos cabe (ver viewport-toolbar.ts), hace scroll horizontal
-       dentro de la barra en lugar de cortarse. */
+    /* Limita la barra al ancho del visor (no lo ensancha); el modo
+       solo-iconos (viewport-toolbar.ts) la hace caber. Sin overflow propio:
+       los tooltips de los botones se dibujan dentro de la barra y un
+       overflow auto los recortaría y añadiría una barra de scroll. */
     max-width: 100%;
     min-width: 0;
     box-sizing: border-box;
-    overflow-x: auto;
+    overflow: visible;
 }
 
 /* Hide the floating viewport toolbar while the "Vistas" (smart views) layout
