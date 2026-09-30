@@ -100,7 +100,7 @@ export function ToDoPage(props: Props) {
         theme="dark"
       />
       <div className="task-header">
-        <h4>To-Do</h4>
+        <h4>Tareas</h4>
         <div className="task-searchbar">
           <div className="task-searchbar-container">
             <SearchBox onChange={onTodoSearch} searchProp="ToDo" size="100%" />

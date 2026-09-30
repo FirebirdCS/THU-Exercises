@@ -117,7 +117,7 @@ export const ProjectForm: React.FC<Props> = ({
           />
           <p
             id="tip"
-            style={{ color: "#5d616f", fontStyle: "italic", marginTop: 5 }}
+            style={{ color: "var(--gris-texto)", fontStyle: "italic", marginTop: 5 }}
           >
             TIP: Usa un nombre corto
           </p>

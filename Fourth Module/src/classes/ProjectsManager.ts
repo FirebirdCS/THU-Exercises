@@ -180,13 +180,13 @@ export class ProjectsManager {
             // Recalculate derived properties
             if (updatedTodo.statusToDo === "important") {
               todoToUpdate.symbol = "warning";
-              todoToUpdate.colorStatus = "#cf0e28";
+              todoToUpdate.colorStatus = "#EB6241";
             } else if (updatedTodo.statusToDo === "completed") {
               todoToUpdate.symbol = "done";
-              todoToUpdate.colorStatus = "#0ec70e";
+              todoToUpdate.colorStatus = "#202B37";
             } else if (updatedTodo.statusToDo === "on-going") {
               todoToUpdate.symbol = "grade";
-              todoToUpdate.colorStatus = "#2b69b5";
+              todoToUpdate.colorStatus = "#4C545E";
             }
           } else {
             console.error('ToDo not found for update');

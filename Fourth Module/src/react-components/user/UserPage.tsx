@@ -4,65 +4,65 @@ export function UserPage() {
   return (
     <div className="page" id="users-list">
       <header>
-        <h2>Users</h2>
+        <h2>Usuarios</h2>
         <div className="user-search">
           <span className="material-icons-round">search</span>
           <input
             type="text"
-            placeholder="Search an user..."
+            placeholder="Buscar usuario..."
             style={{ width: 300 }}
           />
           <button className="user-button">
-            <span className="material-icons-round">add</span>New user
+            <span className="material-icons-round">add</span>Nuevo usuario
           </button>
         </div>
       </header>
       <dialog id="new-user-modal">
         <form>
-          <h2>Create an user</h2>
+          <h2>Crear usuario</h2>
           <div className="input-list">
             <div className="form-field-container">
               <label>
-                <span className="material-icons-round">badge</span>Full name
+                <span className="material-icons-round">badge</span>Nombre completo
               </label>
-              <input type="text" placeholder="Type your full name..." />
+              <input type="text" placeholder="Escribe tu nombre completo..." />
             </div>
             <div className="form-field-container">
               <label>
-                <span className="material-icons-round">mail</span>Email
+                <span className="material-icons-round">mail</span>Correo
               </label>
-              <input type="email" placeholder="Type your email..." />
+              <input type="email" placeholder="Escribe tu correo..." />
             </div>
             <div className="form-field-container">
               <label>
-                <span className="material-icons-round">password</span>Password
+                <span className="material-icons-round">password</span>Contraseña
               </label>
-              <input type="password" placeholder="Type your password" />
+              <input type="password" placeholder="Escribe tu contraseña" />
               <p
-                style={{ color: "#5d616f", fontStyle: "italic", marginTop: 5 }}
+                style={{ color: "var(--gris-texto)", fontStyle: "italic", marginTop: 5 }}
               >
-                TIP: It should include at least one upper case letter
+                Consejo: incluye al menos una letra mayúscula,
               </p>
               <p
-                style={{ color: "#5d616f", fontStyle: "italic", marginTop: 5 }}
+                style={{ color: "var(--gris-texto)", fontStyle: "italic", marginTop: 5 }}
               >
-                a number and special character
+                un número y un carácter especial.
               </p>
             </div>
             <div className="form-field-container">
               <label>
-                <span className="material-icons-round">account_circle</span>Role
+                <span className="material-icons-round">account_circle</span>Rol
               </label>
               <select>
-                <option>Architect</option>
-                <option>Engineer</option>
-                <option>Developer</option>
+                <option>Arquitecto</option>
+                <option>Ingeniero</option>
+                <option>Desarrollador</option>
               </select>
             </div>
           </div>
           <div className="modals-buttons">
-            <button className="cancel-button">Cancel</button>
-            <button className="accept-button">Register</button>
+            <button className="cancel-button">Cancelar</button>
+            <button className="accept-button">Registrar</button>
           </div>
         </form>
       </dialog>
@@ -73,20 +73,20 @@ export function UserPage() {
               <img src="/assets/p1.png" alt="" className="profile-image" />
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Name</p>
+              <p style={{ color: "var(--gris-texto)" }}>Nombre</p>
               <p>Alvaro Flores</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Role</p>
-              <p>Engineer</p>
+              <p style={{ color: "var(--gris-texto)" }}>Rol</p>
+              <p>Ingeniero</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Email</p>
+              <p style={{ color: "var(--gris-texto)" }}>Correo</p>
               <p>alvaro@gmail.com</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Signed up</p>
-              <p>6 months ago</p>
+              <p style={{ color: "var(--gris-texto)" }}>Registro</p>
+              <p>Hace 6 meses</p>
             </div>
             <div
               style={{
@@ -108,20 +108,20 @@ export function UserPage() {
               <img src="/assets/p3.png" alt="" className="profile-image" />
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Name</p>
+              <p style={{ color: "var(--gris-texto)" }}>Nombre</p>
               <p>Susanna González</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Role</p>
-              <p>Architect</p>
+              <p style={{ color: "var(--gris-texto)" }}>Rol</p>
+              <p>Arquitecta</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Email</p>
+              <p style={{ color: "var(--gris-texto)" }}>Correo</p>
               <p>susanna@gmail.com</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Signed up</p>
-              <p>1 year ago ago</p>
+              <p style={{ color: "var(--gris-texto)" }}>Registro</p>
+              <p>Hace 1 año</p>
             </div>
             <div
               style={{
@@ -143,20 +143,20 @@ export function UserPage() {
               <img src="/assets/p2.png" alt="" className="profile-image" />
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Name</p>
+              <p style={{ color: "var(--gris-texto)" }}>Nombre</p>
               <p>Pedro Jimenez</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Role</p>
-              <p>Developer</p>
+              <p style={{ color: "var(--gris-texto)" }}>Rol</p>
+              <p>Desarrollador</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Email</p>
+              <p style={{ color: "var(--gris-texto)" }}>Correo</p>
               <p>pedro@gmail.com</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Signed up</p>
-              <p>3 years ago ago</p>
+              <p style={{ color: "var(--gris-texto)" }}>Registro</p>
+              <p>Hace 3 años</p>
             </div>
             <div
               style={{
@@ -178,20 +178,20 @@ export function UserPage() {
               <img src="/assets/p4.png" alt="" className="profile-image" />
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Name</p>
+              <p style={{ color: "var(--gris-texto)" }}>Nombre</p>
               <p>Carmelia Orozco</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Role</p>
-              <p>Architect</p>
+              <p style={{ color: "var(--gris-texto)" }}>Rol</p>
+              <p>Arquitecta</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Email</p>
+              <p style={{ color: "var(--gris-texto)" }}>Correo</p>
               <p>carmeliao@gmail.com</p>
             </div>
             <div className="user-property">
-              <p style={{ color: "#969696" }}>Signed up</p>
-              <p>3 weeks ago ago</p>
+              <p style={{ color: "var(--gris-texto)" }}>Registro</p>
+              <p>Hace 3 semanas</p>
             </div>
             <div
               style={{

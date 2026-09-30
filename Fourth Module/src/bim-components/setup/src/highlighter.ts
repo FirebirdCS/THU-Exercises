@@ -8,7 +8,7 @@ export const setupHighlighter = (components: OBC.Components, world: OBC.World) =
     highlighter.setup({
         world,
         selectMaterialDefinition: {
-            color: new THREE.Color("#feca29"),
+            color: new THREE.Color("#FDC929"),
             renderedFaces: FRAGS.RenderedFaces.ONE,
             opacity: 1,
             transparent: false,

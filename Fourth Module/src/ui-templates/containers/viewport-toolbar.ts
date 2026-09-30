@@ -215,34 +215,82 @@ export const viewerToolbarTemplate : BUI.StatefullComponent<ViewerToolbarState> 
         target.loading = false;
       };
 
-    return BUI.html`<bim-toolbar>
+    // Barra responsiva: si no cabe en el ancho del visor (p. ej. layout
+    // "Modelos", con paneles a ambos lados), los botones pasan a mostrar solo
+    // su icono (con tooltip) y la barra se mantiene en una fila. Al haber
+    // espacio de nuevo, recuperan su texto. Se oculta el texto en cada
+    // bim-button: labelHidden de bim-toolbar-section solo oculta el título.
+    const onToolbarCreated = (e?: Element) => {
+        if (!e) return
+        const toolbar = e as HTMLElement
+        let compact = false
+        let fullWidth = 0
+        let observer: ResizeObserver | undefined
+
+        const setCompact = (value: boolean) => {
+            compact = value
+            for (const button of toolbar.querySelectorAll(":scope > bim-toolbar-section > bim-button")) {
+                (button as BUI.Button).labelHidden = value
+            }
+        }
+
+        const fit = () => {
+            const grid = toolbar.parentElement
+            if (!grid || !toolbar.offsetWidth) return // layout sin toolbar (Vistas)
+            const style = getComputedStyle(grid)
+            const available = grid.clientWidth
+                - parseFloat(style.paddingLeft) - parseFloat(style.paddingRight)
+            if (!compact) {
+                const needed = toolbar.scrollWidth
+                if (needed > available) {
+                    fullWidth = needed
+                    setCompact(true)
+                }
+            } else if (available >= fullWidth) {
+                setCompact(false)
+                // Re-mide tras el render por si las etiquetas cambiaron de
+                // largo (p. ej. "Salir 1ª persona").
+                requestAnimationFrame(() => requestAnimationFrame(fit))
+            }
+        }
+
+        // El toolbar aún no está insertado en el grid al crearse la referencia.
+        requestAnimationFrame(() => {
+            const grid = toolbar.parentElement
+            if (!grid || observer) return
+            observer = new ResizeObserver(() => fit())
+            observer.observe(grid)
+        })
+    }
+
+    return BUI.html`<bim-toolbar ${BUI.ref(onToolbarCreated)}>
      <bim-toolbar-section label="Visibilidad" icon=${appIcons.SHOW}>
-        <bim-button icon=${appIcons.SHOW} label="Mostrar todo" @click=${onShowAll}></bim-button>
-        <bim-button icon=${appIcons.TRANSPARENCY} label="Modo fantasma" @click=${onToggleGhost}></bim-button>
+        <bim-button icon=${appIcons.SHOW} label="Mostrar todo" tooltip-title="Mostrar todo" @click=${onShowAll}></bim-button>
+        <bim-button icon=${appIcons.TRANSPARENCY} label="Modo fantasma" tooltip-title="Modo fantasma" @click=${onToggleGhost}></bim-button>
       </bim-toolbar-section>
      <bim-toolbar-section label="Selección" icon=${appIcons.SELECT}>
-        <bim-button icon=${appIcons.FOCUS} label="Encuadrar" @click=${onFocus}></bim-button>
-        <bim-button icon=${appIcons.HIDE} label="Ocultar" @click=${onHide}></bim-button>
-        <bim-button icon=${appIcons.ISOLATE} label="Aislar" @click=${onIsolate}></bim-button>
-        <bim-button icon=${appIcons.COLORIZE} label="Colorear">
+        <bim-button icon=${appIcons.FOCUS} label="Encuadrar" tooltip-title="Encuadrar" @click=${onFocus}></bim-button>
+        <bim-button icon=${appIcons.HIDE} label="Ocultar" tooltip-title="Ocultar" @click=${onHide}></bim-button>
+        <bim-button icon=${appIcons.ISOLATE} label="Aislar" tooltip-title="Aislar" @click=${onIsolate}></bim-button>
+        <bim-button icon=${appIcons.COLORIZE} label="Colorear" tooltip-title="Colorear">
         <bim-context-menu>
             <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                <bim-color-input ${BUI.ref(onInputCreated)} ></bim-color-input>
                <div style="display: flex; gap: 0.5rem;">
                     <bim-button @click=${onApplyColor} icon=${appIcons.APPLY} label="Aplicar"></bim-button>
-                    <bim-button icon=${appIcons.CLEAR} label="Restablecer" @click=${onReset}></bim-buttom>
+                    <bim-button icon=${appIcons.CLEAR} label="Restablecer" @click=${onReset}></bim-button>
                </div>
             </div>
         </bim-context-menu>
         </bim-button>
      </bim-toolbar-section>
      <bim-toolbar-section label="Cortes" icon=${appIcons.CLIPPER}>
-        <bim-button icon=${appIcons.CLEAR} label="Eliminar planos" @click=${onDeleteAllClippers}></bim-button>
+        <bim-button icon=${appIcons.CLEAR} label="Eliminar planos" tooltip-title="Eliminar planos de corte" @click=${onDeleteAllClippers}></bim-button>
      </bim-toolbar-section>
      <bim-toolbar-section icon=${appIcons.SCENE} label="Escena">
-        <bim-button label="Blanco" @click=${onToggleBackground}></bim-button>
-        <bim-button icon=${appIcons.GRID} label="Ocultar cuadrícula" @click=${onToggleGrid}></bim-button>
-        <bim-button icon=${appIcons.FIRST_PERSON} label="1ª persona" @click=${onToggleFirstPerson}></bim-button>
+        <bim-button icon=${appIcons.BACKGROUND} label="Blanco" tooltip-title="Fondo del visor" @click=${onToggleBackground}></bim-button>
+        <bim-button icon=${appIcons.GRID} label="Ocultar cuadrícula" tooltip-title="Mostrar/ocultar cuadrícula" @click=${onToggleGrid}></bim-button>
+        <bim-button icon=${appIcons.FIRST_PERSON} label="1ª persona" tooltip-title="Vista en 1ª persona" @click=${onToggleFirstPerson}></bim-button>
      </bim-toolbar-section>
     </bim-toolbar>`
 }

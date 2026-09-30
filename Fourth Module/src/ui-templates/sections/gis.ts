@@ -48,8 +48,8 @@ export const gisPanelTemplate: BUI.StatefullComponent<GisPanelState> = (
 	const enableInput = BUI.Component.create<BUI.Selector>(() => {
 		return BUI.html`
 			<bim-selector class="disabled">
-				<bim-option label="On" value="${true}"></bim-option>
-				<bim-option label="Off" value="${false}" checked></bim-option>
+				<bim-option label="Activado" value="${true}"></bim-option>
+				<bim-option label="Desactivado" value="${false}" checked></bim-option>
 			</bim-selector>
 		`;
 	});

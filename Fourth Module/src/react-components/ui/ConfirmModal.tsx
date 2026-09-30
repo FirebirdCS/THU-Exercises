@@ -26,7 +26,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
       <form onSubmit={handleSubmit} className="input-list">
         <h2>{title}</h2>
         <div className="input-list">
-          <p style={{ color: "#969696", margin: "20px 0" }}>{message}</p>
+          <p style={{ color: "var(--gris-texto)", margin: "20px 0" }}>{message}</p>
         </div>
         <div className="modals-buttons">
           <button type="button" className="cancel-button" onClick={onCancel}>

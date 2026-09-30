@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Project } from "@classes/Project";
 import { appIcons } from "@icons";
+import { brandProjectColor } from "@utils/Utils";
 
 interface Props {
   project: Project;
@@ -14,7 +15,7 @@ export function ProjectCard(props: Props) {
       <div className="card-header">
         <bim-label
           style={{
-            backgroundColor: `${props.project.cardColor}`,
+            backgroundColor: brandProjectColor(props.project.cardColor),
             padding: 10,
             borderRadius: 8,
             aspectRatio: 1,
@@ -24,7 +25,7 @@ export function ProjectCard(props: Props) {
           {iconTitle}
         </bim-label>
         <div>
-          <p style={{ color: "var(--azul)", fontSize: "1rem", fontWeight: 600 }}>
+          <p style={{ color: "var(--azul)", fontSize: "1rem", fontWeight: 700 }}>
             {props.project.name}
           </p>
           <p style={{ color: "var(--gris-texto)", fontSize: "0.9rem" }}>

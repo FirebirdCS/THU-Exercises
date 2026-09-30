@@ -30,4 +30,6 @@ export const appIcons = {
   SMART_VIEWS: "mingcute:eye-2-line",
   DELETE: "mingcute:delete-2-line",
   GIS: "mingcute:earth-line",
+  AUDIT: "mingcute:list-check-line",
+  BACKGROUND: "mingcute:paint-brush-line",
 };

@@ -1,6 +1,6 @@
 import * as BUI from "@thatopen/ui"
 import { Project } from "@classes/Project"
-import { formattedDateProject } from "@utils/Utils"
+import { brandProjectColor, formattedDateProject } from "@utils/Utils"
 
 export interface ProjectInfoPanelState {
     project?: Project
@@ -18,11 +18,11 @@ export const projectInfoPanelTemplate: BUI.StatefullComponent<ProjectInfoPanelSt
 
     return BUI.html`
     <bim-panel-section fixed label="Información del proyecto">
-      <div style="max-width: 475px; padding: 30px 0; border: 1px solid var(--gris); border-radius: 0.25rem; background-color: var(--blanco);">
+      <div style="max-width: 475px; padding: 30px 0; border: 1px solid var(--gris); border-radius: 0.25rem; background-color: var(--superficie);">
         <div style="display: flex; align-items: center; justify-content: space-between; padding: 0 30px; margin-bottom: 30px;">
           <p style="
             font-size: 20px;
-            background-color: ${project.cardColor};
+            background-color: ${brandProjectColor(project.cardColor)};
             aspect-ratio: 1;
             border-radius: 100%;
             padding: 12px;

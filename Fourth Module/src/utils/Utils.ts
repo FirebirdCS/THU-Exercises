@@ -36,9 +36,25 @@ export function formattedDateProject(date: Date, options?: Intl.DateTimeFormatOp
     return date.toLocaleDateString('en-US', options);
 }
 
+// Colores de marca BIM·CA® aptos para el avatar de proyecto (texto crema
+// encima). El amarillo queda fuera: con texto crema no es legible.
+const PROJECT_COLORS = ["#202B37", "#EB6241"];
+
 export function selectRandomColor(): string {
-    const colors = ["#212B37", "#EF6337", "#781239", "#3b95bf", "#48bf3b"];
-    return colors[Math.floor(Math.random() * colors.length)];
+    return PROJECT_COLORS[Math.floor(Math.random() * PROJECT_COLORS.length)];
+}
+
+/**
+ * Los proyectos antiguos guardaron en Firebase colores fuera de la paleta
+ * (vino, celeste, verde...). Se mapean de forma estable a un color de marca
+ * al mostrarlos, sin tocar los datos guardados.
+ */
+export function brandProjectColor(stored: string | undefined): string {
+    const value = (stored ?? "").toUpperCase();
+    if (PROJECT_COLORS.includes(value)) return value;
+    let hash = 0;
+    for (const char of value) hash = (hash * 31 + char.charCodeAt(0)) | 0;
+    return PROJECT_COLORS[Math.abs(hash) % PROJECT_COLORS.length];
 }
 
 /**

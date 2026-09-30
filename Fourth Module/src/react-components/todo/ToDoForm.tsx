@@ -80,11 +80,11 @@ export const ToDoForm: React.FC<Props> = ({
 
   return (
     <form onSubmit={handleSubmit} className="input-list">
-      <h2>{mode === "create" ? "Create To-Do" : "Edit To-Do"}</h2>
+      <h2>{mode === "create" ? "Nueva tarea" : "Editar tarea"}</h2>
       <div className="input-list">
         <div className="form-field-container">
           <label>
-            <span className="material-icons-round">notes</span>Description
+            <span className="material-icons-round">notes</span>Descripción
           </label>
           <textarea
             name="description"
@@ -110,7 +110,7 @@ export const ToDoForm: React.FC<Props> = ({
 
         <div className="form-field-container">
           <label>
-            <span className="material-icons-round">calendar_month</span>Finish
+            <span className="material-icons-round">calendar_month</span>Fecha límite
             Date
           </label>
           <input
@@ -123,16 +123,16 @@ export const ToDoForm: React.FC<Props> = ({
 
         <div className="form-field-container">
           <label>
-            <span className="material-icons-round">help</span>Status
+            <span className="material-icons-round">help</span>Estado
           </label>
           <select
             name="statusToDo"
             value={status}
             onChange={(e) => setStatus(e.target.value as statusTask)}
           >
-            <option value="important">important</option>
-            <option value="completed">completed</option>
-            <option value="on-going">on-going</option>
+            <option value="important">Importante</option>
+            <option value="completed">Completada</option>
+            <option value="on-going">En curso</option>
           </select>
         </div>
       </div>

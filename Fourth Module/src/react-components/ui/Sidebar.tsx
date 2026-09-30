@@ -28,6 +28,17 @@ export function Sidebar() {
             label="Proyectos"
           ></bim-button>
         </Router.Link>
+        <Router.Link to="/audit">
+          <bim-button
+            style={{
+              color: "var(--blanco)",
+              fontSize: "1rem",
+              lineHeight: "1.2",
+            }}
+            icon={appIcons.AUDIT}
+            label="Auditoría"
+          ></bim-button>
+        </Router.Link>
       </ul>
 
       <bim-label
@@ -41,7 +52,7 @@ export function Sidebar() {
           marginBottom: "-0.5rem",
         }}
       >
-        Version 0.0.4
+        Version 0.0.5
       </bim-label>
 
       <div id="sidebar-footer" style={{ marginTop: 0 }}>

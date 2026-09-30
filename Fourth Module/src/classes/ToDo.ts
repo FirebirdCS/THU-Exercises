@@ -24,13 +24,13 @@ export class ToDo implements ITodo{
       }
       if (this.statusToDo === "important") {
         this.symbol = 'warning'
-        this.colorStatus = "#cf0e28";
+        this.colorStatus = "#EB6241";
       } else if (this.statusToDo === "completed") {
         this.symbol = "done";
-        this.colorStatus = "#0ec70e";
+        this.colorStatus = "#202B37";
       } else if (this.statusToDo === "on-going") {
         this.symbol = "grade";
-        this.colorStatus = "#2b69b5";
+        this.colorStatus = "#4C545E";
       }
       this.id = id
     }

@@ -4,6 +4,7 @@ import * as Router from "react-router-dom";
 import { ProjectsPage } from "./react-components/project/ProjectsPage";
 import { ProjectDetailsPage } from "./react-components/project/ProjectDetailsPage";
 import { UserPage } from "./react-components/user/UserPage";
+import { AuditPage } from "./react-components/audit/AuditPage";
 import { LoginPage } from "./react-components/auth/LoginPage";
 import { RequireAuth } from "./react-components/auth/RequireAuth";
 import { AuthProvider } from "./react-components/auth/AuthContext";
@@ -33,6 +34,7 @@ appRoot.render(
                 <ProjectDetailsPage projectsManager={projectsManager} />
               }
             />
+            <Router.Route path="/audit" element={<AuditPage />} />
             <Router.Route path="/users" element={<UserPage />} />
           </Router.Route>
         </Router.Routes>

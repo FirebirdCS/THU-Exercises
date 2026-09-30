@@ -148,16 +148,9 @@ export function ProjectsPage(props: Props) {
       {projects.length > 0 ? (
         <div id="projects-lists">{projectCards}</div>
       ) : (
-        <div
-          style={{
-            textAlign: "center",
-            marginTop: "50px",
-            color: "var(--naranja)",
-            fontSize: "18px",
-            fontWeight: "bold",
-          }}
-        >
-          🚫 ¡No se encontraron proyectos! Intenta con otra búsqueda.
+        <div className="empty-state">
+          <h4>No se encontraron proyectos</h4>
+          <p>Intenta con otra búsqueda.</p>
         </div>
       )}
     </div>
