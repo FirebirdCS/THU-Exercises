@@ -33,7 +33,7 @@ export function formattedDateProject(date: Date, options?: Intl.DateTimeFormatOp
     if (!date || !(date instanceof Date)) {
         return ''; 
     }
-    return date.toLocaleDateString('en-US', options);
+    return date.toLocaleDateString('es-GT', options);
 }
 
 // Colores de marca BIM·CA® aptos para el avatar de proyecto (texto crema

@@ -450,7 +450,11 @@ dialog{
     margin: auto;
 }
 
-dialog::backdrop{
+/* Fondo oscuro + desenfoque solo para los modales propios (proyecto,
+   confirmación). Los menús contextuales de bim-ui (cargar modelo, colorear,
+   exportar...) también se abren en un <dialog data-context-dialog>; sin esta
+   exclusión heredaban el desenfoque y la pantalla quedaba borrosa. */
+dialog:not([data-context-dialog])::backdrop{
     background-color: rgba(32, 43, 55, 0.55);
     backdrop-filter: blur(3px);
 }

@@ -1,5 +1,5 @@
 import * as BUI from "@thatopen/ui"
-import { Project } from "@classes/Project"
+import { Project, roleLabel, statusLabel } from "@classes/Project"
 import { brandProjectColor, formattedDateProject } from "@utils/Utils"
 
 export interface ProjectInfoPanelState {
@@ -42,7 +42,7 @@ export const projectInfoPanelTemplate: BUI.StatefullComponent<ProjectInfoPanelSt
           <div style="display: flex; column-gap: 30px; padding: 30px 0; justify-content: space-between;">
             <div>
               <p style="color: var(--gris-texto); font-size: var(--font-sm); margin: 0;">Estado</p>
-              <p style="margin: 0; color: var(--azul);">${project.status}</p>
+              <p style="margin: 0; color: var(--azul);">${statusLabel(project.status)}</p>
             </div>
             <div>
               <p style="color: var(--gris-texto); font-size: var(--font-sm); margin: 0;">Costo</p>
@@ -50,7 +50,7 @@ export const projectInfoPanelTemplate: BUI.StatefullComponent<ProjectInfoPanelSt
             </div>
             <div>
               <p style="color: var(--gris-texto); font-size: var(--font-sm); margin: 0;">Rol</p>
-              <p style="margin: 0; color: var(--azul);">${project.role}</p>
+              <p style="margin: 0; color: var(--azul);">${roleLabel(project.role)}</p>
             </div>
             <div>
               <p style="color: var(--gris-texto); font-size: var(--font-sm); margin: 0;">Fecha de finalización</p>

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Project } from "@classes/Project";
+import { Project, roleLabel, statusLabel } from "@classes/Project";
 import { appIcons } from "@icons";
 import { brandProjectColor } from "@utils/Utils";
 
@@ -42,7 +42,7 @@ export function ProjectCard(props: Props) {
             Estado
           </bim-label>
           <bim-label style={{ color: "var(--azul)", fontSize: "1rem" }}>
-            {props.project.status}
+            {statusLabel(props.project.status)}
           </bim-label>
         </div>
         <div className="card-property">
@@ -53,7 +53,7 @@ export function ProjectCard(props: Props) {
             Rol
           </bim-label>
           <bim-label style={{ color: "var(--azul)", fontSize: "1rem" }}>
-            {props.project.role}
+            {roleLabel(props.project.role)}
           </bim-label>
         </div>
         <div className="card-property">
