@@ -24,6 +24,8 @@ export const loadModelBtnTemplate: BUI.StatefullComponent<LoadModelBtnState> = (
     input.addEventListener("change", async () => {
       const file = input.files?.[0];
       if (!file) return;
+      // Cierra el menú "+" (y el desenfoque de su fondo) al elegir el archivo.
+      BUI.ContextMenu.removeMenus();
       const name = file.name.replace(/\.ifc$/i, "");
 
       const buffer = await file.arrayBuffer();
@@ -76,6 +78,8 @@ export const loadModelBtnTemplate: BUI.StatefullComponent<LoadModelBtnState> = (
     input.addEventListener("change", async () => {
       const file = input.files?.[0];
       if (!file) return;
+      // Cierra el menú "+" (y el desenfoque de su fondo) al elegir el archivo.
+      BUI.ContextMenu.removeMenus();
       const name = file.name.replace(/\.frag$/i, "");
 
       const buffer = await file.arrayBuffer();
