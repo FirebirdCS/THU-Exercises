@@ -87,7 +87,9 @@ export const loadModelBtnTemplate: BUI.StatefullComponent<LoadModelBtnState> = (
       const loadingToast = toast.loading(`Cargando "${name}"...`);
       try {
         const fragments = components.get(OBC.FragmentsManager)
-        await fragments.core.load(buffer, { modelId: name })
+        // core.load transfiere el ArrayBuffer al worker y lo deja vacío
+        // ("detached"); se le pasa una copia para poder subir el original.
+        await fragments.core.load(buffer.slice(0), { modelId: name })
 
         await uploadProjectModel(projectId, {
           name,
