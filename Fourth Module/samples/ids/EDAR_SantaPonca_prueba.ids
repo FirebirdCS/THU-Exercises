@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IDS de prueba para el modelo 20201_INS_Instalaciones_SantaPonca (IFC2X3).
+  Incluye casos que cumplen, que fallan, que no se pueden evaluar y que no
+  aplican, para ver cada estado en la pestaña IDS del visor.
+-->
+<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/1.0/ids.xsd">
+  <ids:info>
+    <ids:title>EDAR Santa Ponça - Requisitos de información (prueba)</ids:title>
+    <ids:copyright>BIM·CA</ids:copyright>
+    <ids:version>1.0</ids:version>
+    <ids:description>Verifica que los elementos de instalaciones tengan los parámetros EDAR de identificación y localización.</ids:description>
+    <ids:author>info@bimca.com</ids:author>
+    <ids:date>2026-10-14</ids:date>
+    <ids:purpose>Prueba del verificador IDS</ids:purpose>
+  </ids:info>
+  <ids:specifications>
+
+    <!-- 1. CUMPLE: todas las tuberías tienen los 5 parámetros de identificación. -->
+    <ids:specification name="Identificación EDAR completa en tuberías" ifcVersion="IFC2X3" identifier="EDAR-01"
+                       description="Toda tubería debe tener los cinco parámetros del pset EDAR_Identificacion."
+                       instructions="Rellena EDAR_I1 a EDAR_I5 en cada tubería.">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
+        <ids:entity>
+          <ids:name><ids:simpleValue>IFCFLOWSEGMENT</ids:simpleValue></ids:name>
+        </ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:property dataType="IFCTEXT" cardinality="required">
+          <ids:propertySet><ids:simpleValue>EDAR_Identificacion</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>EDAR_I1_CodigoClasificacion</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:property dataType="IFCTEXT" cardinality="required">
+          <ids:propertySet><ids:simpleValue>EDAR_Identificacion</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>EDAR_I2_DescripcionClasificacion</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:property dataType="IFCTEXT" cardinality="required">
+          <ids:propertySet><ids:simpleValue>EDAR_Identificacion</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>EDAR_I3_Tipo</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:property dataType="IFCTEXT" cardinality="required">
+          <ids:propertySet><ids:simpleValue>EDAR_Identificacion</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>EDAR_I4_Especialidad</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:property dataType="IFCTEXT" cardinality="required">
+          <ids:propertySet><ids:simpleValue>EDAR_Identificacion</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>EDAR_I5_Sistema</ids:simpleValue></ids:baseName>
+        </ids:property>
+      </ids:requirements>
+    </ids:specification>
+
+    <!-- 2. CUMPLE: la especialidad de los elementos de distribución es "Instalaciones". -->
+    <ids:specification name="Especialidad de instalaciones" ifcVersion="IFC2X3" identifier="EDAR-02"
+                       description="Los elementos de flujo y distribución deben pertenecer a la especialidad Instalaciones.">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
+        <ids:entity>
+          <ids:name>
+            <xs:restriction base="xs:string">
+              <xs:pattern value="IFC(FLOW|DISTRIBUTION)[A-Z]*"/>
+            </xs:restriction>
+          </ids:name>
+        </ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:property dataType="IFCTEXT" cardinality="required">
+          <ids:propertySet><ids:simpleValue>EDAR_Identificacion</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>EDAR_I4_Especialidad</ids:simpleValue></ids:baseName>
+          <ids:value><ids:simpleValue>Instalaciones</ids:simpleValue></ids:value>
+        </ids:property>
+      </ids:requirements>
+    </ids:specification>
+
+    <!-- 3. FALLA EN PARTE: el código de proceso debe tener el formato AP.XX.XX.XX.XX.XX
+         (hay elementos con "AP.08.07.5.00.00", que rompe el formato). -->
+    <ids:specification name="Formato del código de proceso" ifcVersion="IFC2X3" identifier="EDAR-03"
+                       description="El código de proceso de tuberías y accesorios debe seguir el formato AP.XX.XX.XX.XX.XX."
+                       instructions="Usa siempre dos dígitos por nivel, por ejemplo AP.08.07.05.00.00.">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
+        <ids:entity>
+          <ids:name>
+            <xs:restriction base="xs:string">
+              <xs:enumeration value="IFCFLOWSEGMENT"/>
+              <xs:enumeration value="IFCFLOWFITTING"/>
+            </xs:restriction>
+          </ids:name>
+        </ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:property dataType="IFCTEXT" cardinality="required">
+          <ids:propertySet><ids:simpleValue>EDAR_Localizacion</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>EDAR_L1_CodigoProceso</ids:simpleValue></ids:baseName>
+          <ids:value>
+            <xs:restriction base="xs:string">
+              <xs:pattern value="AP\.\d{2}\.\d{2}\.\d{2}\.\d{2}\.\d{2}"/>
+            </xs:restriction>
+          </ids:value>
+        </ids:property>
+      </ids:requirements>
+    </ids:specification>
+
+    <!-- 4. NO CUMPLE: las válvulas deben indicar el fabricante (el modelo no trae ese pset). -->
+    <ids:specification name="Fabricante en válvulas y compuertas" ifcVersion="IFC2X3" identifier="EDAR-04"
+                       description="Las válvulas y compuertas deben indicar su fabricante."
+                       instructions="Rellena Pset_ManufacturerTypeInformation.Manufacturer.">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
+        <ids:entity>
+          <ids:name><ids:simpleValue>IFCFLOWCONTROLLER</ids:simpleValue></ids:name>
+        </ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:property dataType="IFCLABEL" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Pset_ManufacturerTypeInformation</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>Manufacturer</ids:simpleValue></ids:baseName>
+        </ids:property>
+      </ids:requirements>
+    </ids:specification>
+
+    <!-- 5. NO EVALUABLE: requisito de clasificación (aún no soportado por el verificador). -->
+    <ids:specification name="Clasificación de equipos" ifcVersion="IFC2X3" identifier="EDAR-05"
+                       description="Los equipos de bombeo deben estar clasificados.">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
+        <ids:entity>
+          <ids:name><ids:simpleValue>IFCFLOWMOVINGDEVICE</ids:simpleValue></ids:name>
+        </ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:classification cardinality="required">
+          <ids:system><ids:simpleValue>Uniclass 2015</ids:simpleValue></ids:system>
+        </ids:classification>
+      </ids:requirements>
+    </ids:specification>
+
+    <!-- 6. NO APLICA: especificación escrita para IFC4 (el modelo es IFC2X3). -->
+    <ids:specification name="Tuberías IFC4 con sistema" ifcVersion="IFC4" identifier="EDAR-06"
+                       description="Especificación para modelos IFC4; no aplica a este modelo IFC2X3.">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
+        <ids:entity>
+          <ids:name><ids:simpleValue>IFCPIPESEGMENT</ids:simpleValue></ids:name>
+        </ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:property dataType="IFCTEXT" cardinality="required">
+          <ids:propertySet><ids:simpleValue>EDAR_Identificacion</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>EDAR_I5_Sistema</ids:simpleValue></ids:baseName>
+        </ids:property>
+      </ids:requirements>
+    </ids:specification>
+
+  </ids:specifications>
+</ids:ids>

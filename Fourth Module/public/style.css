@@ -1065,3 +1065,143 @@ bim-grid[floating] > bim-toolbar {
     width: 16.5rem;
     overflow-x: clip;
   }
+/* ---------------------------------------------------------------------------
+ * Pestaña IDS (verificación de requisitos de información)
+ * ------------------------------------------------------------------------- */
+
+.ids-panel {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+    min-height: 0;
+}
+
+.ids-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.ids-actions bim-button {
+    flex: 0 0 auto;
+}
+
+.ids-message {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: var(--bim-ui_bg-contrast-10);
+    color: var(--azul);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+}
+
+/* El coral no lleva cuerpo de texto: texto navy sobre tinte coral. */
+.ids-message--error {
+    background-color: rgba(235, 98, 65, 0.12);
+    border: 1px solid rgba(235, 98, 65, 0.45);
+}
+
+.ids-file {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2px;
+}
+
+.ids-file__title {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--azul);
+}
+
+.ids-file__meta {
+    font-size: 0.75rem;
+    line-height: 1.45;
+    color: var(--gris-texto);
+}
+
+.ids-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    padding: 12px;
+    border: 1px solid var(--gris);
+    border-radius: 8px;
+}
+
+.ids-summary__value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--azul);
+}
+
+.ids-specs {
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
+}
+
+.ids-spec {
+    display: flex;
+    flex-direction: column;
+    row-gap: 6px;
+    padding: 10px 12px;
+    border: 1px solid var(--gris);
+    border-radius: 8px;
+}
+
+.ids-spec__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ids-spec__name {
+    font-weight: 700;
+    font-size: 0.8125rem;
+    color: var(--azul);
+}
+
+.ids-spec__description {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--azul);
+}
+
+.ids-spec__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ids-spec__actions bim-button {
+    flex: 0 0 auto;
+}
+
+.ids-failures {
+    display: flex;
+    flex-direction: column;
+    max-height: 18rem;
+    overflow-y: auto;
+    border-top: 1px solid var(--gris);
+    padding-top: 6px;
+}
+
+.ids-failure {
+    display: flex;
+    flex-direction: column;
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--gris);
+    cursor: pointer;
+}
+
+.ids-failure:hover {
+    background-color: var(--bim-ui_bg-contrast-10);
+}
+
+.ids-failure__name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--azul);
+    word-break: break-all;
+}

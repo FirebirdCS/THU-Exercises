@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  IDS INCORRECTO a propósito: está escrito para IFC4, pero el modelo
+  20201_INS_Instalaciones_SantaPonca es IFC2X3. Al cargarlo, el visor debe
+  rechazarlo sin cargar nada y mostrar un error.
+-->
+<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/1.0/ids.xsd">
+  <ids:info>
+    <ids:title>Requisitos IFC4 (no corresponde al modelo)</ids:title>
+    <ids:date>2026-10-14</ids:date>
+  </ids:info>
+  <ids:specifications>
+    <ids:specification name="Tuberías con sistema" ifcVersion="IFC4" identifier="IFC4-01">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
+        <ids:entity>
+          <ids:name><ids:simpleValue>IFCPIPESEGMENT</ids:simpleValue></ids:name>
+        </ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:property dataType="IFCLABEL" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Pset_PipeSegmentTypeCommon</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>Reference</ids:simpleValue></ids:baseName>
+        </ids:property>
+      </ids:requirements>
+    </ids:specification>
+  </ids:specifications>
+</ids:ids>

@@ -32,4 +32,5 @@ export const appIcons = {
   GIS: "mingcute:earth-line",
   AUDIT: "mingcute:list-check-line",
   BACKGROUND: "mingcute:paint-brush-line",
+  IDS: "mingcute:certificate-line",
 };

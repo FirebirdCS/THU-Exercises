@@ -1,7 +1,7 @@
 import * as BUI from "@thatopen/ui";
 import { ComponentsGrid } from "./src";
 import { viewportContainerTemplate } from "../../containers";
-import { itemsDataPanelTemplate, modelsPanelTemplate, queriesPanelTemplate, projectInfoPanelTemplate, smartViewsPanelTemplate, spatialTreePanelTemplate, gisPanelTemplate } from "src/ui-templates/sections";
+import { itemsDataPanelTemplate, modelsPanelTemplate, queriesPanelTemplate, projectInfoPanelTemplate, smartViewsPanelTemplate, spatialTreePanelTemplate, gisPanelTemplate, idsPanelTemplate } from "src/ui-templates/sections";
 import * as OBC from "@thatopen/components"
 import { appIcons } from "src/index";
 import { Project } from "@classes/Project";
@@ -57,6 +57,10 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
             gis: {
               template: gisPanelTemplate,
               initialState: { components }
+            },
+            ids: {
+              template: idsPanelTemplate,
+              initialState: { components }
             }
         };
 
@@ -96,6 +100,13 @@ export const componentsGridTemplate: BUI.StatefullComponent<ComponentsGridState>
             template: `
               "viewport gis" 1fr
               /1fr 22rem
+            `,
+          },
+          IDS: {
+            icon: appIcons.IDS,
+            template: `
+              "viewport ids" 1fr
+              /1fr 26rem
             `,
           },
           Proyecto: {
